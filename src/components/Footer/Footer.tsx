@@ -9,11 +9,10 @@ const Footer = () => {
         <div>
           <h5 className="mb-8 flex items-center gap-2">
             <Logo width={30} height={24} />
-            <span className="text-neutral text-lg font-medium">Logoipsum</span>
+            <span className="text-neutral text-lg font-medium">Resumen</span>
           </h5>
           <p className="text-tertiary-content">
-            The first free end-to-end analytics service for the site, designed to work with
-            enterprises of various levels and business segments.
+            Estudiante de Ingeniería en Sistemas de la UNA, apasionado por el desarrollo web y la creación de experiencias digitales únicas. Siempre en busca de nuevos desafíos y oportunidades para aprender y crecer en el mundo de la tecnología.
           </p>
           <a
             href="#"
@@ -58,22 +57,23 @@ const Footer = () => {
             <div className="flex flex-col">
               <h5 className="text-neutral mb-4 text-lg font-medium">Contact Us</h5>
               <a
-                href="mailto:johndoe@gmail.com"
+                href="mailto:marckgv@gmail.com"
                 className="text-tertiary-content hover:text-neutral text-sm font-light transition-colors duration-300">
-                johndoe@gmail.com
+                marckgv@gmail.com
               </a>
               <a
                 href="tel:+92 3123456789"
                 className="text-tertiary-content hover:text-neutral text-sm font-light transition-colors duration-300">
-                +92 3123456789
+                +506 86748396
+              
               </a>
             </div>
             <div>
               <div>
                 <h5 className="text-neutral mb-4 text-lg font-medium">Location</h5>
                 <address className="text-tertiary-content flex flex-col text-sm font-light">
-                  <span>123456, Pakistan</span>
-                  <span>Karachi 22/5/8, Office 4</span>
+                  <span>60801, Costa Rica</span>
+                  <span>San Vito / Coto Brus</span>
                 </address>
               </div>
             </div>

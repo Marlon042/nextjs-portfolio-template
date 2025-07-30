@@ -42,7 +42,7 @@ const Navbar = () => {
           <Link href="/">
             <div className="animate-fade-up text-primary-content relative flex items-center gap-3 transition-all duration-300 md:static">
               <Logo />
-              <span className="text-primary-content">john_doe</span>
+              <span className="text-primary-content">MARLON GUTIÉRREZ</span>
             </div>
           </Link>
         )}

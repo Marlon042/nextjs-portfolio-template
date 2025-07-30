@@ -7,14 +7,14 @@ import Ellipse from './Ellipse'
 
 const Hero = () => {
   const ellipseRef = useRotatingAnimation()
-  const role = useRoleSwitcher({ roles: ['FULLSTACK DEVELOPER', 'INDIE HACKER', 'SOLOPRENEUR'] })
+  const role = useRoleSwitcher({ roles: ['FULLSTACK DEVELOPER', 'ENGINEERING STUDENT', 'SOLOPRENEUR'] })
 
   return (
     <section className="bg-primary bg-small-glow bg-small-glow-position md:bg-large-glow-position lg:bg-large-glow min-h-[calc(dvh-4rem)] bg-no-repeat">
       <div className="mx-auto grid max-w-[1200px] grid-cols-1 items-center gap-4 px-4 pt-12 pb-10 md:grid-cols-2 lg:p-4">
         <div className="flex min-h-48 flex-col justify-between lg:min-h-56 lg:max-w-[33.75rem]">
           <h1>
-            <span className="text-neutral mb-2 block text-3xl font-bold">Hi - I'm John Doe</span>
+            <span className="text-neutral mb-2 block text-3xl font-bold">Hi - I'm Marlon</span>
             <span className="text-accent block text-[1.75rem] font-bold">{role}</span>
           </h1>
 
