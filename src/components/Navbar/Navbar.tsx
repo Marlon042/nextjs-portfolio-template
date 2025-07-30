@@ -3,29 +3,34 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
-import { BurgerIcon, CloseIcon } from '../../utils/icons'
+import { BurgerIcon, CloseIcon, HomeIcon, ProjectsIcon, ServicesIcon, BlogIcon, ContactIcon } from '../../utils/icons'
 import Logo from './Logo'
 
 const navItems = [
   {
     label: '_home',
     href: '/',
+    icon: HomeIcon,
   },
   {
     label: '_projects',
     href: '/#projects',
+    icon: ProjectsIcon,
   },
   {
     label: '_services',
     href: '/#services',
-  },
-  {
-    label: '_contact-me',
-    href: '/#contact',
+    icon: ServicesIcon,
   },
   {
     label: '_blogs',
     href: '/blogs',
+    icon: BlogIcon,
+  },
+  {
+    label: '_contact-me',
+    href: '/#contact',
+    icon: ContactIcon,
   },
 ]
 
@@ -63,14 +68,15 @@ const Navbar = () => {
 
         <ul
           className={`${isVisible ? 'flex' : 'hidden'} animate-fade-in bg-primary absolute top-16 left-0 z-10 h-dvh w-dvw flex-col md:static md:top-0 md:flex md:h-full md:w-[72%] md:flex-row lg:w-[70%]`}>
-          {navItems.map(({ label, href }) => (
+          {navItems.map(({ label, href, icon: Icon }) => (
             <li
               key={href}
               onClick={() => setIsVisible(false)}
               className="border-border flex items-center border-b px-4 text-2xl md:border-y-0 md:border-e md:text-base md:first:border-s md:last:ml-auto md:last:border-none md:last:px-0 lg:px-8">
               <Link
                 href={href}
-                className={`text-primary-content hover:text-neutral w-full py-7 transition-all duration-150 md:py-0 ${pathname === href ? 'text-neutral cursor-text' : ''}`}>
+                className={`text-primary-content hover:text-neutral flex w-full items-center gap-2 py-7 transition-all duration-150 md:py-0 ${pathname === href ? 'text-neutral cursor-text' : ''}`}>
+                <Icon className="h-6 w-6" />
                 {label}
               </Link>
             </li>
