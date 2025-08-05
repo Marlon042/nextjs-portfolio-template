@@ -23,7 +23,7 @@ const ContactSection = () => {
             <MsgIcon /> marckgv@gmail.com
           </a>
           <a
-            href="tel:+92 3123456789"
+            href="tel:+506 8674-8396"
             className="text-neutral hover:text-accent flex items-center gap-1 font-light transition-colors duration-300">
             <PhoneIcon /> +506 8674-8396
           </a>
