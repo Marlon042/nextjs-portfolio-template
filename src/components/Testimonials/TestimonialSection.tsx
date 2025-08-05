@@ -1,7 +1,8 @@
 'use client'
 
 import { Testimonial } from '@/lib/types'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
+import { BsArrowLeft, BsArrowRight } from 'react-icons/bs'
 import SectionHeading from '../SectionHeading/SectionHeading'
 import TestimonialCard from './TestimonialCard'
 
@@ -11,15 +12,39 @@ interface TestimonialSectionProps {
 
 const TestimonialSection: React.FC<TestimonialSectionProps> = ({ testimonials }) => {
   const [activeCard, setActiveCard] = useState(0)
+  const scrollContainer = useRef<HTMLDivElement>(null)
+
+  const scroll = (direction: 'left' | 'right') => {
+    if (scrollContainer.current) {
+      const scrollAmount = direction === 'left' ? -300 : 300
+      scrollContainer.current.scrollBy({ left: scrollAmount, behavior: 'smooth' })
+    }
+  }
 
   return (
     <section id="testimonials">
-      <SectionHeading
-        title="// Testimonials"
-        subtitle="Don't just take our word for it - see what actual users of our service have to say about their experience."
-      />
+      <div className="flex items-end justify-between">
+        <SectionHeading
+          title="// Testimonials"
+          subtitle="Don't just take our word for it - see what actual users of our service have to say about their experience."
+        />
+        <div className="hidden items-center gap-4 sm:flex">
+          <button
+            className="bg-accent-dark hover:bg-accent-dark/80 grid size-12 place-items-center rounded-full"
+            onClick={() => scroll('left')}
+          >
+            <BsArrowLeft />
+          </button>
+          <button
+            className="bg-accent-dark hover:bg-accent-dark/80 grid size-12 place-items-center rounded-full"
+            onClick={() => scroll('right')}
+          >
+            <BsArrowRight />
+          </button>
+        </div>
+      </div>
 
-      <div className="hide-scrollbar my-8 flex gap-8 overflow-x-auto">
+      <div ref={scrollContainer} className="hide-scrollbar my-8 flex gap-8 overflow-x-auto">
         {testimonials.map((testimonial, idx) => (
           <TestimonialCard
             key={idx}
