@@ -1,8 +1,8 @@
 {
-  "name": "John Doe",
-  "title": "CEO",
-  "feedback": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut purus eget sapien egestas fermentum eget auctor justo. Nullam sit amet nunc nec purus tincidunt aliquam. Nullam sit amet nunc nec purus tincidunt aliquam.",
-  "image": "https://i.pravatar.cc/150?img=12",
+  "name": "Sofía Fernández",
+  "title": "Líder de Desarrollo",
+  "feedback": "Técnicamente muy sólidos. Resolvieron un problema complejo de nuestra arquitectura de una manera elegante y escalable. Su código es limpio y está bien documentado. Ha sido un placer colaborar.",
+  "image": "https://i.pravatar.cc/150?img=5",
   "stars": 5,
-  "createdAt": "2025-01-01"
+  "createdAt": "2025-05-22"
 }

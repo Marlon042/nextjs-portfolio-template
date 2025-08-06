@@ -1,8 +1,8 @@
 {
-  "name": "John Doe",
-  "title": "CEO",
-  "feedback": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut purus eget sapien egestas fermentum eget auctor justo.",
-  "image": "https://i.pravatar.cc/150?img=12",
+  "name": "Carlos Gómez",
+  "title": "Gerente de Proyectos",
+  "feedback": "La comunicación fue fluida y el proyecto se entregó antes de la fecha límite. La calidad del código es excelente y muy fácil de mantener. Definitivamente volveré a trabajar con ellos.",
+  "image": "https://i.pravatar.cc/150?img=2",
   "stars": 5,
-  "createdAt": "2025-01-01"
+  "createdAt": "2025-02-20"
 }

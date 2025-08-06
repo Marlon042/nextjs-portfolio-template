@@ -1,8 +1,8 @@
 {
-  "name": "John Doe",
-  "title": "CEO",
-  "feedback": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut purus eget sapien egestas fermentum eget auctor justo. Nullam sit amet nunc nec purus tincidunt aliquam. Nullam sit amet nunc nec purus tincidunt aliquam.",
-  "image": "https://i.pravatar.cc/150?img=12",
+  "name": "David Rodríguez",
+  "title": "Director de Marketing",
+  "feedback": "El impacto en nuestro performance fue inmediato. La nueva plataforma es rápida, intuitiva y ha mejorado significativamente la experiencia de nuestros usuarios. Un trabajo impecable.",
+  "image": "https://i.pravatar.cc/150?img=4",
   "stars": 5,
-  "createdAt": "2025-01-01"
+  "createdAt": "2025-04-05"
 }

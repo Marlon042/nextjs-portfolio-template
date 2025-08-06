@@ -1,8 +1,8 @@
 {
-  "name": "John Doe",
-  "title": "CEO",
-  "feedback": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut purus eget sapien egestas fermentum eget auctor justo. Nullam sit amet nunc nec purus tincidunt aliquam. Nullam sit amet nunc nec purus tincidunt aliquam.",
-  "image": "https://i.pravatar.cc/150?img=12",
-  "stars": 4,
-  "createdAt": "2025-01-01"
+  "name": "Laura Martínez",
+  "title": "Emprendedora",
+  "feedback": "Como alguien con poca experiencia técnica, aprecié mucho la paciencia y la claridad con la que me explicaron cada paso del proceso. El resultado final es una web moderna y funcional que me encanta.",
+  "image": "https://i.pravatar.cc/150?img=3",
+  "stars": 5,
+  "createdAt": "2025-03-10"
 }
