@@ -1,5 +1,6 @@
 import { footerLinks, languages } from '@/appData'
 import { socials } from '@/appData/personal'
+import React from 'react'
 import Logo from '../Navbar/Logo'
 
 const Footer = () => {
@@ -40,8 +41,11 @@ const Footer = () => {
               <li key={index} className="cursor-pointer bg-transparent">
                 <a
                   href={item.href}
-                  className="text-neutral transition-color hover:text-neutral/50 h-full w-full duration-300">
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-neutral hover:text-accent flex items-center gap-2 font-light transition-colors duration-300">
                   {item.icon}
+                  <span>{item.name}</span>
                 </a>
               </li>
             ))}
