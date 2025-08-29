@@ -1,14 +1,13 @@
 // Data for portfolio
 import {
-  ExpressjsIcon,
   JavaScriptIcon,
-  NestjsIcon,
   NextjsIcon,
   NodejsIcon,
   ReactIcon,
-  SocketIcon,
   TailwindCSS,
   TypescriptIcon,
+  FlutterIcon,
+  FirebaseIcon,
 } from '../utils/icons'
 
 // Project Data
@@ -122,17 +121,14 @@ export const skillList = [
     icon: NodejsIcon,
   },
   {
-    name: 'Express.js',
-    icon: ExpressjsIcon,
+    name: 'Flutter',
+    icon: FlutterIcon,
   },
   {
-    name: 'Nest.js',
-    icon: NestjsIcon,
+    name: 'Firebase',
+    icon: FirebaseIcon,
   },
-  {
-    name: 'Socket.io',
-    icon: SocketIcon,
-  },
+ 
 ]
 
 export const footerLinks = [

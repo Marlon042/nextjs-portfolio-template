@@ -1,18 +1,17 @@
 import { FC, SVGProps } from 'react'
 
 import Earning from '../assets/icons/earning.svg'
-import ExpressjsIcon from '../assets/icons/express.svg'
 import JavaScriptIcon from '../assets/icons/javascript.svg'
 import Likes from '../assets/icons/likes.svg'
-import NestjsIcon from '../assets/icons/nest.svg'
 import NextjsIcon from '../assets/icons/nextjs.svg'
 import NodejsIcon from '../assets/icons/nodejs.svg'
 import ReactIcon from '../assets/icons/react.svg'
-import SocketIcon from '../assets/icons/socket.svg'
 import Star from '../assets/icons/star.svg'
 import TailwindCSS from '../assets/icons/tailwind-css.svg'
 import Timer from '../assets/icons/timer.svg'
 import TypescriptIcon from '../assets/icons/typescript.svg'
+import FlutterIcon from '../assets/icons/flutter.svg'
+import FirebaseIcon from '../assets/icons/firebase.svg'
 
 const PreviewIcon: FC<SVGProps<SVGSVGElement>> = (props) => {
   return (
@@ -411,7 +410,6 @@ export {
   CloseIcon,
   Codepen,
   Earning,
-  ExpressjsIcon,
   Facebook,
   GithubIcon,
   Instagram,
@@ -419,15 +417,15 @@ export {
   Likes,
   LinkedIn,
   MsgIcon,
-  NestjsIcon,
   NextjsIcon,
   NodejsIcon,
   PhoneIcon,
   PreviewIcon,
   ReactIcon,
-  SocketIcon,
   Star,
   StarIcon,
+  FlutterIcon,
+  FirebaseIcon,
   TailwindCSS,
   Timer,
   TypescriptIcon,
