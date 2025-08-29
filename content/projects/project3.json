@@ -1,11 +1,11 @@
 {
   "priority": 3,
-  "title": "Próximamente",
-  "shortDescription": "Pronto se agregarán nuevos proyectos aquí.",
-  "cover": "https://res.cloudinary.com/dyvkdwzcj/image/upload/v1656971294/waitlist-template_qr4l9k.png",
+  "title": "Portafolio de desarrollador basico",
+  "shortDescription": "El repositorio Portafolio_MarlonGV es un portafolio web desarrollado con Next.js y React. Su principal funcionalidad es mostrar una presentación personal y destacar proyectos propios alojados en GitHub. El código implementa un proveedor que consulta los repositorios públicos del usuario en GitHub, analiza el contenido de sus README y extrae la primera imagen para mostrarla en un carrusel visual de proyectos. Además, la estructura incluye secciones como presentación, llamada a la acción para contratación y un pie de página, todo integrado en una sola página web moderna y responsiva.",
+  "cover": "https://github.com/user-attachments/assets/f9dc4926-e020-4971-983c-0c39a2c1d35c",
   "type": "Free 🔥",
-  "livePreview": "https://example.com/epsilon",
-  "githubLink": "https://github.com/example/ReactJS-Coding-Challenges",
-  "githubStars": "40 Stars",
-  "numberOfSales": "138 Sales"
+  "livePreview": "https://portafolio-marlongv.vercel.app/",
+  "githubLink": "https://github.com/Marlon042/Portafolio_MarlonGV",
+  "technologies": ["Next.js", "Tailwind CSS", "JavaScript"]
+
 }
