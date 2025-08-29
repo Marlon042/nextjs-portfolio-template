@@ -1,59 +1,55 @@
 'use server'
 
+import { db } from '@/lib/firebase'
+import { addDoc, collection } from 'firebase/firestore'
+
 const action = async (_: { success: boolean; message: string } | null, formData: FormData) => {
   try {
-    const name = formData.get('name')
+    const name = formData.get('name') as string
     if (!name)
       return {
         success: false,
-        message: 'Please provide your name.',
+        message: 'Por favor proporciona tu nombre.',
       }
 
-    const email = formData.get('email')
+    const email = formData.get('email') as string
     if (!email)
       return {
         success: false,
-        message: 'Please provide your email address.',
+        message: 'Por favor proporciona tu dirección de email.',
       }
 
-    const subject = formData.get('subject')
+    const subject = formData.get('subject') as string
     if (!subject)
       return {
         success: false,
-        message: 'Please provide a subject.',
+        message: 'Por favor proporciona un asunto.',
       }
 
-    const message = formData.get('message')
+    const message = formData.get('message') as string
     if (!message)
       return {
         success: false,
-        message: 'Please provide a message.',
+        message: 'Por favor proporciona un mensaje.',
       }
 
-    const res = await fetch(process.env.CONTACT_FORM_ACTION_URL!, {
-      method: 'POST',
-      body: formData,
-      headers: {
-        Accept: 'application/json',
-      },
+    // Save to Firestore
+    await addDoc(collection(db, 'contactSubmissions'), {
+      name,
+      email,
+      subject,
+      message,
+      timestamp: new Date(),
+      status: 'new'
     })
 
-    if (res.ok) {
-      return { success: true, message: 'Thanks for your submission!' }
-    } else {
-      const data = await res.json()
-      console.error(data?.error)
-
-      return {
-        success: false,
-        message: 'Oops! There was a problem submitting your form',
-      }
-    }
+    return { success: true, message: '¡Gracias por tu mensaje! Te contactaré pronto.' }
+    
   } catch (error) {
-    console.error('Contact form submission error: ' + error)
+    console.error('Error submitting contact form: ', error)
     return {
       success: false,
-      message: 'Oops! There was a problem submitting your form',
+      message: 'Oops! Hubo un problema al enviar tu formulario. Por favor intenta de nuevo.',
     }
   }
 }
