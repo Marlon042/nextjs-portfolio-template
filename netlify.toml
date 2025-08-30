@@ -1,0 +1,24 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Functions configuration for Next.js
+[functions]
+  node_bundler = "esbuild"
+
+# Ensure environment variables are available during build
+[context.production.environment]
+  NEXT_PUBLIC_FIREBASE_API_KEY = "AIzaSyCwZh7cS6I5NlSQldccmAlhTE6aGOujRrI"
+  NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN = "portfolio-marlon.firebaseapp.com"
+  NEXT_PUBLIC_FIREBASE_PROJECT_ID = "portfolio-marlon"
+  NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET = "portfolio-marlon.firebasestorage.app"
+  NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID = "92170705421"
+  NEXT_PUBLIC_FIREBASE_APP_ID = "1:92170705421:web:9540fac2b7c2524c365344"
