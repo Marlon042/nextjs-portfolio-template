@@ -1,0 +1,8 @@
+{
+  "title": "Mi primer blog",
+  "shortDescription": "Este es mi primer blog. Estoy emocionado de compartir mis pensamientos con el mundo.",
+  "cover": "https://images.unsplash.com/photo-1496128858413-b36217c725aa?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80",
+  "slug": "mi-primer-blog",
+  "publishDate": "2024-08-30",
+  "estimatedTimeToRead": "5 min read"
+}

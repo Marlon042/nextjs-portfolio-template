@@ -1,0 +1,8 @@
+{
+  "title": "Mi segundo blog",
+  "shortDescription": "Este es mi segundo blog. Hoy estoy hablando sobre la importancia de la comunidad.",
+  "cover": "https://images.unsplash.com/photo-1519389950473-47a0277814d1?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1650&q=80",
+  "slug": "mi-segundo-blog",
+  "publishDate": "2024-08-29",
+  "estimatedTimeToRead": "7 min read"
+}

@@ -24,7 +24,7 @@ const navItems = [
   },
   {
     label: '_blogs',
-    href: '/blogs',
+    href: '/blog',
     icon: BlogIcon,
   },
   {
