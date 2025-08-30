@@ -1,1 +1,3 @@
-export const HeroImage = '/hero-placeholder.png'
+import HeroImage from '../assets/images/hero-placeholder.png'
+
+export { HeroImage }
