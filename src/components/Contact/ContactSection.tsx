@@ -1,3 +1,5 @@
+'use client'
+
 import { MsgIcon, PhoneIcon } from '@/utils/icons'
 import ContactForm from './ContactForm'
 
@@ -16,12 +18,12 @@ const ContactSection = () => {
             </p>
           </div>
 
-          <a
-            href="#"
+          <button
+            onClick={downloadCV}
             aria-label="Download CV"
             className="bg-accent max-w-max cursor-pointer rounded-lg px-[14px] py-[10px] text-center text-sm font-medium text-[#00071E]">
             Descargar CV
-          </a>
+          </button>
         </div>
 
         <div className="space-y-2">
@@ -42,6 +44,16 @@ const ContactSection = () => {
       <ContactForm />
     </section>
   )
+
+  function downloadCV() {
+    // Crear un enlace temporal para descargar el CV
+    const link = document.createElement('a');
+    link.href = '/CV_Marlon_Gutiérrez_V_English.pdf';
+    link.download = 'CV_Marlon_Gutiérrez_V_English.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
 }
 
 export default ContactSection
