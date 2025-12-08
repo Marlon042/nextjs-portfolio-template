@@ -44,10 +44,10 @@ const Hero = () => {
           <div className="text-accent relative size-56 sm:size-60 md:size-[20rem] lg:size-[25.75rem]">
             <Image
               src={HeroImage}
-              fill={true}
-              priority={true}
-              sizes="(min-width: 1024px) 25.75rem, (min-width: 768px) 20rem, (min-width: 640px) 15rem, 14rem"
               alt="Marlon Gutiérrez - Full Stack Developer"
+              fill
+              priority
+              sizes="(min-width: 1024px) 25.75rem, (min-width: 768px) 20rem, (min-width: 640px) 15rem, 14rem"
               className="object-contain p-7"
             />
             <Ellipse
