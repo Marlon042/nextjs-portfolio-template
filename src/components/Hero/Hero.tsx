@@ -1,7 +1,6 @@
 'use client'
 import useRoleSwitcher from '@/hooks/useRoleSwitcher'
 import useRotatingAnimation from '@/hooks/useRotatingAnimation'
-import Image from 'next/image'
 import { HeroImage } from '../../utils/images'
 import Ellipse from './Ellipse'
 
@@ -42,13 +41,11 @@ const Hero = () => {
 
         <div className="flex min-h-[18.75rem] items-center justify-center lg:min-h-[35rem]">
           <div className="text-accent relative size-56 sm:size-60 md:size-[20rem] lg:size-[25.75rem]">
-            <Image
+            <img
               src={HeroImage}
               alt="Marlon Gutiérrez - Full Stack Developer"
-              fill
-              priority
-              sizes="(min-width: 1024px) 25.75rem, (min-width: 768px) 20rem, (min-width: 640px) 15rem, 14rem"
-              className="object-contain p-7"
+              className="absolute inset-0 w-full h-full object-contain p-7"
+              loading="eager"
             />
             <Ellipse
               ref={ellipseRef}
