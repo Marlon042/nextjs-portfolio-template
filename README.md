@@ -65,6 +65,8 @@ This ensures proper configuration of environment variables.
 
 ## Customizing the Template
 
+> **Note:** The Testimonials section has been temporarily commented out in `src/app/page.tsx`. You can reactivate it anytime by uncommenting the relevant lines.
+
 1. Navbar
    - File: navbar.tsx
      - Update the navbar name from john_doe to your name.
