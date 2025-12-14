@@ -4,6 +4,8 @@ import './globals.css'
 import DisclaimerBanner from '@/components/Disclaimer/DisclaimerBanner'
 import Footer from '@/components/Footer/Footer'
 import Navbar from '@/components/Navbar/Navbar'
+import { SectionProvider } from '@/context/SectionContext'
+import SectionToggle from '@/components/SectionToggle'
 import ThemeMenu from '@/components/Theme/ThemeMenu'
 import { Fira_Code } from 'next/font/google'
 
@@ -47,13 +49,16 @@ export default function RootLayout({
   return (
     <html lang="en" data-theme="dark" suppressHydrationWarning>
       <body className={`${firaCode.className}`}>
-        <header>
-          <Navbar />
-        </header>
-        <DisclaimerBanner />
-        {children}
-        <ThemeMenu />
-        <Footer />
+        <SectionProvider>
+          <header>
+            <Navbar />
+          </header>
+          <DisclaimerBanner />
+          {children}
+          <SectionToggle />
+          <ThemeMenu />
+          <Footer />
+        </SectionProvider>
       </body>
     </html>
   )
