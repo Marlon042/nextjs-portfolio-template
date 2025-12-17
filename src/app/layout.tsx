@@ -5,7 +5,6 @@ import DisclaimerBanner from '@/components/Disclaimer/DisclaimerBanner'
 import Footer from '@/components/Footer/Footer'
 import Navbar from '@/components/Navbar/Navbar'
 import { SectionProvider } from '@/context/SectionContext'
-import SectionToggle from '@/components/SectionToggle'
 import ThemeMenu from '@/components/Theme/ThemeMenu'
 import { Fira_Code } from 'next/font/google'
 
@@ -55,7 +54,6 @@ export default function RootLayout({
           </header>
           <DisclaimerBanner />
           {children}
-          <SectionToggle />
           <ThemeMenu />
           <Footer />
         </SectionProvider>

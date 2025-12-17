@@ -1,10 +1,7 @@
 'use client'
 
-import { useSectionContext } from '@/context/SectionContext'
-import ServiceSection from './Services/ServiceSection'
+import ServicesAccordion from './Services/ServicesAccordion'
 
 export default function ClientServiceSection() {
-  const { showServices } = useSectionContext()
-
-  return showServices ? <ServiceSection /> : null
+  return <ServicesAccordion />
 }
