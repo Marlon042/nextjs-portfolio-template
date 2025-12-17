@@ -401,6 +401,132 @@ const ContactIcon: FC<SVGProps<SVGSVGElement>> = (props) => {
   )
 }
 
+const HardwareDiagnosticsIcon: FC<SVGProps<SVGSVGElement>> = (props) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}>
+      <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+      <line x1="8" y1="21" x2="16" y2="21"></line>
+      <line x1="12" y1="17" x2="12" y2="21"></line>
+      <path d="M12 9L8 13M12 9L16 13M12 9V7"></path>
+    </svg>
+  )
+}
+
+const SoftwareInstallationIcon: FC<SVGProps<SVGSVGElement>> = (props) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}>
+      <polyline points="12 3 20 7.5 20 16.5 12 21 4 16.5 4 7.5 12 3"></polyline>
+      <line x1="12" y1="12" x2="12" y2="21"></line>
+      <line x1="20" y1="10.5" x2="12" y2="15"></line>
+      <line x1="4" y1="10.5" x2="12" y2="15"></line>
+      <line x1="12" y1="9" x2="12" y2="3"></line>
+    </svg>
+  )
+}
+
+const SystemOptimizationIcon: FC<SVGProps<SVGSVGElement>> = (props) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}>
+      <circle cx="12" cy="12" r="1"></circle>
+      <path d="M12 1v6m0 6v6"></path>
+      <path d="M4.22 4.22l4.24 4.24m2.88 0l4.24-4.24"></path>
+      <path d="M1 12h6m6 0h6"></path>
+      <path d="M4.22 19.78l4.24-4.24m2.88 0l4.24 4.24"></path>
+    </svg>
+  )
+}
+
+const MalwareRemovalIcon: FC<SVGProps<SVGSVGElement>> = (props) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}>
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+      <line x1="9" y1="12" x2="15" y2="12"></line>
+      <line x1="12" y1="9" x2="12" y2="15"></line>
+    </svg>
+  )
+}
+
+const DataBackupIcon: FC<SVGProps<SVGSVGElement>> = (props) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}>
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+      <polyline points="7 10 12 15 17 10"></polyline>
+      <line x1="12" y1="15" x2="12" y2="3"></line>
+    </svg>
+  )
+}
+
+const TechnicalSupportIcon: FC<SVGProps<SVGSVGElement>> = (props) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}>
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+      <circle cx="9" cy="10" r="1"></circle>
+      <circle cx="12" cy="10" r="1"></circle>
+      <circle cx="15" cy="10" r="1"></circle>
+    </svg>
+  )
+}
+
 export {
   ArrowLeftIcon,
   ArrowRightIcon,
@@ -435,4 +561,10 @@ export {
   ServicesIcon,
   BlogIcon,
   ContactIcon,
+  HardwareDiagnosticsIcon,
+  SoftwareInstallationIcon,
+  SystemOptimizationIcon,
+  MalwareRemovalIcon,
+  DataBackupIcon,
+  TechnicalSupportIcon,
 }

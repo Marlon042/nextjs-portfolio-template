@@ -8,6 +8,12 @@ import {
   TypescriptIcon,
   FlutterIcon,
   FirebaseIcon,
+  HardwareDiagnosticsIcon,
+  SoftwareInstallationIcon,
+  SystemOptimizationIcon,
+  MalwareRemovalIcon,
+  DataBackupIcon,
+  TechnicalSupportIcon,
 } from '../utils/icons'
 
 // Project Data
@@ -98,7 +104,40 @@ export const serviceData = [
   },
 ]
 
-// Skill List
+// Computer Support & Maintenance Data
+export const computerSupportData = [
+  {
+    icon: HardwareDiagnosticsIcon,
+    title: 'Hardware Diagnostics',
+    shortDescription: 'Comprehensive hardware testing and diagnostics to identify issues.',
+  },
+  {
+    icon: SoftwareInstallationIcon,
+    title: 'Software Installation',
+    shortDescription: 'Professional software installation and configuration services.',
+  },
+  {
+    icon: SystemOptimizationIcon,
+    title: 'System Optimization',
+    shortDescription: 'Optimize your computer performance for maximum efficiency.',
+  },
+  {
+    icon: MalwareRemovalIcon,
+    title: 'Malware Removal',
+    shortDescription: 'Complete malware and virus detection and removal services.',
+  },
+  {
+    icon: DataBackupIcon,
+    title: 'Data Backup',
+    shortDescription: 'Secure data backup and recovery solutions for your files.',
+  },
+  {
+    icon: TechnicalSupportIcon,
+    title: 'Technical Support',
+    shortDescription: 'Remote and on-site technical support for all your needs.',
+  },
+]
+
 export const skillList = [
   {
     name: 'JavaScript',
