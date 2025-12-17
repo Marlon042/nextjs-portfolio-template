@@ -1,23 +1,26 @@
 # Copilot Instructions for Flexy Dev Portfolio
 
 ## Project Overview
-This is a **Next.js 15 portfolio template** built with React 19, Tailwind CSS v4, and TypeScript. It's designed as a customizable personal portfolio/resume site with dynamic content loading, theme support, and Firebase integration for contact forms.
+This is a **Next.js 15 portfolio template** built with React 19, Tailwind CSS v4, and TypeScript. It's designed as a customizable personal portfolio/resume site with dynamic content loading, theme support, Firebase integration for contact forms, and sections for services and computer support.
 
 ## Architecture & Key Patterns
 
 ### Data Architecture: File-Based Content
 - **Projects & Testimonials**: Stored as JSON files in `/content/{projects,testimonials}/` directories
-- **Services & Skills**: Defined in `src/appData/index.ts` (hardcoded data with icon mappings)
+- **Services, Skills, Computer Support**: Defined in `src/appData/index.ts` (hardcoded data with icon mappings)
+- **Personal Data (Socials)**: Defined in `src/appData/personal.tsx`
 - **Data Flow**: Uses `src/services/index.ts` with `fs` module to read files, sort by `priority` or `createdAt`
 - **Why**: Simplifies management—edit JSON files without code changes; facilitates future CMS migration
 
 ### Component Structure
-- **Folder-based organization**: Each section has its own folder (`Hero/`, `Projects/`, `Services/`, etc.)
-- **Page composition**: `src/app/page.tsx` orchestrates section components (Hero → Skills → Projects → Services → Testimonials → Contact)
+- **Folder-based organization**: Each section has its own folder (`Hero/`, `Projects/`, `Services/`, `ComputerSupport/`, etc.)
+- **Page composition**: `src/app/page.tsx` orchestrates section components (Hero → Skills → Projects → ClientServiceSection → ClientComputerSupportSection → Contact)
 - **Client vs Server**: Most components are **server components** except:
   - `Hero.tsx` ('use client'): Custom hooks for role switching animation
   - `ContactForm.tsx`: Form submission logic
   - `ThemeMenu.tsx`: Theme switcher with state management
+  - `ClientServiceSection.tsx`, `ClientComputerSupportSection.tsx`: Client components for interactive sections
+- **Context & State**: `SectionContext` for toggling services visibility via `SectionToggle` component
 
 ### Type Safety
 - Central types in `src/lib/types.d.ts`: `Project`, `Testimonial`, `Heading`
@@ -27,6 +30,7 @@ This is a **Next.js 15 portfolio template** built with React 19, Tailwind CSS v4
 - **Tailwind v4 with DaisyUI semantics**: Uses CSS variables (`--primary`, `--secondary`, `--accent`, etc.)
 - **Theme support**: `data-theme="dark"` in `<html>` tag, managed by `ThemeMenu.tsx`
 - **Config**: `tailwindcss.config.js` (not in workspace—uses defaults), `globals.css` for theme variables
+- **Font**: Fira Code loaded in `src/app/layout.tsx`
 - **Responsive**: Mobile-first approach; test at `sm:`, `md:`, `lg:` breakpoints
 
 ## Critical Developer Workflows
@@ -41,9 +45,10 @@ npm run lint                  # ESLint check
 
 ### Adding New Content
 1. **Projects**: Add JSON to `content/projects/` matching `Project` interface
-2. **Testimonials**: Add JSON to `content/testimonials/` with `Testimonial` interface
-3. **Skills/Services**: Edit `src/appData/index.ts` directly (hardcoded arrays)
-4. **Icons**: Add SVG imports to `src/utils/icons.tsx`, export as components
+2. **Testimonials**: Add JSON to `content/testimonials/` with `Testimonial` interface (currently commented out in `page.tsx`)
+3. **Skills/Services/Computer Support**: Edit `src/appData/index.ts` directly (hardcoded arrays)
+4. **Social Links**: Edit `src/appData/personal.tsx`
+5. **Icons**: Add SVG imports to `src/utils/icons.tsx`, export as components
 
 ### Environment Configuration
 - **Required**: `.env.local` with `NEXT_PUBLIC_SITE_URL`
@@ -73,6 +78,11 @@ npm run lint                  # ESLint check
 - **Remote patterns**: Configured in `next.config.ts` for Unsplash, ImageKit, Cloudinary, GitHub
 - **Local images**: Import from `src/assets/images/` (e.g., `HeroImage`)
 
+### Section Toggling
+- **Context**: `SectionContext` manages `showServices` state
+- **Toggle**: `SectionToggle` component allows hiding/showing services sections
+- **Usage**: Wrap sections in conditional rendering based on context
+
 ## Key Integration Points
 
 ### Firebase Setup
@@ -96,8 +106,11 @@ npm run lint                  # ESLint check
 |------|----------|
 | Change portfolio name/title | `src/app/layout.tsx`, `src/components/Navbar/Logo.tsx` |
 | Add project | `content/projects/projectN.json` |
-| Update skills/services | `src/appData/index.ts` |
+| Update skills/services/computer support | `src/appData/index.ts` |
+| Update social links | `src/appData/personal.tsx` |
 | Modify color scheme | `src/app/globals.css` (CSS vars) |
+| Add new section | Create component in `src/components/`, import in `src/app/page.tsx` |
+| Toggle section visibility | Use `SectionContext` in component rendering |
 | Add page section | Create component in `src/components/`, import in `src/app/page.tsx` |
 | Update contact email | `.env.local` (Firebase config) or form backend |
 
