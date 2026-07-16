@@ -1,9 +1,12 @@
 'use client'
 
 import { MsgIcon, PhoneIcon } from '@/utils/icons'
+import { useLanguage } from '@/context/LanguageContext'
 import ContactForm from './ContactForm'
 
 const ContactSection = () => {
+  const { t } = useLanguage()
+
   return (
     <section
       id="contact"
@@ -11,10 +14,10 @@ const ContactSection = () => {
       <div className="flex flex-col justify-between gap-8">
         <div className="flex flex-col gap-8">
           <div>
-            <h3 className="text-neutral text-3xl font-bold">Let's Talk</h3>
-            <h4 className="text-accent text-2xl font-bold md:text-3xl">We'd love to help</h4>
+            <h3 className="text-neutral text-3xl font-bold">{t('contact.letsTalk')}</h3>
+            <h4 className="text-accent text-2xl font-bold md:text-3xl">{t('contact.help')}</h4>
             <p className="text-neutral mt-8">
-              Crafting innovative solutions to solve real-world problems
+              {t('contact.subtitle')}
             </p>
           </div>
 
@@ -22,12 +25,12 @@ const ContactSection = () => {
             onClick={downloadCV}
             aria-label="Download CV"
             className="bg-accent max-w-max cursor-pointer rounded-lg px-[14px] py-[10px] text-center text-sm font-medium text-[#00071E]">
-            Descargar CV
+            {t('contact.downloadCV')}
           </button>
         </div>
 
         <div className="space-y-2">
-          <p className="text-neutral text-lg font-bold">Contact Information</p>
+          <p className="text-neutral text-lg font-bold">{t('contact.information')}</p>
           <a
             href="mailto:marckgv@gmail.com"
             className="text-neutral hover:text-accent flex items-center gap-1 font-light transition-colors duration-300">
@@ -46,7 +49,6 @@ const ContactSection = () => {
   )
 
   function downloadCV() {
-    // Crear un enlace temporal para descargar el CV
     const link = document.createElement('a');
     link.href = '/CV_Marlon_Gutiérrez_V_English.pdf';
     link.download = 'CV_Marlon_Gutiérrez_V_English.pdf';

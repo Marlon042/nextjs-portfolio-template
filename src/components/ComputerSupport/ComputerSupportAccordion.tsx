@@ -1,11 +1,13 @@
 'use client'
 
 import { useState } from 'react'
+import { useLanguage } from '@/context/LanguageContext'
 import { ChevronRightIcon } from '@/utils/icons'
 import ComputerSupportSection from './ComputerSupportSection'
 
 export default function ComputerSupportAccordion() {
   const [showComputerSupport, setShowComputerSupport] = useState(true)
+  const { t } = useLanguage()
 
   const handleToggle = () => {
     setShowComputerSupport(!showComputerSupport)
@@ -13,14 +15,13 @@ export default function ComputerSupportAccordion() {
 
   return (
     <div className="my-14">
-      {/* Accordion Header */}
       <div
         onClick={handleToggle}
         className="bg-base-100 border-border cursor-pointer rounded-lg border p-4 md:rounded-xl md:p-5 transition-all duration-200"
       >
         <div className="flex items-center justify-between">
           <h3 className="text-lg md:text-xl font-semibold">
-            // Computer Support & Maintenance
+            {t('support.title')}
           </h3>
           <ChevronRightIcon
             className={`h-5 w-5 md:h-6 md:w-6 transition-transform duration-300 ${
@@ -33,7 +34,6 @@ export default function ComputerSupportAccordion() {
         </p>
       </div>
 
-      {/* Accordion Content */}
       {showComputerSupport && (
         <div className="animate-fade-in">
           <ComputerSupportSection />
