@@ -107,6 +107,20 @@ npm run lint                  # Verificar ESLint
 
 ## Puntos de Integración Clave
 
+### Cloudinary (Imágenes del Admin)
+- **Cuenta**: Crear en cloudinary.com (plan free: 25 GB storage, 25 GB CDN/mes)
+- **SDK**: `cloudinary` (server-side) para upload/delete
+- **Server utility**: `src/lib/cloudinary.ts` — uploadImage, deleteImage, generateSignature
+- **API route**: `POST /api/upload` — genera signature para signed uploads
+- **Componente reutilizable**: `src/components/Admin/ImageUpload.tsx`
+- **Variables**: `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`
+
+### Server Actions (Admin CRUD)
+- **Ubicación**: `src/actions/projects.ts` con directiva `'use server'`
+- **Lectura pública**: Usar `supabase` (cliente anon, RLS permite lectura pública)
+- **Escritura admin**: Usar `getSupabaseAdmin()` de `src/lib/supabase-admin.ts` (service_role key, bypass RLS)
+- **Métodos**: getProjects, getProject, createProject, updateProject, deleteProject
+
 ### Panel de Administración (Supabase)
 - **Login**: `/admin/login` con Supabase Auth (email + password)
 - **Layout**: `src/app/admin/layout.tsx` — verifica sesión con `getUser()` + `onAuthStateChange`
@@ -140,7 +154,7 @@ npm run lint                  # Verificar ESLint
 | Tarea | Ubicación |
 |-------|-----------|
 | Cambiar nombre/título del portafolio | `src/app/layout.tsx`, `src/components/Navbar/Logo.tsx` |
-| Agregar proyecto (admin) | `/admin/projects` (futuro CRUD) |
+| Agregar proyecto (admin) | `/admin/projects/new` (formulario con upload a Cloudinary) |
 | Agregar proyecto (directo) | `content/projects/projectN.json` |
 | Actualizar skills (admin) | `/admin/skills` (futuro CRUD) |
 | Actualizar skills (directo) | `src/appData/index.ts` (`skillList`) |

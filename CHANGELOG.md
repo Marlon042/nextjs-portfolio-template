@@ -15,6 +15,17 @@
 - `PLAN.md` con la estrategia del admin panel usando Supabase, Cloudinary y Firebase
 - `.env.example` con todas las variables de entorno del proyecto
 
+### Added
+- Integración con Cloudinary para subida de imágenes
+- `src/lib/cloudinary.ts` — utilidad server-side para Cloudinary SDK
+- `src/lib/supabase-admin.ts` — cliente Supabase con service_role key para escritura
+- `src/actions/projects.ts` — server actions CRUD para proyectos
+- `src/components/Admin/ImageUpload.tsx` — componente de subida de imágenes a Cloudinary
+- `src/components/Admin/ProjectForm.tsx` — formulario de crear/editar proyectos
+- `src/app/api/upload/route.ts` — API route para generar signature de Cloudinary
+- CRUD completo de proyectos en `/admin/projects` (lista, crear, editar, eliminar)
+
 ### Changed
 - Actualizado `.gitignore` para incluir `.env.example` como excepción
 - Instalada dependencia `@supabase/supabase-js`
+- Instaladas dependencias `cloudinary` y `next-cloudinary`
