@@ -1,5 +1,7 @@
 # Copilot Instructions for Flexy Dev Portfolio
 
+> 📋 Ver historial de cambios → [CHANGELOG.md](../CHANGELOG.md)
+
 ## Project Overview
 This is a **Next.js 16 portfolio template** built with React 19, Tailwind CSS v4, and TypeScript. It's designed as a customizable personal portfolio/resume site with **i18n support** (5 languages), Firebase integration for contact forms, dynamic content loading, theme support, and sections for services and computer support.
 
@@ -143,5 +145,4 @@ npm run lint                  # ESLint check
 - **Path aliases**: `@/*` resolves to `./src/*` (use for imports)
 - **No required external types**: All types defined locally in `src/lib/types.d.ts`
 
-## Changelog
-See [CHANGELOG.md](../CHANGELOG.md) for recent updates.
+
