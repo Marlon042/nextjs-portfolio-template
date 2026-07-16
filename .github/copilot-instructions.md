@@ -1,6 +1,6 @@
 # Instrucciones de Copilot para Flexy Dev Portfolio
 
-> 📋 Ver historial de cambios → [CHANGELOG.md](../CHANGELOG.md)
+> 📋 Ver historial de cambios → [CHANGELOG.md](./CHANGELOG.md)
 
 > **Nota sobre commits**: Todos los mensajes de commit deben escribirse en **español (Costa Rica)**.
 
