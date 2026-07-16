@@ -1,8 +1,13 @@
+'use client'
+
 import { serviceData } from '../../appData'
+import { useLanguage } from '@/context/LanguageContext'
 import SectionHeading from '../SectionHeading/SectionHeading'
 import ServiceCard from './ServiceCard'
 
 const ServiceSection = () => {
+  const { t } = useLanguage()
+
   return (
     <section id="services" className="my-14">
       <SectionHeading
@@ -15,8 +20,8 @@ const ServiceSection = () => {
           <ServiceCard
             key={index}
             icon={service.icon}
-            title={service.title}
-            shortDescription={service.shortDescription}
+            title={t(`services.${index}.title`)}
+            shortDescription={t(`services.${index}.desc`)}
           />
         ))}
       </div>

@@ -30,7 +30,7 @@ export default function ComputerSupportAccordion() {
           />
         </div>
         <p className="text-sm md:text-base text-base-content/70 mt-1">
-          Click to expand/collapse the accordion content
+          {t('support.subtitle')}
         </p>
       </div>
 

@@ -26,7 +26,7 @@ export default function ServicesAccordion() {
           />
         </div>
         <p className="text-sm md:text-base text-base-content/70 mt-1">
-          I offer a wide range of services to ensure you have the best written code and stay ahead in the competition
+          {t('services.subtitle')}
         </p>
       </div>
 

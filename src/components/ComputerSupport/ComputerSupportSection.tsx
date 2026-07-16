@@ -1,8 +1,13 @@
+'use client'
+
 import { computerSupportData } from '../../appData'
+import { useLanguage } from '@/context/LanguageContext'
 import SectionHeading from '../SectionHeading/SectionHeading'
 import ComputerSupportCard from './ComputerSupportCard'
 
 const ComputerSupportSection = () => {
+  const { t } = useLanguage()
+
   return (
     <section id="computer-support" className="my-14">
       <SectionHeading
@@ -15,8 +20,8 @@ const ComputerSupportSection = () => {
           <ComputerSupportCard
             key={index}
             icon={service.icon}
-            title={service.title}
-            shortDescription={service.shortDescription}
+            title={t(`support.${index}.title`)}
+            shortDescription={t(`support.${index}.desc`)}
           />
         ))}
       </div>

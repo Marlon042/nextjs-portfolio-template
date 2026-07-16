@@ -70,72 +70,24 @@ export const projects = [
   },
 ]
 
-// Service Data
+// Service Data (icons only - text is translated via i18n)
 export const serviceData = [
-  {
-    icon: JavaScriptIcon,
-    title: 'JavaScript Development',
-    shortDescription: 'Creating dynamic and interactive web applications using JavaScript.',
-  },
-  {
-    icon: ReactIcon,
-    title: 'React.js Development',
-    shortDescription: 'Building modern and responsive user interfaces with React.js.',
-  },
-  {
-    icon: NodejsIcon,
-    title: 'Node.js Backend',
-    shortDescription: 'Developing scalable server-side applications using Node.js.',
-  },
-  {
-    icon: NextjsIcon,
-    title: 'Next.js Development',
-    shortDescription: 'Creating server-rendered React applications with Next.js.',
-  },
-  {
-    icon: TypescriptIcon,
-    title: 'TypeScript Development',
-    shortDescription: 'Ensuring robust and maintainable code with TypeScript.',
-  },
-  {
-    icon: TailwindCSS,
-    title: 'Tailwind CSS Styling',
-    shortDescription: 'Designing beautiful and responsive interfaces with Tailwind CSS.',
-  },
+  { icon: JavaScriptIcon },
+  { icon: ReactIcon },
+  { icon: NodejsIcon },
+  { icon: NextjsIcon },
+  { icon: TypescriptIcon },
+  { icon: TailwindCSS },
 ]
 
-// Computer Support & Maintenance Data
+// Computer Support & Maintenance Data (icons only - text is translated via i18n)
 export const computerSupportData = [
-  {
-    icon: HardwareDiagnosticsIcon,
-    title: 'Hardware Diagnostics',
-    shortDescription: 'Comprehensive hardware testing and diagnostics to identify issues.',
-  },
-  {
-    icon: SoftwareInstallationIcon,
-    title: 'Software Installation',
-    shortDescription: 'Professional software installation and configuration services.',
-  },
-  {
-    icon: SystemOptimizationIcon,
-    title: 'System Optimization',
-    shortDescription: 'Optimize your computer performance for maximum efficiency.',
-  },
-  {
-    icon: MalwareRemovalIcon,
-    title: 'Malware Removal',
-    shortDescription: 'Complete malware and virus detection and removal services.',
-  },
-  {
-    icon: DataBackupIcon,
-    title: 'Data Backup',
-    shortDescription: 'Secure data backup and recovery solutions for your files.',
-  },
-  {
-    icon: TechnicalSupportIcon,
-    title: 'Technical Support',
-    shortDescription: 'Remote and on-site technical support for all your needs.',
-  },
+  { icon: HardwareDiagnosticsIcon },
+  { icon: SoftwareInstallationIcon },
+  { icon: SystemOptimizationIcon },
+  { icon: MalwareRemovalIcon },
+  { icon: DataBackupIcon },
+  { icon: TechnicalSupportIcon },
 ]
 
 export const skillList = [
