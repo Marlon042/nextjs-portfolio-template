@@ -5,16 +5,18 @@
 > **Nota sobre commits**: Todos los mensajes de commit deben escribirse en **español (Costa Rica)**.
 
 ## Descripción del Proyecto
-Este es un **portfolio template en Next.js 16** construido con React 19, Tailwind CSS v4 y TypeScript. Está diseñado como un sitio personalizable de portafolio/currículum con **soporte i18n** (5 idiomas), integración con Firebase para formularios de contacto, carga dinámica de contenido, soporte de temas y secciones de servicios y soporte técnico.
+Este es un **portfolio template en Next.js 16** construido con React 19, Tailwind CSS v4 y TypeScript. Está diseñado como un sitio personalizable de portafolio/currículum con **soporte i18n** (5 idiomas), integración con Firebase para formularios de contacto, carga dinámica de contenido, soporte de temas, secciones de servicios y soporte técnico, y un **panel de administración** con Supabase.
 
 ## Arquitectura y Patrones Clave
 
-### Arquitectura de Datos: Archivos + i18n
-- **Proyectos y Testimonios**: Almacenados como archivos JSON en `/content/{projects,testimonials}/`
-- **Servicios y Soporte Técnico**: Solo íconos en `src/appData/index.ts`; **todo el texto se traduce via i18n** (`translations.ts`)
-- **Datos Personales (Redes Sociales)**: Definidos en `src/appData/personal.tsx`
-- **Flujo de Datos**: Usa `src/services/index.ts` con el módulo `fs` para leer archivos, ordena por `priority` o `createdAt`
-- **Por qué**: Simplifica la gestión — editar archivos JSON sin cambiar código; facilita migración futura a CMS
+### Arquitectura de Datos: Archivos + i18n + Supabase (en transición)
+- **Proyectos y Testimonios**: Actualmente en archivos JSON en `/content/{projects,testimonials}/`; migrando a Supabase PostgreSQL
+- **Servicios y Soporte Técnico**: Íconos en `src/appData/index.ts`; **texto traducido via i18n** (`translations.ts`); migrando a Supabase (tablas `sections` + `section_items`)
+- **Datos Personales (Redes Sociales)**: Definidos en `src/appData/personal.tsx`; migrando a Supabase (tabla `social_links`)
+- **Flujo de Datos Actual**: `src/services/index.ts` con `fs` para leer archivos JSON
+- **Flujo de Datos Futuro**: Queries a Supabase via `src/lib/supabase.ts` (cliente lazy con Proxy)
+- **Panel Admin**: `/admin/*` protegido con Supabase Auth, layout con sidebar y dashboard
+- **Por qué la migración**: Centralizar datos en PostgreSQL permite CRUD desde el admin panel sin tocar código
 
 ### Sistema i18n
 - **5 idiomas**: Inglés, Español, Francés, Alemán, Ruso
@@ -105,10 +107,20 @@ npm run lint                  # Verificar ESLint
 
 ## Puntos de Integración Clave
 
-### Configuración Firebase
-- Archivo: `src/lib/firebase.ts`
-- Envíos de contacto → Colección `contactSubmissions` de Firestore
-- Degrada gracefulmente si no está configurado (muestra error al usuario)
+### Panel de Administración (Supabase)
+- **Login**: `/admin/login` con Supabase Auth (email + password)
+- **Layout**: `src/app/admin/layout.tsx` — verifica sesión con `getUser()` + `onAuthStateChange`
+- **Dashboard**: `/admin/page.tsx` — estadísticas de contenido desde Supabase
+- **Cliente Supabase**: `src/lib/supabase.ts` — instancia lazy via Proxy (solo se crea al primer uso)
+- **Migraciones SQL**: `supabase/migrations/` — esquema de tablas + seeds
+- **RLS Policies**: Lectura pública, escritura solo para admin autenticado (`auth.role() = 'authenticated'`)
+- **Iconos**: Identificadores string en DB, resueltos via `src/utils/iconMap.ts`
+
+### Configuración de Entorno
+- **Requerido** (producción): `.env.local` con `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- **Firebase** (opcional): Configurar en `src/lib/firebase.ts` — el formulario de contacto guarda en Firestore si está configurado
+- **SEO**: Editar metadatos en `src/app/layout.tsx` (título, descripción, Open Graph)
+- **Admin**: Crear usuario en Supabase Dashboard → Authentication → Users
 
 ### Metadatos y SEO
 - Archivo: `src/app/layout.tsx`
@@ -128,19 +140,22 @@ npm run lint                  # Verificar ESLint
 | Tarea | Ubicación |
 |-------|-----------|
 | Cambiar nombre/título del portafolio | `src/app/layout.tsx`, `src/components/Navbar/Logo.tsx` |
-| Agregar proyecto | `content/projects/projectN.json` |
-| Actualizar skills | `src/appData/index.ts` (arreglo `skillList`) |
-| Actualizar texto de servicios | `src/i18n/translations.ts` (`services.N.title`, `services.N.desc`) |
-| Actualizar texto de soporte técnico | `src/i18n/translations.ts` (`support.N.title`, `support.N.desc`) |
-| Actualizar íconos de servicios/soporte | `src/appData/index.ts` (`serviceData`/`computerSupportData`) |
-| Actualizar redes sociales | `src/appData/personal.tsx` |
-| Modificar esquema de colores | `src/app/globals.css` (variables CSS por tema) |
-| Agregar nueva sección | Crear componente en `src/components/`, importar en `src/app/page.tsx` |
-| Alternar visibilidad de sección | Usar `SectionContext` en el renderizado |
-| Agregar/editar clave de traducción | `src/i18n/translations.ts` |
+| Agregar proyecto (admin) | `/admin/projects` (futuro CRUD) |
+| Agregar proyecto (directo) | `content/projects/projectN.json` |
+| Actualizar skills (admin) | `/admin/skills` (futuro CRUD) |
+| Actualizar skills (directo) | `src/appData/index.ts` (`skillList`) |
+| Actualizar texto de servicios/soporte (admin) | `/admin/translations` (futuro editor) |
+| Actualizar texto de servicios/soporte (directo) | `src/i18n/translations.ts` (claves `services.N.*`, `support.N.*`) |
+| Actualizar íconos de servicios/soporte | `src/appData/index.ts` (`serviceData`/`computerSupportData`) + `src/utils/iconMap.ts` |
+| Actualizar redes sociales | `src/appData/personal.tsx` o tabla `social_links` en Supabase |
+| Agregar nueva sección acordeón (admin) | `/admin/sections` (futuro editor) |
+| Agregar nueva sección (código) | Crear componente en `src/components/`, importar en `src/app/page.tsx` |
+| Agregar/editar clave de traducción | `src/i18n/translations.ts` o tabla `translations` en Supabase |
 | Agregar nuevo idioma | `src/i18n/translations.ts` (tipo, arreglo, objeto de traducción) |
 | Actualizar correo de contacto | `.env.local` (config Firebase) o backend del formulario |
-| Cambiar posición del LanguageSwitcher | `src/components/LanguageSwitcher/LanguageSwitcher.tsx` (clases Tailwind) |
+| Modificar esquema de colores | `src/app/globals.css` (variables CSS por tema) o tabla `themes` en Supabase |
+| Acceder al admin | `/admin/login` — credenciales creadas en Supabase Auth |
+| Agregar nuevo ícono SVG | Agregar SVG a `src/assets/icons/`, importar en `src/utils/icons.tsx`, agregar a `iconMap.ts` |
 
 ## TypeScript y Calidad de Código
 - **Modo estricto activado**: Requerido agregar tipos para código nuevo
