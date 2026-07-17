@@ -1,17 +1,39 @@
 import { FC, SVGProps } from 'react'
+import Image from 'next/image'
 
-import Earning from '../assets/icons/earning.svg'
-import JavaScriptIcon from '../assets/icons/javascript.svg'
-import Likes from '../assets/icons/likes.svg'
-import NextjsIcon from '../assets/icons/nextjs.svg'
-import NodejsIcon from '../assets/icons/nodejs.svg'
-import ReactIcon from '../assets/icons/react.svg'
-import Star from '../assets/icons/star.svg'
-import TailwindCSS from '../assets/icons/tailwind-css.svg'
-import Timer from '../assets/icons/timer.svg'
-import TypescriptIcon from '../assets/icons/typescript.svg'
-import FlutterIcon from '../assets/icons/flutter.svg'
-import FirebaseIcon from '../assets/icons/firebase.svg'
+import EarningSrc from '../assets/icons/earning.svg'
+import JavaScriptIconSrc from '../assets/icons/javascript.svg'
+import LikesSrc from '../assets/icons/likes.svg'
+import NextjsIconSrc from '../assets/icons/nextjs.svg'
+import NodejsIconSrc from '../assets/icons/nodejs.svg'
+import ReactIconSrc from '../assets/icons/react.svg'
+import StarSrc from '../assets/icons/star.svg'
+import TailwindCSSSrc from '../assets/icons/tailwind-css.svg'
+import TimerSrc from '../assets/icons/timer.svg'
+import TypescriptIconSrc from '../assets/icons/typescript.svg'
+import FlutterIconSrc from '../assets/icons/flutter.svg'
+import FirebaseIconSrc from '../assets/icons/firebase.svg'
+
+const SvgIcon = (src: string): FC<SVGProps<SVGSVGElement>> => {
+  const Icon: FC<SVGProps<SVGSVGElement>> = (props) => (
+    <Image src={src} alt="" {...props as any} />
+  )
+  Icon.displayName = `SvgIcon(${src})`
+  return Icon
+}
+
+export const Earning = SvgIcon(EarningSrc)
+export const JavaScriptIcon = SvgIcon(JavaScriptIconSrc)
+export const Likes = SvgIcon(LikesSrc)
+export const NextjsIcon = SvgIcon(NextjsIconSrc)
+export const NodejsIcon = SvgIcon(NodejsIconSrc)
+export const ReactIcon = SvgIcon(ReactIconSrc)
+export const Star = SvgIcon(StarSrc)
+export const TailwindCSS = SvgIcon(TailwindCSSSrc)
+export const Timer = SvgIcon(TimerSrc)
+export const TypescriptIcon = SvgIcon(TypescriptIconSrc)
+export const FlutterIcon = SvgIcon(FlutterIconSrc)
+export const FirebaseIcon = SvgIcon(FirebaseIconSrc)
 
 const PreviewIcon: FC<SVGProps<SVGSVGElement>> = (props) => {
   return (
@@ -555,26 +577,14 @@ export {
   ChevronRightIcon,
   CloseIcon,
   Codepen,
-  Earning,
   Facebook,
   GithubIcon,
   Instagram,
-  JavaScriptIcon,
-  Likes,
   LinkedIn,
   MsgIcon,
-  NextjsIcon,
-  NodejsIcon,
   PhoneIcon,
   PreviewIcon,
-  ReactIcon,
-  Star,
   StarIcon,
-  FlutterIcon,
-  FirebaseIcon,
-  TailwindCSS,
-  Timer,
-  TypescriptIcon,
   X,
   HomeIcon,
   ProjectsIcon,

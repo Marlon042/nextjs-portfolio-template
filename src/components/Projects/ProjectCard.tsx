@@ -1,10 +1,11 @@
 import { Project } from '@/lib/types'
 import Image from 'next/image'
+import { FC, SVGProps } from 'react'
 import { Earning, GithubIcon, Likes, PreviewIcon, Star, Timer } from '../../utils/icons'
 
-const IconText: React.FC<{ icon: string; text: string }> = ({ icon, text }) => (
+const IconText: React.FC<{ icon: FC<SVGProps<SVGSVGElement>>; text: string }> = ({ icon: Icon, text }) => (
   <li className="flex gap-2">
-    <Image src={icon} alt={text} className="size-[18px] md:size-5" />
+    <Icon className="size-[18px] md:size-5" />
     <span className="text-neutral text-sm">{text}</span>
   </li>
 )
@@ -53,15 +54,17 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ data }) => {
             )}
           </ul>
         </div>
-        <figure className="flex justify-end overflow-hidden">
-          <Image
-            src={cover}
-            width={150}
-            height={80}
-            alt="Project Cover"
-            className="h-[80px] w-[150px] rounded-md object-cover shadow-[0px_1.66px_3.74px_-1.25px_#18274B1F]"
-          />
-        </figure>
+        {cover && (
+          <figure className="flex justify-end overflow-hidden">
+            <Image
+              src={cover}
+              width={150}
+              height={80}
+              alt="Project Cover"
+              className="h-[80px] w-[150px] rounded-md object-cover shadow-[0px_1.66px_3.74px_-1.25px_#18274B1F]"
+            />
+          </figure>
+        )}
       </div>
 
       <div>

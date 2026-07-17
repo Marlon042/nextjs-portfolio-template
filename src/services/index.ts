@@ -8,7 +8,26 @@ const getAllProjects = async (): Promise<Project[]> => {
       .from('projects')
       .select('*')
       .order('priority', { ascending: true })
-    return data ?? []
+
+    if (!data) return []
+
+    return (data as Record<string, any>[]).map((item) => ({
+      id: item.id,
+      title: item.title,
+      shortDescription: item.short_description,
+      priority: item.priority,
+      cover: item.cover_url,
+      cover_url: item.cover_url,
+      livePreview: item.live_preview_url,
+      githubLink: item.github_link,
+      visitors: item.visitors ?? '',
+      earned: item.earned ?? '',
+      githubStars: item.github_stars ?? '',
+      ratings: item.ratings ?? '',
+      numberOfSales: item.number_of_sales ?? '',
+      type: item.type,
+      siteAge: item.site_age ?? '',
+    }))
   } catch (error) {
     console.error('Error fetching projects:', error)
     return []

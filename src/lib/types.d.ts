@@ -1,8 +1,10 @@
 export interface Project {
+  id?: string
   title: string
   shortDescription: string
   priority: number
   cover: string
+  cover_url?: string
   livePreview?: string
   githubLink?: string
   visitors?: string
