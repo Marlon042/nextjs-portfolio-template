@@ -48,3 +48,11 @@
 ### Added
 - `src/lib/supabase-server.ts` — cliente Supabase para server components
 - `src/services/site.ts` — servicios para skills, sections, social, footer, themes, config
+
+### Fixed
+- SVGs importados de archivos convertidos a componentes React con `SvgIcon` wrapper
+- IconMap ahora retorna solo componentes React (no strings URL)
+- Mapping snake_case → camelCase en `getAllProjects()` de Supabase
+- Key duplicada en `ProjectSection` (usa `id` en vez de `priority`)
+- `ProjectCard` maneja `cover_url` vacía sin romper
+- `IconText` en ProjectCard ahora renderiza componentes SVG
