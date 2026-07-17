@@ -9,14 +9,14 @@ Este es un **portfolio template en Next.js 16** construido con React 19, Tailwin
 
 ## Arquitectura y Patrones Clave
 
-### Arquitectura de Datos: Archivos + i18n + Supabase (en transición)
-- **Proyectos y Testimonios**: Actualmente en archivos JSON en `/content/{projects,testimonials}/`; migrando a Supabase PostgreSQL
-- **Servicios y Soporte Técnico**: Íconos en `src/appData/index.ts`; **texto traducido via i18n** (`translations.ts`); migrando a Supabase (tablas `sections` + `section_items`)
-- **Datos Personales (Redes Sociales)**: Definidos en `src/appData/personal.tsx`; migrando a Supabase (tabla `social_links`)
-- **Flujo de Datos Actual**: `src/services/index.ts` con `fs` para leer archivos JSON
-- **Flujo de Datos Futuro**: Queries a Supabase via `src/lib/supabase.ts` (cliente lazy con Proxy)
+### Arquitectura de Datos: Supabase + Frontend Público
+- **Proyectos, Testimonios, Skills, Secciones, Redes Sociales, Footer, Temas, Traducciones**: Todos almacenados en Supabase PostgreSQL
+- **Server Components**: Usan `getSupabaseServer()` de `src/lib/supabase-server.ts` para queries directas (público)
+- **Client Components**: Usan `supabase` (cliente lazy Proxy) o reciben datos como props desde server components
+- **Resolución de Íconos**: `iconMap` en `src/utils/iconMap.ts` convierte `icon_id` (string) a componentes SVG
+- **Traducciones**: `LanguageContext` carga desde Supabase al cambiar idioma, con caché en `Map` para evitar re-fetch
 - **Panel Admin**: `/admin/*` protegido con Supabase Auth, layout con sidebar y dashboard
-- **Por qué la migración**: Centralizar datos en PostgreSQL permite CRUD desde el admin panel sin tocar código
+- **Archivos JSON locales**: Ya no se usan en producción (se mantienen como referencia)
 
 ### Sistema i18n
 - **5 idiomas**: Inglés, Español, Francés, Alemán, Ruso
@@ -57,14 +57,21 @@ npm run build && npm run start # Build producción y servidor
 npm run lint                  # Verificar ESLint
 ```
 
-### Agregar Nuevo Contenido
-1. **Proyectos**: Agregar JSON a `content/projects/` que coincida con la interfaz `Project`
-2. **Testimonios**: Agregar JSON a `content/testimonials/` con interfaz `Testimonial` (actualmente comentado en `page.tsx`)
-3. **Skills**: Editar `src/appData/index.ts` directamente (arreglo hardcodeado con nombre + ícono)
-4. **Texto de Servicios/Soporte**: Agregar/editar claves en `src/i18n/translations.ts` (formato: `services.N.title`, `services.N.desc`, `support.N.title`, `support.N.desc`)
-5. **Íconos de Servicios/Soporte**: Editar arreglos `serviceData`/`computerSupportData` en `src/appData/index.ts`
-6. **Redes Sociales**: Editar `src/appData/personal.tsx`
-7. **Íconos**: Agregar imports SVG a `src/utils/icons.tsx`, exportar como componentes
+### Agregar Nuevo Contenido (vía Admin Panel)
+1. **Proyectos**: Usar `/admin/projects/new` — formulario con subida de imagen a Cloudinary
+2. **Testimonios**: Usar `/admin/testimonials` (próximamente)
+3. **Skills**: Usar `/admin/skills` (próximamente)
+4. **Texto de Servicios/Soporte/Traducciones**: Usar `/admin/translations` (próximamente)
+5. **Secciones Acordeón**: Usar `/admin/sections` (próximamente)
+
+### Agregar Nuevo Contenido (directo en Supabase)
+1. **Proyectos**: Insertar fila en tabla `projects` (Supabase Dashboard → Table Editor)
+2. **Testimonios**: Insertar fila en tabla `testimonials`
+3. **Skills**: Insertar fila en tabla `skills` — `icon_id` debe coincidir con una clave en `iconMap.ts`
+4. **Traducciones**: Insertar fila en tabla `translations` — columnas: `key`, `language`, `value`
+5. **Secciones**: Insertar en `sections` + sus items en `section_items`
+6. **Redes Sociales**: Insertar en `social_links`
+7. **Íconos**: Agregar SVG a `src/assets/icons/`, importar en `src/utils/icons.tsx`, agregar al `iconMap.ts`
 
 ### Agregar un Nuevo Idioma
 1. Agregar código de idioma al tipo `Language` en `src/i18n/translations.ts`

@@ -1,19 +1,35 @@
 'use client'
 
-import { themes } from '@/appData'
+import { useEffect, useState } from 'react'
+import { supabase } from '@/lib/supabase'
 import { useLanguage } from '@/context/LanguageContext'
 import useOutsideClick from '@/hooks/useOutsideClick'
 import { CheckIcon, CloseIcon } from '@/utils/icons'
-import { useEffect, useState } from 'react'
+
+interface ThemeItem {
+  name: string
+  colors: string[]
+}
 
 const ThemeMenu = () => {
   const [theme, setTheme] = useState('dark')
+  const [themes, setThemes] = useState<ThemeItem[]>([])
   const [showThemeMenu, setShowThemeMenu] = useState(false)
   const { t } = useLanguage()
   const menuRef = useOutsideClick(() => setShowThemeMenu(false))
 
   useEffect(() => {
-    if (window) setTheme(localStorage.getItem('theme') ?? theme)
+    const init = async () => {
+      const { data } = await supabase.from('themes').select('name, colors')
+      setThemes(data ?? [])
+
+      if (window) {
+        const saved = localStorage.getItem('theme')
+        if (saved) setTheme(saved)
+      }
+    }
+
+    init()
   }, [])
 
   useEffect(() => {

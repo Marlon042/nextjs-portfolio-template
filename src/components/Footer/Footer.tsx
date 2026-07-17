@@ -1,12 +1,41 @@
 'use client'
 
-import { footerLinks } from '@/appData'
-import { socials } from '@/appData/personal'
+import { useEffect, useState } from 'react'
+import { supabase } from '@/lib/supabase'
+import { iconMap } from '@/utils/iconMap'
 import { useLanguage } from '@/context/LanguageContext'
 import Logo from '../Navbar/Logo'
 
+interface FooterLink {
+  title: string
+  href: string
+  display_order: number
+}
+
+interface Social {
+  platform: string
+  url: string
+  icon_id: string
+  display_order: number
+}
+
 const Footer = () => {
   const { t } = useLanguage()
+  const [footerLinks, setFooterLinks] = useState<FooterLink[]>([])
+  const [socials, setSocials] = useState<Social[]>([])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const [{ data: links }, { data: socialData }] = await Promise.all([
+        supabase.from('footer_links').select('title, href, display_order').order('display_order'),
+        supabase.from('social_links').select('platform, url, icon_id, display_order').order('display_order'),
+      ])
+      setFooterLinks(links ?? [])
+      setSocials(socialData ?? [])
+    }
+
+    fetchData()
+  }, [])
 
   return (
     <footer className="bg-secondary relative flex min-h-[560px] flex-col justify-between gap-20 overflow-hidden px-4 py-14 md:p-14">
@@ -41,18 +70,21 @@ const Footer = () => {
       <div className="relative z-20 flex flex-col-reverse gap-20 md:grid md:grid-cols-2 md:gap-12">
         <div className="grid grid-cols-2 gap-4">
           <ul className="flex flex-col gap-4">
-            {socials.map((item, index) => (
-              <li key={index} className="cursor-pointer bg-transparent">
-                <a
-                  href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-neutral hover:text-accent flex items-center gap-2 font-light transition-colors duration-300">
-                  {item.icon}
-                  <span>{item.name}</span>
-                </a>
-              </li>
-            ))}
+            {socials.map((item, index) => {
+              const Icon = iconMap[item.icon_id]
+              return (
+                <li key={index} className="cursor-pointer bg-transparent">
+                  <a
+                    href={item.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-neutral hover:text-accent flex items-center gap-2 font-light transition-colors duration-300">
+                    {Icon ? <Icon /> : null}
+                    <span>{item.platform}</span>
+                  </a>
+                </li>
+              )
+            })}
           </ul>
           <p className="text-tertiary-content flex flex-col self-end text-right text-xs md:text-center">
             <span>{t('footer.copyright')}</span>
@@ -73,7 +105,6 @@ const Footer = () => {
                 href="tel:+506 86748396"
                 className="text-tertiary-content hover:text-neutral text-sm font-light transition-colors duration-300">
                 +506 86748396
-              
               </a>
             </div>
             <div>
@@ -86,7 +117,6 @@ const Footer = () => {
               </div>
             </div>
           </div>
-
         </div>
       </div>
 

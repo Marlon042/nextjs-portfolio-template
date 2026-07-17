@@ -29,7 +29,22 @@
 - Navegación del formulario de proyectos: usa `window.location.href` en vez de `router.push()` para evitar que el formulario se quede colgado
 
 ### Changed
+- Migración del frontend público de archivos/fs a Supabase
+- `src/services/index.ts` ahora consulta Supabase en vez de leer JSON con `fs`
+- `src/appData/index.ts` ahora exporta funciones async desde servicios Supabase
+- `src/components/Skills/Skills.tsx` usa `iconMap` en vez de `<Image src>`
+- `src/components/Services/ServiceSection.tsx` + `ServiceCard.tsx` usan Supabase + `iconMap`
+- `src/components/ComputerSupport/` usan Supabase + `iconMap`
+- `src/components/Footer/Footer.tsx` obtiene links sociales y footer desde Supabase
+- `src/components/Theme/ThemeMenu.tsx` obtiene temas desde Supabase
+- `src/context/LanguageContext.tsx` obtiene traducciones desde Supabase con caché
+- `src/i18n/translations.ts` reducido a solo tipos y constantes (datos movidos a Supabase)
+- `src/app/page.tsx` usa `getSkills()` async en vez de `skillList` estático
 - Import directo de server actions en `ProjectForm.tsx` en vez de `await import()` dinámico
 - Actualizado `.gitignore` para incluir `.env.example` como excepción
 - Instalada dependencia `@supabase/supabase-js`
 - Instaladas dependencias `cloudinary` y `next-cloudinary`
+
+### Added
+- `src/lib/supabase-server.ts` — cliente Supabase para server components
+- `src/services/site.ts` — servicios para skills, sections, social, footer, themes, config
