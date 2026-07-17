@@ -25,7 +25,11 @@
 - `src/app/api/upload/route.ts` — API route para generar signature de Cloudinary
 - CRUD completo de proyectos en `/admin/projects` (lista, crear, editar, eliminar)
 
+### Fixed
+- Navegación del formulario de proyectos: usa `window.location.href` en vez de `router.push()` para evitar que el formulario se quede colgado
+
 ### Changed
+- Import directo de server actions en `ProjectForm.tsx` en vez de `await import()` dinámico
 - Actualizado `.gitignore` para incluir `.env.example` como excepción
 - Instalada dependencia `@supabase/supabase-js`
 - Instaladas dependencias `cloudinary` y `next-cloudinary`

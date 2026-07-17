@@ -3,6 +3,7 @@
 import { useState, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import ImageUpload from './ImageUpload'
+import { createProject, updateProject } from '@/actions/projects'
 
 interface ProjectData {
   title: string
@@ -57,19 +58,14 @@ export default function ProjectForm({ initialData, projectId, action }: ProjectF
     setLoading(true)
 
     try {
-      const { createProject, updateProject } = await import('@/actions/projects')
-
       if (action === 'create') {
         await createProject(form)
       } else if (projectId) {
         await updateProject(projectId, form)
       }
-
-      router.push('/admin/projects')
-      router.refresh()
+      window.location.href = '/admin/projects'
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
-    } finally {
       setLoading(false)
     }
   }
