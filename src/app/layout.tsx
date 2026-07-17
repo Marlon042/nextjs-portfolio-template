@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 
-import Footer from '@/components/Footer/Footer'
+import FooterWrapper from '@/components/Footer/FooterWrapper'
 import Navbar from '@/components/Navbar/Navbar'
 import LanguageSwitcher from '@/components/LanguageSwitcher/LanguageSwitcher'
 import { SectionProvider } from '@/context/SectionContext'
@@ -57,7 +57,7 @@ export default function RootLayout({
           {children}
           <ThemeMenu />
           <LanguageSwitcher />
-          <Footer />
+          <FooterWrapper />
         </SectionProvider>
         </LanguageProvider>
       </body>
