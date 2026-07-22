@@ -1,24 +1,19 @@
 [build]
   command = "npm run build"
-  publish = ".next"
 
 [build.environment]
   NODE_VERSION = "22"
 
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-
-# Functions configuration for Next.js
-[functions]
-  node_bundler = "esbuild"
-
-# Ensure environment variables are available during build
+# Las vars sensibles (SUPABASE_SERVICE_ROLE_KEY, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET)
+# configúralas manualmente en Netlify Dashboard → Site settings → Environment variables
 [context.production.environment]
+  NEXT_PUBLIC_SITE_URL = "https://marlon042-dev.netlify.app"
   NEXT_PUBLIC_FIREBASE_API_KEY = "AIzaSyCwZh7cS6I5NlSQldccmAlhTE6aGOujRrI"
   NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN = "portfolio-marlon.firebaseapp.com"
   NEXT_PUBLIC_FIREBASE_PROJECT_ID = "portfolio-marlon"
   NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET = "portfolio-marlon.firebasestorage.app"
   NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID = "92170705421"
   NEXT_PUBLIC_FIREBASE_APP_ID = "1:92170705421:web:9540fac2b7c2524c365344"
+  NEXT_PUBLIC_SUPABASE_URL = "https://iqhwcrcgrqftumbqulsl.supabase.co"
+  NEXT_PUBLIC_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlxaHdjcmNncnFmdHVtYnF1bHNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQxNjA0NjYsImV4cCI6MjA5OTczNjQ2Nn0.Ckx4G0jCUOSv_8OMlM8OoSR__DjLnnwUudYvtSkqrcw"
+  NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME = "wwmifjka"
