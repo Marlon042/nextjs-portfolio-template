@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { getProjects, deleteProject } from '@/actions/projects'
+import InlineEditableTitle from '@/components/Admin/InlineEditableTitle'
 
 interface Project {
   id: string
@@ -38,7 +39,7 @@ export default function AdminProjects() {
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-white">Projects</h1>
+        <InlineEditableTitle translationKey="projects.title" className="text-2xl font-bold text-white" />
         <Link
           href="/admin/projects/new"
           className="rounded bg-[#5565e8] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#4555d8]"
