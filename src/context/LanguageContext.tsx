@@ -27,7 +27,7 @@ interface LanguageProviderProps {
 const translationCache = new Map<string, Record<string, string>>()
 
 export const LanguageProvider = ({ children }: LanguageProviderProps) => {
-  const [lang, setLang] = useState<Language>('en')
+  const [lang, setLang] = useState<Language>('es')
   const [mounted, setMounted] = useState(false)
   const [dict, setDict] = useState<Record<string, string>>({})
   const loadingRef = useRef(false)
@@ -58,7 +58,7 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
 
   useEffect(() => {
     const saved = localStorage.getItem('language') as Language | null
-    const initial = saved && languages.some((l) => l.code === saved) ? saved : 'en'
+    const initial = saved && languages.some((l) => l.code === saved) ? saved : 'es'
     setLang(initial)
     loadTranslations(initial)
     setMounted(true)

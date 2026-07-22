@@ -5,6 +5,7 @@ import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import type { User } from '@supabase/supabase-js'
+import LanguageSwitcher from '@/components/LanguageSwitcher/LanguageSwitcher'
 
 const sidebarLinks = [
   { label: 'Dashboard', href: '/admin' },
@@ -86,6 +87,9 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
         <div className="mt-auto">
           <p className="mb-2 truncate text-xs text-[#607b96]">{user?.email}</p>
+          <div className="mb-2">
+            <LanguageSwitcher />
+          </div>
           <button
             onClick={async () => {
               await supabase.auth.signOut()
