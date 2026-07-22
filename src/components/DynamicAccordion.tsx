@@ -93,7 +93,7 @@ const DynamicAccordion: React.FC<DynamicAccordionProps> = ({ identifier, default
     : `${identifier}.title`
 
   return (
-    <section id={identifier} className="my-14">
+    <section id={identifier} className="my-6">
       <button
         onClick={() => setOpen(!open)}
         className="group flex w-full items-center justify-between rounded-lg border border-[#607b96]/20 bg-[#0d1a3b]/50 p-4 text-left transition hover:border-[#607b96]/40 md:rounded-xl md:p-5"
