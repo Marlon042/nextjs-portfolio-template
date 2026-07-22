@@ -30,7 +30,7 @@ create table skills (
   display_order int not null default 0
 );
 
--- 3. SECCIONES DINÁMICAS (accordions/grids)
+-- 3. SECCIONES DINÁMICAS (accordions/gridsss)
 create table sections (
   id uuid primary key default gen_random_uuid(),
   identifier text unique not null,
