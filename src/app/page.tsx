@@ -1,7 +1,7 @@
 import { getSkills } from '@/appData'
 import ContactSection from '@/components/Contact/ContactSection'
 import Hero from '@/components/Hero/Hero'
-import ProjectSection from '@/components/Projects/ProjectSection'
+import ProjectsAccordion from '@/components/Projects/ProjectsAccordion'
 import ClientServiceSection from '@/components/ClientServiceSection'
 import ClientComputerSupportSection from '@/components/ComputerSupport/ClientComputerSupportSection'
 import Skills from '@/components/Skills/Skills'
@@ -19,7 +19,7 @@ export default async function Home() {
       <Hero />
       <Skills skills={skillsFormatted} />
       <div className="mx-auto my-8 max-w-[1200px] px-4 md:my-[3.75rem]">
-        <ProjectSection />
+        <ProjectsAccordion />
         <ClientServiceSection />
         <ClientComputerSupportSection />
         {/* <TestimonialSection testimonials={testimonials} /> */}
