@@ -5,15 +5,9 @@ import ProjectSection from '@/components/Projects/ProjectSection'
 import ClientServiceSection from '@/components/ClientServiceSection'
 import ClientComputerSupportSection from '@/components/ComputerSupport/ClientComputerSupportSection'
 import Skills from '@/components/Skills/Skills'
-// import TestimonialSection from '@/components/Testimonials/TestimonialSection'
-import { getAllProjects } from '@/services'
-import { getAllTestimonials } from '@/services'
 
 export default async function Home() {
-  const [projects, skills] = await Promise.all([
-    getAllProjects(),
-    getSkills(),
-  ])
+  const skills = await getSkills()
 
   const skillsFormatted = skills.map((s) => ({
     name: s.name,
@@ -25,7 +19,7 @@ export default async function Home() {
       <Hero />
       <Skills skills={skillsFormatted} />
       <div className="mx-auto my-8 max-w-[1200px] px-4 md:my-[3.75rem]">
-        <ProjectSection projects={projects} />
+        <ProjectSection />
         <ClientServiceSection />
         <ClientComputerSupportSection />
         {/* <TestimonialSection testimonials={testimonials} /> */}
