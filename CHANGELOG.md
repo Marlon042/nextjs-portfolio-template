@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.3.0] — 2026-07-22
+
+### Added
+- **DynamicAccordion** unificado: reemplaza ServicesAccordion, ComputerSupportAccordion y ProjectsAccordion para servicios/soporte
+- **CRUD completo de Secciones** en `/admin/sections` con listado, toggle activo/inactivo, y editor de items
+- **`src/actions/sections.ts`** — server actions para sections, section_items, section_item_translations
+- **Editor de items por sección** en `/admin/sections/[id]` con selector visual de íconos y campos en español
+- `supabase/migrations/00006_section_item_translations.sql` — tabla section_item_translations + migración de datos existentes
+
+### Changed
+- Acordeones ahora inician **cerrados** por defecto (`defaultOpen = false`)
+- Editor de secciones simplificado: solo campos en **español** (se eliminaron EN, FR, DE, RU)
+- DynamicAccordion hace fallback a español si el idioma seleccionado no tiene traducción
+- `page.tsx` ahora usa `ProjectsAccordion` para projects y `DynamicAccordion` para services/support
+
+### Fixed
+- DynamicAccordion requería 2 clicks para abrirse (cambiado `useRef` → `useState` para sectionId)
+- Sección de projects aparecía vacía (usaba DynamicAccordion sin soporte para tabla projects)
+
 ## [1.2.0] — 2026-07-22
 
 ### Added

@@ -13,11 +13,12 @@ Este es un **portfolio template en Next.js 16** construido con React 19, Tailwin
 - **Proyectos, Testimonios, Skills, Secciones, Redes Sociales, Footer, Temas, Traducciones**: Todos almacenados en Supabase PostgreSQL
 - **Server Components**: Usan `getSupabaseServer()` de `src/lib/supabase-server.ts` para queries directas (público)
 - **Client Components**: Usan `supabase` (cliente lazy Proxy) o reciben datos como props desde server components
-- **Datos en vivo**: Componentes como `ProjectSection` y `Skills` obtienen datos directamente desde Supabase en el cliente (useEffect) para reflejar cambios del admin sin recargar la página
+- **Datos en vivo**: Componentes como `ProjectSection`, `Skills` y `DynamicAccordion` obtienen datos directamente desde Supabase en el cliente (useEffect) para reflejar cambios del admin sin recargar la página
 - **Resolución de Íconos**: `iconMap` en `src/utils/iconMap.ts` convierte `icon_id` (string) a componentes SVG
 - **Íconos personalizados**: Los SVGs custom se guardan en la tabla `icons` de Supabase y se renderizan inline con `dangerouslySetInnerHTML`
 - **Tabla `icons`**: Contiene `id`, `label`, `category`, `svg_content`, `is_bundled` — 40 íconos bundlados precargados
 - **Traducciones**: `LanguageContext` carga desde Supabase al cambiar idioma, con caché en `Map` para evitar re-fetch
+- **Traducciones de items de sección**: Guardadas en `section_item_translations` (item_id, language, title, description). Solo se almacena español (ES); DynamicAccordion hace fallback automático a español si el idioma seleccionado no tiene traducción
 - **Panel Admin**: `/admin/*` protegido con Supabase Auth, layout con sidebar y dashboard
 - **Archivos JSON locales**: Ya no se usan en producción (se mantienen como referencia)
 
@@ -33,10 +34,10 @@ Este es un **portfolio template en Next.js 16** construido con React 19, Tailwin
 
 ### Estructura de Componentes
 - **Organización por carpetas**: Cada sección tiene su propia carpeta (`Hero/`, `Projects/`, `Services/`, `ComputerSupport/`, etc.)
-- **Composición de página**: `src/app/page.tsx` orquesta los componentes de sección (Hero → Skills → Projects → ClientServiceSection → ClientComputerSupportSection → Contact)
+- **Composición de página**: `src/app/page.tsx` orquesta los componentes de sección (Hero → Skills → ProjectsAccordion → DynamicAccordion (services) → DynamicAccordion (support) → Contact)
 - **Cliente vs Servidor**:
   - **Componentes servidor por defecto**; solo elementos interactivos usan `'use client'`
-  - Los componentes que usan `useLanguage()` deben ser client components (ej: `Hero`, `ContactForm`, `ProjectSection`, `Footer`, `Navbar`, `ServicesAccordion`, `ComputerSupportAccordion`, `ServiceSection`, `ComputerSupportSection`, `ThemeMenu`)
+  - Los componentes que usan `useLanguage()` deben ser client components (ej: `Hero`, `ContactForm`, `ProjectSection`, `Footer`, `Navbar`, `ProjectsAccordion`, `DynamicAccordion`, `ThemeMenu`)
 - **Contexto y Estado**: `SectionContext` para alternar visibilidad de servicios mediante `SectionToggle`
 
 ### Seguridad de Tipos
@@ -67,16 +68,16 @@ npm run lint                  # Verificar ESLint
 4. **Velocidad del carrusel**: `/admin/skills` → slider "Marquee Speed"
 5. **Testimonios**: Usar `/admin/testimonials` (próximamente)
 6. **Texto de Servicios/Soporte/Traducciones**: Usar `/admin/translations` (próximamente)
-7. **Secciones Acordeón**: Usar `/admin/sections` (próximamente)
+7. **Secciones Acordeón**: Usar `/admin/sections` → editar items con campos en español (fallback automático a otros idiomas)
 
 ### Agregar Nuevo Contenido (directo en Supabase)
 1. **Proyectos**: Insertar fila en tabla `projects` (Supabase Dashboard → Table Editor)
 2. **Testimonios**: Insertar fila en tabla `testimonials`
 3. **Skills**: Insertar fila en tabla `skills` — `icon_id` debe coincidir con un `id` en la tabla `icons`
 4. **Traducciones**: Insertar fila en tabla `translations` — columnas: `key`, `language`, `value`
-5. **Secciones**: Insertar en `sections` + sus items en `section_items`
-6. **Redes Sociales**: Insertar en `social_links`
-7. **Íconos**: Usar `/admin/icons` para crear SVGs personalizados, o agregar SVG a `src/assets/icons/`, importar en `src/utils/icons.tsx`, agregar a `iconMap.ts`
+5. **Redes Sociales**: Insertar en `social_links`
+6. **Íconos**: Usar `/admin/icons` para crear SVGs personalizados, o agregar SVG a `src/assets/icons/`, importar en `src/utils/icons.tsx`, agregar a `iconMap.ts`
+7. **Items de acordeones**: Insertar en `section_items` + sus traducciones en `section_item_translations`
 
 ### Agregar un Nuevo Idioma
 1. Agregar código de idioma al tipo `Language` en `src/i18n/translations.ts`
@@ -111,6 +112,7 @@ npm run lint                  # Verificar ESLint
 - **CRUD Skills**: `src/actions/skills.ts` — getSkills, getSkill, createSkill, updateSkill, deleteSkill
 - **CRUD Íconos**: `src/actions/icons.ts` — getIcons, getIcon, createIcon, updateIcon, deleteIcon
 - **Site Config**: `src/actions/site-config.ts` — getSiteConfig, updateSiteConfig
+- **CRUD Secciones**: `src/actions/sections.ts` — getSections, getSection, createSection, updateSection, deleteSection, getSectionItems, createSectionItem, updateSectionItem, deleteSectionItem, getItemTranslations, upsertItemTranslation
 - **Integración Firebase**: Usa `addDoc` a la colección `contactSubmissions` de Firestore
 - **Validación**: Campos del formulario validados del lado del servidor antes de escribir en Firebase
 
@@ -139,6 +141,13 @@ npm run lint                  # Verificar ESLint
 - **Lectura pública**: Usar `supabase` (cliente anon, RLS permite lectura pública)
 - **Escritura admin**: Usar `getSupabaseAdmin()` de `src/lib/supabase-admin.ts` (service_role key, bypass RLS)
 - **Métodos**: getProjects, getProject, createProject, updateProject, deleteProject
+
+### DynamicAccordion
+- **Propósito**: Componente único para todos los acordeones de contenido dinámico (services, support)
+- **Data**: Obtiene section_id de la tabla `sections` por `identifier`, luego items de `section_items` con traducciones de `section_item_translations`
+- **Fallback de idioma**: Si el idioma seleccionado no tiene traducción, usa español (`es`) automáticamente
+- **Projects**: Usa `ProjectsAccordion` separado (tabla `projects` con estructura diferente)
+- **Admin**: Los items se editan en `/admin/sections/[id]` con selector de íconos y campos de título/descripción solo en español
 
 ### Panel de Administración (Supabase)
 - **Login**: `/admin/login` con Supabase Auth (email + password)
@@ -181,11 +190,9 @@ npm run lint                  # Verificar ESLint
 | Gestionar íconos (admin) | `/admin/icons` — agregar/editar/eliminar SVGs con categorías |
 | Agregar ícono custom | `/admin/icons` → "+ New Icon" — pegar markup SVG |
 | Velocidad carrusel (admin) | `/admin/skills` → slider "Marquee Speed" |
-| Actualizar texto de servicios/soporte (admin) | `/admin/translations` (futuro editor) |
-| Actualizar texto de servicios/soporte (directo) | `src/i18n/translations.ts` (claves `services.N.*`, `support.N.*`) |
-| Actualizar íconos de servicios/soporte | `src/appData/index.ts` (`serviceData`/`computerSupportData`) + `src/utils/iconMap.ts` |
+| Editar items de acordeones (admin) | `/admin/sections` → elegir sección → editar items con íconos y texto en español |
 | Actualizar redes sociales | `src/appData/personal.tsx` o tabla `social_links` en Supabase |
-| Agregar nueva sección acordeón (admin) | `/admin/sections` (futuro editor) |
+| Agregar nueva sección acordeón (admin) | `/admin/sections` → elegir sección → "Edit Items" |
 | Agregar nueva sección (código) | Crear componente en `src/components/`, importar en `src/app/page.tsx` |
 | Agregar/editar clave de traducción | `src/i18n/translations.ts` o tabla `translations` en Supabase |
 | Agregar nuevo idioma | `src/i18n/translations.ts` (tipo, arreglo, objeto de traducción) |
