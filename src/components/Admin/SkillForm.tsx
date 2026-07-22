@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, FormEvent } from 'react'
+import { useState, useEffect, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import { iconMap } from '@/utils/iconMap'
 import { createSkill, updateSkill } from '@/actions/skills'
+import { getIcons, Icon } from '@/actions/icons'
 
 interface SkillData {
   name: string
@@ -17,7 +18,7 @@ interface SkillFormProps {
   action: 'create' | 'update'
 }
 
-const iconOptions = Object.entries(iconMap).map(([id, Icon]) => ({ id, Icon }))
+const categories = ['all', 'tech', 'social', 'support', 'ui', 'stats', 'custom']
 
 export default function SkillForm({ initialData, skillId, action }: SkillFormProps) {
   const router = useRouter()
@@ -26,6 +27,25 @@ export default function SkillForm({ initialData, skillId, action }: SkillFormPro
   const [form, setForm] = useState<SkillData>(
     initialData ?? { name: '', icon_id: '', display_order: 1 },
   )
+  const [icons, setIcons] = useState<Icon[]>([])
+  const [filter, setFilter] = useState('all')
+
+  useEffect(() => {
+    getIcons().then(setIcons)
+  }, [])
+
+  const filteredIcons = filter === 'all' ? icons : icons.filter((i) => i.category === filter)
+
+  const renderIconPreview = (icon: Icon) => {
+    if (icon.is_bundled && iconMap[icon.id]) {
+      const Comp = iconMap[icon.id]
+      return <Comp className="size-6 text-white" />
+    }
+    if (icon.svg_content) {
+      return <div className="flex size-6 items-center justify-center text-white" dangerouslySetInnerHTML={{ __html: icon.svg_content }} />
+    }
+    return <span className="text-[10px] text-[#607b96]">N/A</span>
+  }
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
@@ -46,7 +66,7 @@ export default function SkillForm({ initialData, skillId, action }: SkillFormPro
   }
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-xl space-y-6">
+    <form onSubmit={handleSubmit} className="max-w-2xl space-y-6">
       <h1 className="text-2xl font-bold text-white">
         {action === 'create' ? 'New Skill' : 'Edit Skill'}
       </h1>
@@ -80,23 +100,41 @@ export default function SkillForm({ initialData, skillId, action }: SkillFormPro
 
       <div>
         <label className="mb-2 block text-sm text-[#607b96]">Icon *</label>
-        <div className="grid grid-cols-6 gap-3 md:grid-cols-8">
-          {iconOptions.map(({ id, Icon }) => (
-            <button
-              type="button"
-              key={id}
-              onClick={() => setForm((prev) => ({ ...prev, icon_id: id }) )}
-              className={`flex flex-col items-center gap-1 rounded border p-2 transition ${
-                form.icon_id === id
-                  ? 'border-[#18f2e5] bg-[#18f2e5]/10'
-                  : 'border-[#607b96]/40 bg-[#011627] hover:border-[#607b96]'
-              }`}
-              title={id}
-            >
-              <Icon className="size-6 text-white" />
-              <span className="truncate text-[10px] text-[#607b96]">{id}</span>
+
+        {/* Category filter tabs */}
+        <div className="mb-3 flex flex-wrap gap-1.5">
+          {categories.map((cat) => (
+            <button key={cat} type="button" onClick={() => setFilter(cat)}
+              className={`rounded px-2 py-0.5 text-[11px] font-medium transition ${
+                filter === cat
+                  ? 'bg-[#5565e8] text-white'
+                  : 'bg-[#0d1a3b] text-[#607b96] hover:bg-[#1a2d4a] hover:text-white'
+              }`}>
+              {cat === 'all' ? 'All' : cat}
             </button>
           ))}
+        </div>
+
+        <div className="grid grid-cols-4 gap-2 sm:grid-cols-6 md:grid-cols-8">
+          {filteredIcons.map((icon) => {
+            const isSelected = form.icon_id === icon.id
+            return (
+              <button
+                type="button"
+                key={icon.id}
+                onClick={() => setForm((prev) => ({ ...prev, icon_id: icon.id }) )}
+                className={`flex flex-col items-center gap-1 rounded border p-1.5 transition ${
+                  isSelected
+                    ? 'border-[#18f2e5] bg-[#18f2e5]/10'
+                    : 'border-[#607b96]/40 bg-[#011627] hover:border-[#607b96]'
+                }`}
+                title={icon.label}
+              >
+                {renderIconPreview(icon)}
+                <span className="truncate text-[10px] text-[#607b96]">{icon.label}</span>
+              </button>
+            )
+          })}
         </div>
       </div>
 

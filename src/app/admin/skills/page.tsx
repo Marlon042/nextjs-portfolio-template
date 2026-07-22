@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { getSkills, deleteSkill } from '@/actions/skills'
 import { getSiteConfig, updateSiteConfig } from '@/actions/site-config'
+import { getIcons } from '@/actions/icons'
 import { iconMap } from '@/utils/iconMap'
 
 interface Skill {
@@ -20,15 +21,22 @@ export default function AdminSkills() {
   const [marqueeDuration, setMarqueeDuration] = useState(20000)
   const [speedSaving, setSpeedSaving] = useState(false)
   const [speedMsg, setSpeedMsg] = useState('')
+  const [customSvgs, setCustomSvgs] = useState<Record<string, string>>({})
   const router = useRouter()
 
   useEffect(() => {
     Promise.all([
       getSkills(),
       getSiteConfig(),
-    ]).then(([skillsData, config]) => {
+      getIcons(),
+    ]).then(([skillsData, config, icons]) => {
       setSkills(skillsData)
       if (config.marquee_duration) setMarqueeDuration(config.marquee_duration)
+      const svgMap: Record<string, string> = {}
+      icons.forEach((icon) => {
+        if (!icon.is_bundled && icon.svg_content) svgMap[icon.id] = icon.svg_content
+      })
+      setCustomSvgs(svgMap)
       setLoading(false)
     })
   }, [])
@@ -116,12 +124,13 @@ export default function AdminSkills() {
             </thead>
             <tbody>
               {skills.map((skill, i) => {
-                const Icon = iconMap[skill.icon_id]
+                const BundledIcon = iconMap[skill.icon_id]
+                const customSvg = customSvgs[skill.icon_id]
                 return (
                   <tr key={skill.id} className="border-b border-[#607b96]/20 hover:bg-[#1a2d4a]">
                     <td className="px-4 py-3 text-[#607b96]">{i + 1}</td>
                     <td className="px-4 py-3">
-                      {Icon && <Icon className="size-6 text-white" />}
+                      {BundledIcon ? <BundledIcon className="size-6 text-white" /> : customSvg ? <span className="inline-flex size-6 items-center justify-center text-white" dangerouslySetInnerHTML={{ __html: customSvg }} /> : <span className="text-xs text-[#607b96]">?</span>}
                     </td>
                     <td className="px-4 py-3 font-medium text-white">{skill.name}</td>
                     <td className="px-4 py-3 text-[#607b96]">{skill.display_order}</td>

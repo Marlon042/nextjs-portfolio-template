@@ -11,6 +11,7 @@ const sidebarLinks = [
   { label: 'Projects', href: '/admin/projects' },
   { label: 'Sections', href: '/admin/sections' },
   { label: 'Skills', href: '/admin/skills' },
+  { label: 'Icons', href: '/admin/icons' },
   { label: 'Testimonials', href: '/admin/testimonials' },
   { label: 'Translations', href: '/admin/translations' },
   { label: 'Settings', href: '/admin/settings' },
