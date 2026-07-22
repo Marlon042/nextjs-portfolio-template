@@ -1,58 +1,32 @@
 # Changelog
 
-## [1.1.0] — 2026-07-16
+## [1.2.0] — 2026-07-22
 
 ### Added
-- Panel de administración en `/admin` con login via Supabase Auth
-- Dashboard con estadísticas de contenido (proyectos, skills, secciones, testimonios)
-- Layout protegido con sidebar de navegación para el admin
-- Secciones placeholder: Projects, Sections, Skills, Testimonials, Translations, Settings
-- Migración SQL inicial con tablas y seeds para Supabase PostgreSQL
-- RLS policies para lectura pública y escritura solo para admin autenticado
-- `src/lib/supabase.ts` con cliente lazy para Supabase (Proxy)
-- `src/utils/iconMap.ts` — mapa de identificadores a componentes SVG
-- `supabase/migrations/00001_initial_schema.sql` — esquema completo + datos iniciales
-- `PLAN.md` con la estrategia del admin panel usando Supabase, Cloudinary y Firebase
-- `.env.example` con todas las variables de entorno del proyecto
-
-### Added
-- Integración con Cloudinary para subida de imágenes
-- `src/lib/cloudinary.ts` — utilidad server-side para Cloudinary SDK
-- `src/lib/supabase-admin.ts` — cliente Supabase con service_role key para escritura
-- `src/actions/projects.ts` — server actions CRUD para proyectos
-- `src/components/Admin/ImageUpload.tsx` — componente de subida de imágenes a Cloudinary
-- `src/components/Admin/ProjectForm.tsx` — formulario de crear/editar proyectos
-- `src/app/api/upload/route.ts` — API route para generar signature de Cloudinary
-- CRUD completo de proyectos en `/admin/projects` (lista, crear, editar, eliminar)
-
-### Fixed
-- Navegación del formulario de proyectos: usa `window.location.href` en vez de `router.push()` para evitar que el formulario se quede colgado
+- **CRUD completo de Skills** en `/admin/skills` con formulario, lista, crear, editar y eliminar
+- `src/actions/skills.ts` — server actions CRUD para skills
+- `src/components/Admin/SkillForm.tsx` — formulario con selector visual de íconos
+- **Control de velocidad del carrusel** en el admin de Skills (slider 5s–60s, guardado en `site_config`)
+- `src/actions/site-config.ts` — server actions para leer/escribir configuración del sitio
+- **Sistema de gestión de íconos** en `/admin/icons` con tabla `icons` en Supabase
+- `src/actions/icons.ts` — server actions CRUD para íconos
+- Grid de íconos con filtros por categoría (tech, social, support, ui, stats, custom)
+- Formulario inline para crear/editar íconos personalizados con preview de SVG en vivo
+- Soporte para SVGs personalizados: pegar markup SVG desde el admin
+- El selector de íconos en SkillForm ahora carga desde la DB con filtros por categoría
+- `IconRenderer` en Skills.tsx público: prueba `iconMap` primero, fallback a SVG inline desde DB
+- Vista previa de íconos custom en la tabla de skills del admin
+- Enlace "Icons" en el sidebar del admin
+- `supabase/migrations/00005_icons_table.sql` — tabla icons con seed de 40 íconos + RLS
 
 ### Changed
-- Migración del frontend público de archivos/fs a Supabase
-- `src/services/index.ts` ahora consulta Supabase en vez de leer JSON con `fs`
-- `src/appData/index.ts` ahora exporta funciones async desde servicios Supabase
-- `src/components/Skills/Skills.tsx` usa `iconMap` en vez de `<Image src>`
-- `src/components/Services/ServiceSection.tsx` + `ServiceCard.tsx` usan Supabase + `iconMap`
-- `src/components/ComputerSupport/` usan Supabase + `iconMap`
-- `src/components/Footer/Footer.tsx` obtiene links sociales y footer desde Supabase
-- `src/components/Theme/ThemeMenu.tsx` obtiene temas desde Supabase
-- `src/context/LanguageContext.tsx` obtiene traducciones desde Supabase con caché
-- `src/i18n/translations.ts` reducido a solo tipos y constantes (datos movidos a Supabase)
-- `src/app/page.tsx` usa `getSkills()` async en vez de `skillList` estático
-- Import directo de server actions en `ProjectForm.tsx` en vez de `await import()` dinámico
-- Actualizado `.gitignore` para incluir `.env.example` como excepción
-- Instalada dependencia `@supabase/supabase-js`
-- Instaladas dependencias `cloudinary` y `next-cloudinary`
-
-### Added
-- `src/lib/supabase-server.ts` — cliente Supabase para server components
-- `src/services/site.ts` — servicios para skills, sections, social, footer, themes, config
+- `ProjectSection.tsx` cambiado a fetching cliente con Supabase (refleja cambios del admin sin recargar)
+- `MarqueeWrapper.tsx` acepta `duration` prop para control de velocidad
+- Título de Skills cambiado a "Technical Knowledge" / "Conocimientos técnicos" en 5 idiomas
+- `Skills.tsx` ahora obtiene `marquee_duration` de `site_config` y pasa a MarqueeWrapper
+- `netlify.toml` actualizado para Next.js 16 (se eliminó `publish` y redirects SPA)
+- Footer oculto en rutas `/admin` mediante `FooterWrapper.tsx`
 
 ### Fixed
-- SVGs importados de archivos convertidos a componentes React con `SvgIcon` wrapper
-- IconMap ahora retorna solo componentes React (no strings URL)
-- Mapping snake_case → camelCase en `getAllProjects()` de Supabase
-- Key duplicada en `ProjectSection` (usa `id` en vez de `priority`)
-- `ProjectCard` maneja `cover_url` vacía sin romper
-- `IconText` en ProjectCard ahora renderiza componentes SVG
+- Error de build por `publish = ".next"` en netlify.toml
+- Los cambios del admin ahora se reflejan en la página principal al recargar (client-side fetching)

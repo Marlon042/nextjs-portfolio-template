@@ -13,7 +13,10 @@ Este es un **portfolio template en Next.js 16** construido con React 19, Tailwin
 - **Proyectos, Testimonios, Skills, Secciones, Redes Sociales, Footer, Temas, Traducciones**: Todos almacenados en Supabase PostgreSQL
 - **Server Components**: Usan `getSupabaseServer()` de `src/lib/supabase-server.ts` para queries directas (público)
 - **Client Components**: Usan `supabase` (cliente lazy Proxy) o reciben datos como props desde server components
+- **Datos en vivo**: Componentes como `ProjectSection` y `Skills` obtienen datos directamente desde Supabase en el cliente (useEffect) para reflejar cambios del admin sin recargar la página
 - **Resolución de Íconos**: `iconMap` en `src/utils/iconMap.ts` convierte `icon_id` (string) a componentes SVG
+- **Íconos personalizados**: Los SVGs custom se guardan en la tabla `icons` de Supabase y se renderizan inline con `dangerouslySetInnerHTML`
+- **Tabla `icons`**: Contiene `id`, `label`, `category`, `svg_content`, `is_bundled` — 40 íconos bundlados precargados
 - **Traducciones**: `LanguageContext` carga desde Supabase al cambiar idioma, con caché en `Map` para evitar re-fetch
 - **Panel Admin**: `/admin/*` protegido con Supabase Auth, layout con sidebar y dashboard
 - **Archivos JSON locales**: Ya no se usan en producción (se mantienen como referencia)
@@ -59,19 +62,21 @@ npm run lint                  # Verificar ESLint
 
 ### Agregar Nuevo Contenido (vía Admin Panel)
 1. **Proyectos**: Usar `/admin/projects/new` — formulario con subida de imagen a Cloudinary
-2. **Testimonios**: Usar `/admin/testimonials` (próximamente)
-3. **Skills**: Usar `/admin/skills` (próximamente)
-4. **Texto de Servicios/Soporte/Traducciones**: Usar `/admin/translations` (próximamente)
-5. **Secciones Acordeón**: Usar `/admin/sections` (próximamente)
+2. **Skills**: Usar `/admin/skills` → "+ New Skill" — selector visual de íconos con filtros por categoría
+3. **Íconos personalizados**: Usar `/admin/icons` → "+ New Icon" — pegar markup SVG, asignar categoría
+4. **Velocidad del carrusel**: `/admin/skills` → slider "Marquee Speed"
+5. **Testimonios**: Usar `/admin/testimonials` (próximamente)
+6. **Texto de Servicios/Soporte/Traducciones**: Usar `/admin/translations` (próximamente)
+7. **Secciones Acordeón**: Usar `/admin/sections` (próximamente)
 
 ### Agregar Nuevo Contenido (directo en Supabase)
 1. **Proyectos**: Insertar fila en tabla `projects` (Supabase Dashboard → Table Editor)
 2. **Testimonios**: Insertar fila en tabla `testimonials`
-3. **Skills**: Insertar fila en tabla `skills` — `icon_id` debe coincidir con una clave en `iconMap.ts`
+3. **Skills**: Insertar fila en tabla `skills` — `icon_id` debe coincidir con un `id` en la tabla `icons`
 4. **Traducciones**: Insertar fila en tabla `translations` — columnas: `key`, `language`, `value`
 5. **Secciones**: Insertar en `sections` + sus items en `section_items`
 6. **Redes Sociales**: Insertar en `social_links`
-7. **Íconos**: Agregar SVG a `src/assets/icons/`, importar en `src/utils/icons.tsx`, agregar al `iconMap.ts`
+7. **Íconos**: Usar `/admin/icons` para crear SVGs personalizados, o agregar SVG a `src/assets/icons/`, importar en `src/utils/icons.tsx`, agregar a `iconMap.ts`
 
 ### Agregar un Nuevo Idioma
 1. Agregar código de idioma al tipo `Language` en `src/i18n/translations.ts`
@@ -93,12 +98,19 @@ npm run lint                  # Verificar ESLint
 - `useOutsideClick`: Cerrar dropdowns/menús al hacer clic fuera
 
 ### Manejo de Íconos SVG
-- **Patrón**: Importar SVG como componentes en `src/utils/icons.tsx`, luego pasar como props
-- **Ejemplo**: `icon: JavaScriptIcon` en `serviceData`, renderizado via `<Image src={icon} />`
+- **Dos tipos de íconos**:
+  - **Bundlados**: Importados de `src/assets/icons/` como componentes React en `src/utils/icons.tsx`, mapeados en `iconMap.ts`
+  - **Custom**: Almacenados en la tabla `icons` de Supabase con `svg_content` (markup SVG), renderizados inline con `dangerouslySetInnerHTML`
+- **Resolución**: `IconRenderer` en `Skills.tsx` prueba `iconMap[iconId]` primero; si no existe, busca en el caché de íconos custom de la DB
+- **Admin**: `/admin/icons` permite crear, editar, eliminar y filtrar íconos por categoría (tech, social, support, ui, stats, custom)
 - **Evitar**: Usar `react-icons` junto con SVGs personalizados (inconsistencia)
 
 ### Server Actions
 - **Formulario de contacto**: `src/actions/contact-form.ts` usa directiva `'use server'`
+- **CRUD Proyectos**: `src/actions/projects.ts` — getProjects, getProject, createProject, updateProject, deleteProject
+- **CRUD Skills**: `src/actions/skills.ts` — getSkills, getSkill, createSkill, updateSkill, deleteSkill
+- **CRUD Íconos**: `src/actions/icons.ts` — getIcons, getIcon, createIcon, updateIcon, deleteIcon
+- **Site Config**: `src/actions/site-config.ts` — getSiteConfig, updateSiteConfig
 - **Integración Firebase**: Usa `addDoc` a la colección `contactSubmissions` de Firestore
 - **Validación**: Campos del formulario validados del lado del servidor antes de escribir en Firebase
 
@@ -135,7 +147,8 @@ npm run lint                  # Verificar ESLint
 - **Cliente Supabase**: `src/lib/supabase.ts` — instancia lazy via Proxy (solo se crea al primer uso)
 - **Migraciones SQL**: `supabase/migrations/` — esquema de tablas + seeds
 - **RLS Policies**: Lectura pública, escritura solo para admin autenticado (`auth.role() = 'authenticated'`)
-- **Iconos**: Identificadores string en DB, resueltos via `src/utils/iconMap.ts`
+- **Iconos**: Identificadores string en DB, resueltos via `src/utils/iconMap.ts` (bundlados) o desde tabla `icons` (custom SVG inline)
+- **Gestión de íconos**: Admin page `/admin/icons` con CRUD completo, categorías y previsualización de SVGs
 
 ### Configuración de Entorno
 - **Requerido** (producción): `.env.local` con `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
@@ -163,8 +176,11 @@ npm run lint                  # Verificar ESLint
 | Cambiar nombre/título del portafolio | `src/app/layout.tsx`, `src/components/Navbar/Logo.tsx` |
 | Agregar proyecto (admin) | `/admin/projects/new` (formulario con upload a Cloudinary) |
 | Agregar proyecto (directo) | `content/projects/projectN.json` |
-| Actualizar skills (admin) | `/admin/skills` (futuro CRUD) |
-| Actualizar skills (directo) | `src/appData/index.ts` (`skillList`) |
+| CRUD skills (admin) | `/admin/skills` — crear, editar, eliminar, reordenar |
+| Agregar skill (admin) | `/admin/skills/new` — nombre + selector visual de íconos |
+| Gestionar íconos (admin) | `/admin/icons` — agregar/editar/eliminar SVGs con categorías |
+| Agregar ícono custom | `/admin/icons` → "+ New Icon" — pegar markup SVG |
+| Velocidad carrusel (admin) | `/admin/skills` → slider "Marquee Speed" |
 | Actualizar texto de servicios/soporte (admin) | `/admin/translations` (futuro editor) |
 | Actualizar texto de servicios/soporte (directo) | `src/i18n/translations.ts` (claves `services.N.*`, `support.N.*`) |
 | Actualizar íconos de servicios/soporte | `src/appData/index.ts` (`serviceData`/`computerSupportData`) + `src/utils/iconMap.ts` |
@@ -176,7 +192,8 @@ npm run lint                  # Verificar ESLint
 | Actualizar correo de contacto | `.env.local` (config Firebase) o backend del formulario |
 | Modificar esquema de colores | `src/app/globals.css` (variables CSS por tema) o tabla `themes` en Supabase |
 | Acceder al admin | `/admin/login` — credenciales creadas en Supabase Auth |
-| Agregar nuevo ícono SVG | Agregar SVG a `src/assets/icons/`, importar en `src/utils/icons.tsx`, agregar a `iconMap.ts` |
+| Agregar nuevo ícono SVG (bundlado) | Agregar SVG a `src/assets/icons/`, importar en `src/utils/icons.tsx`, agregar a `iconMap.ts` |
+| Agregar nuevo ícono SVG (custom) | `/admin/icons` → "+ New Icon" — pegar markup SVG en el campo "SVG Markup" |
 
 ## TypeScript y Calidad de Código
 - **Modo estricto activado**: Requerido agregar tipos para código nuevo
