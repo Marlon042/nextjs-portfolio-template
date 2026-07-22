@@ -3,7 +3,7 @@ import './globals.css'
 
 import FooterWrapper from '@/components/Footer/FooterWrapper'
 import Navbar from '@/components/Navbar/Navbar'
-import LanguageSwitcher from '@/components/LanguageSwitcher/LanguageSwitcher'
+import LanguageSwitcherWrapper from '@/components/LanguageSwitcher/LanguageSwitcherWrapper'
 import { SectionProvider } from '@/context/SectionContext'
 import { LanguageProvider } from '@/context/LanguageContext'
 import ThemeMenu from '@/components/Theme/ThemeMenu'
@@ -56,7 +56,7 @@ export default function RootLayout({
           </header>
           {children}
           <ThemeMenu />
-          <LanguageSwitcher />
+          <LanguageSwitcherWrapper />
           <FooterWrapper />
         </SectionProvider>
         </LanguageProvider>

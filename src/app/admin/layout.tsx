@@ -6,19 +6,21 @@ import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import type { User } from '@supabase/supabase-js'
 import LanguageSwitcher from '@/components/LanguageSwitcher/LanguageSwitcher'
+import { useLanguage } from '@/context/LanguageContext'
 
 const sidebarLinks = [
-  { label: 'Dashboard', href: '/admin' },
-  { label: 'Projects', href: '/admin/projects' },
-  { label: 'Sections', href: '/admin/sections' },
-  { label: 'Skills', href: '/admin/skills' },
-  { label: 'Icons', href: '/admin/icons' },
-  { label: 'Testimonials', href: '/admin/testimonials' },
-  { label: 'Translations', href: '/admin/translations' },
-  { label: 'Settings', href: '/admin/settings' },
+  { key: 'Dashboard', href: '/admin' },
+  { key: 'Projects', href: '/admin/projects' },
+  { key: 'Sections', href: '/admin/sections' },
+  { key: 'Skills', href: '/admin/skills' },
+  { key: 'Icons', href: '/admin/icons' },
+  { key: 'Testimonials', href: '/admin/testimonials' },
+  { key: 'Translations', href: '/admin/translations' },
+  { key: 'Settings', href: '/admin/settings' },
 ]
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
+  const { t } = useLanguage()
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
@@ -64,7 +66,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-screen bg-[#011627]">
       <aside className="flex w-64 flex-col border-r border-[#607b96] bg-[#0d1a3b] p-4">
-        <h2 className="mb-6 text-lg font-bold text-[#18f2e5]">Admin Panel</h2>
+        <h2 className="mb-6 text-lg font-bold text-[#18f2e5]">{t('Admin Panel')}</h2>
 
         <nav className="flex flex-col gap-2">
           {sidebarLinks.map((link) => {
@@ -79,7 +81,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                     : 'text-[#607b96] hover:bg-[#1a2d4a] hover:text-white'
                 }`}
               >
-                {link.label}
+                {t(link.key)}
               </Link>
             )
           })}
@@ -88,7 +90,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         <div className="mt-auto">
           <p className="mb-2 truncate text-xs text-[#607b96]">{user?.email}</p>
           <div className="mb-2">
-            <LanguageSwitcher />
+            <LanguageSwitcher variant="inline" />
           </div>
           <button
             onClick={async () => {
@@ -97,7 +99,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             }}
             className="w-full rounded bg-red-500/20 px-3 py-2 text-sm text-red-400 transition hover:bg-red-500/30"
           >
-            Sign Out
+            {t('Sign Out')}
           </button>
         </div>
       </aside>
