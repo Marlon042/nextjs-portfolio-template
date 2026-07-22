@@ -72,7 +72,7 @@ const DynamicAccordion: React.FC<DynamicAccordionProps> = ({ identifier, default
 
         setItems(
           itemsRaw.map((item: any) => {
-            const tr = transMap[item.id]?.[lang]
+            const tr = transMap[item.id]?.[lang] ?? transMap[item.id]?.['es']
             return {
               id: item.id,
               icon_id: item.icon_id,

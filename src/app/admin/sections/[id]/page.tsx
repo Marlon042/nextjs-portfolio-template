@@ -14,7 +14,7 @@ interface Props {
   params: Promise<{ id: string }>
 }
 
-const languages = ['en', 'es', 'fr', 'de', 'ru']
+const languages = ['es']
 
 export default function EditSectionPage({ params }: Props) {
   const router = useRouter()
