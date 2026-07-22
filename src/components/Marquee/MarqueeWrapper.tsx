@@ -4,19 +4,21 @@ import { ReactNode, useEffect, useRef, useState } from 'react'
 type MarqueeWrapperProps = {
   children: ReactNode
   className?: string
+  duration?: number
 }
 
 type MarqueeAnimationType = (
   element: HTMLElement,
   elementWidth: number,
   windowWidth: number,
+  duration: number,
 ) => void
 
-const marqueeAnimation: MarqueeAnimationType = (element, elementWidth, windowWidth) => {
+const marqueeAnimation: MarqueeAnimationType = (element, elementWidth, windowWidth, duration) => {
   element.animate(
     [{ transform: 'translateX(0)' }, { transform: `translateX(${windowWidth - elementWidth}px)` }],
     {
-      duration: 20000,
+      duration,
       easing: 'linear',
       direction: 'alternate',
       iterations: Infinity,
@@ -24,7 +26,7 @@ const marqueeAnimation: MarqueeAnimationType = (element, elementWidth, windowWid
   )
 }
 
-const MarqueeWrapper: React.FC<MarqueeWrapperProps> = ({ children, className = '' }) => {
+const MarqueeWrapper: React.FC<MarqueeWrapperProps> = ({ children, className = '', duration = 20000 }) => {
   const elementRef = useRef<HTMLDivElement>(null)
   const [windowWidth, setWindowWidth] = useState(0)
 
@@ -33,13 +35,13 @@ const MarqueeWrapper: React.FC<MarqueeWrapperProps> = ({ children, className = '
 
     if (elementRef.current) {
       const elementWidth = elementRef.current.getBoundingClientRect().width
-      marqueeAnimation(elementRef.current as HTMLElement, elementWidth, windowWidth)
+      marqueeAnimation(elementRef.current as HTMLElement, elementWidth, windowWidth, duration)
     }
 
     const handleResize = () => setWindowWidth(window.innerWidth)
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
-  }, [windowWidth])
+  }, [windowWidth, duration])
 
   return (
     <div className={`relative overflow-x-hidden ${className}`}>
