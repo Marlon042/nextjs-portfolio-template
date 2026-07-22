@@ -1,7 +1,9 @@
+'use client'
+
 import { Project } from '@/lib/types'
 import Image from 'next/image'
-import { FC, SVGProps } from 'react'
-import { Earning, GithubIcon, Likes, PreviewIcon, Star, Timer } from '../../utils/icons'
+import { FC, SVGProps, useState } from 'react'
+import { Earning, EyeIcon, GithubIcon, Likes, PreviewIcon, Star, Timer } from '../../utils/icons'
 
 const IconText: React.FC<{ icon: FC<SVGProps<SVGSVGElement>>; text: string }> = ({ icon: Icon, text }) => (
   <li className="flex gap-2">
@@ -15,6 +17,7 @@ interface ProjectCardProps {
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ data }) => {
+  const [lightboxOpen, setLightboxOpen] = useState(false)
   const {
     title,
     shortDescription,
@@ -55,7 +58,10 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ data }) => {
           </ul>
         </div>
         {cover && (
-          <figure className="flex justify-end overflow-hidden">
+          <figure
+            className="group relative flex cursor-pointer justify-end overflow-hidden"
+            onClick={() => setLightboxOpen(true)}
+          >
             <Image
               src={cover}
               width={150}
@@ -63,6 +69,10 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ data }) => {
               alt="Project Cover"
               className="h-[80px] w-[150px] rounded-md object-cover shadow-[0px_1.66px_3.74px_-1.25px_#18274B1F]"
             />
+            <div className="absolute inset-0 flex items-center justify-center gap-1.5 rounded-md bg-black/60 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+              <EyeIcon className="size-4 text-white" />
+              <span className="text-xs font-medium text-white">Ver imagen</span>
+            </div>
           </figure>
         )}
       </div>
@@ -92,6 +102,27 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ data }) => {
           )}
         </div>
       </div>
+      {lightboxOpen && cover && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+          onClick={() => setLightboxOpen(false)}
+        >
+          <button
+            onClick={() => setLightboxOpen(false)}
+            className="absolute top-4 right-4 text-2xl text-white hover:text-gray-300"
+          >
+            ✕
+          </button>
+          <Image
+            src={cover}
+            width={1200}
+            height={800}
+            alt={title}
+            className="max-h-[90vh] max-w-[90vw] rounded-lg object-contain"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
     </div>
   )
 }
