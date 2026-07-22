@@ -10,7 +10,7 @@ import ProjectCard from './ProjectCard'
 
 const ProjectsAccordion: React.FC = () => {
   const { t } = useLanguage()
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(false)
   const [projects, setProjects] = useState<Project[]>([])
   const [count, setCount] = useState<number | null>(null)
   const [loaded, setLoaded] = useState(false)

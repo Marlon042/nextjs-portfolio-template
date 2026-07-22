@@ -2,8 +2,7 @@ import { getSkills } from '@/appData'
 import ContactSection from '@/components/Contact/ContactSection'
 import Hero from '@/components/Hero/Hero'
 import ProjectsAccordion from '@/components/Projects/ProjectsAccordion'
-import ClientServiceSection from '@/components/ClientServiceSection'
-import ClientComputerSupportSection from '@/components/ComputerSupport/ClientComputerSupportSection'
+import DynamicAccordion from '@/components/DynamicAccordion'
 import Skills from '@/components/Skills/Skills'
 
 export default async function Home() {
@@ -20,9 +19,8 @@ export default async function Home() {
       <Skills skills={skillsFormatted} />
       <div className="mx-auto my-8 max-w-[1200px] px-4 md:my-[3.75rem]">
         <ProjectsAccordion />
-        <ClientServiceSection />
-        <ClientComputerSupportSection />
-        {/* <TestimonialSection testimonials={testimonials} /> */}
+        <DynamicAccordion identifier="services" />
+        <DynamicAccordion identifier="support" />
         <ContactSection />
       </div>
     </main>
