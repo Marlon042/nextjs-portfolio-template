@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.4.0] — 2026-07-22
+
+### Added
+- **Lightbox en proyectos**: hover con ojo + "Ver imagen" sobre cover, click abre modal con imagen en grande
+- **Idioma por defecto español** en toda la app (LanguageContext usa `'es'`)
+- **LanguageSwitcher en admin**: selector de idioma en el sidebar del admin con `variant="inline"`
+- **LanguageSwitcherWrapper**: oculta el flotante en rutas `/admin` para evitar duplicados
+- **Admin sidebar traducido**: usa `useLanguage()` y `t()` con fallback al inglés
+- **InlineEditableTitle**: componente para editar títulos (como `projects.title`) directamente en el admin con hover → lápiz → click → inline edit → Enter guarda
+- `src/actions/translations.ts` — server action upsertTranslation
+- `src/components/ScrollProgressBar.tsx` — barra de progreso al scroll en el front principal
+- `supabase/migrations/00007_admin_translations.sql` — traducciones al español para el admin panel
+
+### Changed
+- `LanguageSwitcher.tsx` ahora acepta `variant` prop (`'floating'` | `'inline'`) con estilos específicos para cada modo
+- Acordeones reducen espaciado de `my-14` a `my-6`
+
 ## [1.3.0] — 2026-07-22
 
 ### Added

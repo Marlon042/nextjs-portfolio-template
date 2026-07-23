@@ -4,6 +4,7 @@ import Hero from '@/components/Hero/Hero'
 import ProjectsAccordion from '@/components/Projects/ProjectsAccordion'
 import DynamicAccordion from '@/components/DynamicAccordion'
 import Skills from '@/components/Skills/Skills'
+import ScrollProgressBar from '@/components/ScrollProgressBar'
 
 export default async function Home() {
   const skills = await getSkills()
@@ -15,6 +16,7 @@ export default async function Home() {
 
   return (
     <main>
+      <ScrollProgressBar />
       <Hero />
       <Skills skills={skillsFormatted} />
       <div className="mx-auto my-8 max-w-[1200px] px-4 md:my-[3.75rem]">

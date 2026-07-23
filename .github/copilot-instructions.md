@@ -17,7 +17,7 @@ Este es un **portfolio template en Next.js 16** construido con React 19, Tailwin
 - **Resolución de Íconos**: `iconMap` en `src/utils/iconMap.ts` convierte `icon_id` (string) a componentes SVG
 - **Íconos personalizados**: Los SVGs custom se guardan en la tabla `icons` de Supabase y se renderizan inline con `dangerouslySetInnerHTML`
 - **Tabla `icons`**: Contiene `id`, `label`, `category`, `svg_content`, `is_bundled` — 40 íconos bundlados precargados
-- **Traducciones**: `LanguageContext` carga desde Supabase al cambiar idioma, con caché en `Map` para evitar re-fetch
+- **Traducciones**: `LanguageContext` carga desde Supabase al cambiar idioma, con caché en `Map` para evitar re-fetch. Idioma por defecto: español (`es`)
 - **Traducciones de items de sección**: Guardadas en `section_item_translations` (item_id, language, title, description). Solo se almacena español (ES); DynamicAccordion hace fallback automático a español si el idioma seleccionado no tiene traducción
 - **Panel Admin**: `/admin/*` protegido con Supabase Auth, layout con sidebar y dashboard
 - **Archivos JSON locales**: Ya no se usan en producción (se mantienen como referencia)
@@ -30,7 +30,10 @@ Este es un **portfolio template en Next.js 16** construido con React 19, Tailwin
   - Persiste la selección en `localStorage`
   - Actualiza `<html lang="...">` dinámicamente
 - **Uso**: `const { t } = useLanguage()` en componentes client, luego `{t('key.name')}`
-- **LanguageSwitcher**: Botón flotante abajo a la derecha (`src/components/LanguageSwitcher/`), posicionado arriba del ThemeMenu
+- **LanguageSwitcher**: Soporta dos variantes:
+  - `variant="floating"` (default): botón flotante abajo a la derecha, posicionado arriba del ThemeMenu
+  - `variant="inline"`: para integrar en el sidebar del admin panel
+- **LanguageSwitcherWrapper**: Oculta el flotante en rutas `/admin` para evitar duplicados con el inline
 
 ### Estructura de Componentes
 - **Organización por carpetas**: Cada sección tiene su propia carpeta (`Hero/`, `Projects/`, `Services/`, `ComputerSupport/`, etc.)
@@ -69,6 +72,7 @@ npm run lint                  # Verificar ESLint
 5. **Testimonios**: Usar `/admin/testimonials` (próximamente)
 6. **Texto de Servicios/Soporte/Traducciones**: Usar `/admin/translations` (próximamente)
 7. **Secciones Acordeón**: Usar `/admin/sections` → editar items con campos en español (fallback automático a otros idiomas)
+8. **Editar título de sección** (ej: Projects): Ir a la página de listado, hacer hover sobre el título y click en el lápiz para editar inline
 
 ### Agregar Nuevo Contenido (directo en Supabase)
 1. **Proyectos**: Insertar fila en tabla `projects` (Supabase Dashboard → Table Editor)
@@ -113,6 +117,7 @@ npm run lint                  # Verificar ESLint
 - **CRUD Íconos**: `src/actions/icons.ts` — getIcons, getIcon, createIcon, updateIcon, deleteIcon
 - **Site Config**: `src/actions/site-config.ts` — getSiteConfig, updateSiteConfig
 - **CRUD Secciones**: `src/actions/sections.ts` — getSections, getSection, createSection, updateSection, deleteSection, getSectionItems, createSectionItem, updateSectionItem, deleteSectionItem, getItemTranslations, upsertItemTranslation
+- **CRUD Traducciones**: `src/actions/translations.ts` — upsertTranslation
 - **Integración Firebase**: Usa `addDoc` a la colección `contactSubmissions` de Firestore
 - **Validación**: Campos del formulario validados del lado del servidor antes de escribir en Firebase
 
@@ -158,6 +163,8 @@ npm run lint                  # Verificar ESLint
 - **RLS Policies**: Lectura pública, escritura solo para admin autenticado (`auth.role() = 'authenticated'`)
 - **Iconos**: Identificadores string en DB, resueltos via `src/utils/iconMap.ts` (bundlados) o desde tabla `icons` (custom SVG inline)
 - **Gestión de íconos**: Admin page `/admin/icons` con CRUD completo, categorías y previsualización de SVGs
+- **Idioma default**: Español (`es`). El admin panel usa `useLanguage()` y `t()` para traducir sidebar y textos; si no hay traducción en la DB, muestra el texto en inglés como fallback
+- **Sidebar admin traducido**: Las claves de traducción son las palabras en inglés (ej: `'Dashboard'`, `'Projects'`). Para agregar traducciones, insertar en tabla `translations` con `key` = palabra en inglés y `language` = código del idioma
 
 ### Configuración de Entorno
 - **Requerido** (producción): `.env.local` con `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
@@ -191,6 +198,9 @@ npm run lint                  # Verificar ESLint
 | Agregar ícono custom | `/admin/icons` → "+ New Icon" — pegar markup SVG |
 | Velocidad carrusel (admin) | `/admin/skills` → slider "Marquee Speed" |
 | Editar items de acordeones (admin) | `/admin/sections` → elegir sección → editar items con íconos y texto en español |
+| Editar título de sección inline (admin) | `/admin/projects` → hover sobre título → click lápiz → editar → Enter |
+| Cambiar idioma por defecto | `src/context/LanguageContext.tsx` — cambiar `'es'` en `useState<Language>('es')` y en el fallback de localStorage |
+| Agregar traducción al admin sidebar | Insertar en tabla `translations` con `key` = palabra en inglés, `language` = código, `value` = traducción |
 | Actualizar redes sociales | `src/appData/personal.tsx` o tabla `social_links` en Supabase |
 | Agregar nueva sección acordeón (admin) | `/admin/sections` → elegir sección → "Edit Items" |
 | Agregar nueva sección (código) | Crear componente en `src/components/`, importar en `src/app/page.tsx` |
