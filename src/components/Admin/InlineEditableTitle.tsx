@@ -58,10 +58,19 @@ export default function InlineEditableTitle({ translationKey, className = '' }: 
           ref={inputRef}
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          onBlur={handleSave}
           onKeyDown={handleKeyDown}
           className="rounded border border-[#5565e8] bg-[#0d1a3b] px-2 py-1 text-lg font-bold text-white outline-none"
         />
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className="flex size-7 items-center justify-center rounded bg-[#5565e8] text-white transition hover:bg-[#4555d8] disabled:opacity-50"
+          title="Save"
+        >
+          <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+          </svg>
+        </button>
         {saving && <span className="text-xs text-[#607b96]">saving...</span>}
       </div>
     )

@@ -14,6 +14,7 @@ Este es un **portfolio template en Next.js 16** construido con React 19, Tailwin
 - **Server Components**: Usan `getSupabaseServer()` de `src/lib/supabase-server.ts` para queries directas (público)
 - **Client Components**: Usan `supabase` (cliente lazy Proxy) o reciben datos como props desde server components
 - **Datos en vivo**: Componentes como `ProjectSection`, `Skills` y `DynamicAccordion` obtienen datos directamente desde Supabase en el cliente (useEffect) para reflejar cambios del admin sin recargar la página
+- **Skills Display Mode**: Se controla desde Admin → Settings. Dos modos: `marquee` (animación horizontal) y `grid` (grilla estática de chips). El valor se guarda en `site_config` con key `skills_display_mode`
 - **Resolución de Íconos**: `iconMap` en `src/utils/iconMap.ts` convierte `icon_id` (string) a componentes SVG
 - **Íconos personalizados**: Los SVGs custom se guardan en la tabla `icons` de Supabase y se renderizan inline con `dangerouslySetInnerHTML`
 - **Tabla `icons`**: Contiene `id`, `label`, `category`, `svg_content`, `is_bundled` — 40 íconos bundlados precargados
@@ -149,10 +150,11 @@ npm run lint                  # Verificar ESLint
 
 ### DynamicAccordion
 - **Propósito**: Componente único para todos los acordeones de contenido dinámico (services, support)
-- **Data**: Obtiene section_id de la tabla `sections` por `identifier`, luego items de `section_items` con traducciones de `section_item_translations`
+- **Data**: Obtiene section_id de la tabla `sections` por `identifier` (filtrado por `is_active`), luego items de `section_items` con traducciones de `section_item_translations`
+- **Iconos**: Soporta tanto bundlados (`iconMap`) como custom SVG desde la tabla `icons`
 - **Fallback de idioma**: Si el idioma seleccionado no tiene traducción, usa español (`es`) automáticamente
 - **Projects**: Usa `ProjectsAccordion` separado (tabla `projects` con estructura diferente)
-- **Admin**: Los items se editan en `/admin/sections/[id]` con selector de íconos y campos de título/descripción solo en español
+- **Admin**: Los items se editan en `/admin/sections/[id]` con selector de íconos filtrado por categoría, input de orden, campos de título/descripción en español
 
 ### Panel de Administración (Supabase)
 - **Login**: `/admin/login` con Supabase Auth (email + password)
@@ -196,9 +198,10 @@ npm run lint                  # Verificar ESLint
 | Agregar skill (admin) | `/admin/skills/new` — nombre + selector visual de íconos |
 | Gestionar íconos (admin) | `/admin/icons` — agregar/editar/eliminar SVGs con categorías |
 | Agregar ícono custom | `/admin/icons` → "+ New Icon" — pegar markup SVG |
-| Velocidad carrusel (admin) | `/admin/skills` → slider "Marquee Speed" |
-| Editar items de acordeones (admin) | `/admin/sections` → elegir sección → editar items con íconos y texto en español |
-| Editar título de sección inline (admin) | `/admin/projects` → hover sobre título → click lápiz → editar → Enter |
+| Modo de Skills (admin) | `/admin/settings` → Skills Display Mode (Marquee / Grid) |
+| Velocidad del marquee (admin) | `/admin/settings` → Marquee Speed (solo visible en modo Marquee) |
+| Editar items de acordeones (admin) | `/admin/sections` → elegir sección → editar items con íconos filtrados por categoría, orden y texto en español |
+| Editar título de sección inline (admin) | `/admin/projects` o `/admin/sections/[id]` → hover sobre título → click lápiz → editar → botón guardar |
 | Cambiar idioma por defecto | `src/context/LanguageContext.tsx` — cambiar `'es'` en `useState<Language>('es')` y en el fallback de localStorage |
 | Agregar traducción al admin sidebar | Insertar en tabla `translations` con `key` = palabra en inglés, `language` = código, `value` = traducción |
 | Actualizar redes sociales | `src/appData/personal.tsx` o tabla `social_links` en Supabase |

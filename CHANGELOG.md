@@ -1,5 +1,31 @@
 # Changelog
 
+## [1.5.0] — 2026-07-22
+
+### Added
+- **Editor de secciones mejorado**: filtro de íconos por categoría, input de orden editable, cards con numeración
+- **InlineEditableTitle en todas las secciones**: services, support y projects desde sus respectivos editores
+- **Título traducido en lista de secciones**: `/admin/sections` ahora muestra el título usando `t()`
+- **Botón de guardar** (diskette) en InlineEditableTitle
+- **Skills Display Mode** en Admin → Settings: toggle entre Marquee (animated) y Grid (static)
+- **Marquee Speed movido a Settings**: slider ya no está en Skills, ahora en Settings
+- **Skills como grilla estática**: nuevo modo grid con chips de icono + nombre
+- **MarqueeWrapper mejorado**: limpia animaciones previas, no anima si contenido no desborda, `pointer-events: none` para evitar interferencias con scroll
+- `DynamicAccordion` ahora carga iconos custom desde DB y filtra por `is_active`
+- `supabase/migrations/00008_contact_translations.sql` — traducciones de contacto en 5 idiomas
+- `supabase/migrations/00009_skills_display_mode.sql` — seed de skills_display_mode en site_config
+
+### Changed
+- Admin Settings ahora funcional con controles de Skills Display Mode y Marquee Speed
+- Admin Skills ya no muestra el control de velocidad del marquee
+- `Skills.tsx` soporta ambos modos (marquee/grid) según `site_config`
+
+### Fixed
+- DynamicAccordion ignoraba `is_active` en secciones
+- Iconos custom no se renderizaban en DynamicAccordion ni en editor de secciones
+- Animación del marquee se acumulaba en cada resize
+- Textos de contacto actualizados a 1ra persona sin tuteo en todos los idiomas
+
 ## [1.4.0] — 2026-07-22
 
 ### Added

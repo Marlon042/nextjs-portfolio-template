@@ -4,8 +4,10 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { getSections, createSection, updateSection, deleteSection, Section } from '@/actions/sections'
+import { useLanguage } from '@/context/LanguageContext'
 
 export default function AdminSections() {
+  const { t } = useLanguage()
   const [sections, setSections] = useState<Section[]>([])
   const [loading, setLoading] = useState(true)
   const router = useRouter()
@@ -55,7 +57,7 @@ export default function AdminSections() {
                   title={section.is_active ? 'Active' : 'Inactive'}
                 />
                 <div>
-                  <h3 className="font-medium text-white">{section.identifier}</h3>
+                  <h3 className="font-medium text-white">{t(`${section.identifier}.title`)}</h3>
                   <p className="text-xs text-[#607b96]">
                     Type: {section.section_type} · Order: {section.display_order}
                     {section.is_active ? ' · Active' : ' · Inactive'}

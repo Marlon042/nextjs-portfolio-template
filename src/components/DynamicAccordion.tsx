@@ -14,6 +14,11 @@ interface ItemData {
   description: string
 }
 
+interface IconData {
+  id: string
+  svg_content: string | null
+}
+
 interface DynamicAccordionProps {
   identifier: string
   defaultOpen?: boolean
@@ -27,6 +32,7 @@ const DynamicAccordion: React.FC<DynamicAccordionProps> = ({ identifier, default
   const [loaded, setLoaded] = useState(false)
   const [fetching, setFetching] = useState(false)
   const [sectionId, setSectionId] = useState<string | null>(null)
+  const [customIcons, setCustomIcons] = useState<Record<string, string>>({})
 
   useEffect(() => {
     setLoaded(false)
@@ -34,13 +40,19 @@ const DynamicAccordion: React.FC<DynamicAccordionProps> = ({ identifier, default
     setCount(null)
     setSectionId(null)
     setFetching(false)
+    setCustomIcons({})
 
     ;(async () => {
-      const { data } = await supabase
-        .from('sections')
-        .select('id')
-        .eq('identifier', identifier)
-        .single()
+      const [{ data }, { data: iconsRaw }] = await Promise.all([
+        supabase.from('sections').select('id').eq('identifier', identifier).eq('is_active', true).single(),
+        supabase.from('icons').select('id, svg_content'),
+      ])
+
+      const iconMap_: Record<string, string> = {}
+      ;(iconsRaw as any[] ?? []).forEach((ic: any) => {
+        if (ic.svg_content) iconMap_[ic.id] = ic.svg_content
+      })
+      setCustomIcons(iconMap_)
 
       if (data) {
         setSectionId(data.id)
@@ -130,10 +142,11 @@ const DynamicAccordion: React.FC<DynamicAccordionProps> = ({ identifier, default
               <div className="grid grid-cols-1 gap-x-8 gap-y-8 md:grid-cols-3">
                 {items.map((item) => {
                   const Icon = iconMap[item.icon_id]
+                  const customSvg = customIcons[item.icon_id]
                   return (
                     <div key={item.id}
                       className="bg-secondary border-border flex flex-col items-center rounded-[14px] border p-5">
-                      {Icon ? <Icon className="my-1 size-14" /> : null}
+                      {Icon ? <Icon className="my-1 size-14" /> : customSvg ? <span className="my-1 inline-flex size-14 items-center justify-center text-white" dangerouslySetInnerHTML={{ __html: customSvg }} /> : null}
                       <h5 className="text-accent mt-2 mb-5 text-center text-base font-semibold">{item.title}</h5>
                       <div className="bg-primary rounded-2xl p-4">
                         <p className="text-primary-content text-center text-sm font-normal">{item.description}</p>
