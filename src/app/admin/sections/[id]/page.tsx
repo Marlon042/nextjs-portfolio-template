@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { iconMap } from '@/utils/iconMap'
 import {
@@ -27,6 +27,7 @@ export default function EditSectionPage({ params }: Props) {
   const [loading, setLoading] = useState(true)
   const [sectionId, setSectionId] = useState('')
   const [iconFilter, setIconFilter] = useState('all')
+  const [dragIdx, setDragIdx] = useState<number | null>(null)
 
   useEffect(() => {
     params.then(({ id }) => setSectionId(id))
@@ -99,17 +100,23 @@ export default function EditSectionPage({ params }: Props) {
     }
   }
 
-  const handleChangeOrder = async (itemId: string, newOrder: number) => {
+  const handleDrop = useCallback(async (fromIdx: number, toIdx: number) => {
+    if (fromIdx === toIdx) return
+    const sorted = [...items].sort((a, b) => a.display_order - b.display_order)
+    const [moved] = sorted.splice(fromIdx, 1)
+    sorted.splice(toIdx, 0, moved)
+    const updated = sorted.map((item, i) => ({ ...item, display_order: i + 1 }))
+    setItems(updated)
     try {
-      const updated = await updateSectionItem(itemId, { display_order: newOrder })
-      setItems((prev) => prev.map((i) => (i.id === itemId ? updated : i)))
+      await Promise.all(updated.map((item) => updateSectionItem(item.id, { display_order: item.display_order })))
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Failed to update order')
+      alert(err instanceof Error ? err.message : 'Failed to save order')
     }
-  }
+  }, [items])
+
+  const sortedItems = [...items].sort((a, b) => a.display_order - b.display_order)
 
   const filteredIcons = iconFilter === 'all' ? icons : icons.filter((i) => i.category === iconFilter)
-  const sortedItems = [...items].sort((a, b) => a.display_order - b.display_order)
 
   if (loading) return <p className="text-[#607b96]">Loading...</p>
   if (!section) return <p className="text-red-400">Section not found</p>
@@ -129,8 +136,8 @@ export default function EditSectionPage({ params }: Props) {
         </button>
       </div>
 
-      {/* Items list */}
-      <div className="space-y-4">
+      {/* Items list with drag and drop */}
+      <div className="space-y-2">
         {sortedItems.length === 0 && (
           <p className="text-sm text-[#607b96]">No items yet. Add one below.</p>
         )}
@@ -138,21 +145,25 @@ export default function EditSectionPage({ params }: Props) {
           const Icon = iconMap[item.icon_id]
           const customIcon = icons.find((ic) => ic.id === item.icon_id)
           return (
-            <div key={item.id} className="rounded-lg border border-[#607b96]/20 bg-[#0d1a3b] p-4">
+            <div
+              key={item.id}
+              draggable
+              onDragStart={() => setDragIdx(idx)}
+              onDragOver={(e) => { e.preventDefault(); if (dragIdx !== null && dragIdx !== idx) setDragIdx(idx) }}
+              onDragEnd={() => { if (dragIdx !== null && dragIdx !== idx) handleDrop(dragIdx, idx); setDragIdx(null) }}
+              className={`rounded-lg border bg-[#0d1a3b] p-4 transition ${
+                dragIdx === idx ? 'border-[#5565e8] opacity-50' : 'border-[#607b96]/20 hover:border-[#607b96]/40'
+              }`}
+            >
               <div className="mb-3 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <span className="flex size-8 items-center justify-center rounded-full bg-[#1a2d4a] text-xs font-bold text-[#607b96]">{idx + 1}</span>
+                  <span
+                    className="flex size-8 cursor-grab items-center justify-center rounded text-xs text-[#607b96] hover:text-white active:cursor-grabbing"
+                    title="Drag to reorder"
+                  >
+                    <svg className="size-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 6a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm8 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4zM8 14a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm8 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4zM8 22a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm8 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4z" /></svg>
+                  </span>
                   {Icon ? <Icon className="size-6 text-white" /> : customIcon?.svg_content ? <span className="inline-flex size-6 items-center justify-center text-white" dangerouslySetInnerHTML={{ __html: customIcon.svg_content }} /> : <span className="text-xs text-[#607b96]">{item.icon_id}</span>}
-                  <input
-                    type="number"
-                    defaultValue={item.display_order}
-                    onBlur={(e) => {
-                      const v = parseInt(e.target.value, 10)
-                      if (!isNaN(v) && v !== item.display_order) handleChangeOrder(item.id, v)
-                    }}
-                    className="w-14 rounded border border-[#607b96]/40 bg-transparent px-2 py-1 text-center text-sm text-white outline-none focus:border-[#18f2e5]"
-                    title="Order"
-                  />
                 </div>
                 <button onClick={() => handleDeleteItem(item.id)}
                   className="rounded bg-red-500/20 px-2 py-0.5 text-xs text-red-400 hover:bg-red-500/30">
@@ -194,7 +205,6 @@ export default function EditSectionPage({ params }: Props) {
           <p className="text-xs text-[#607b96]">No icons available. Create one in /admin/icons first.</p>
         ) : (
           <>
-            {/* Category tabs */}
             <div className="mb-3 flex flex-wrap gap-1.5">
               {categories.map((cat) => {
                 const count = cat === 'all' ? icons.length : icons.filter((i) => i.category === cat).length
@@ -214,7 +224,6 @@ export default function EditSectionPage({ params }: Props) {
               })}
             </div>
 
-            {/* Icon grid */}
             {filteredIcons.length === 0 ? (
               <p className="text-xs text-[#607b96]">No icons in this category.</p>
             ) : (

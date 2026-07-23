@@ -1,9 +1,9 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { getSkills, deleteSkill } from '@/actions/skills'
+import { getSkills, deleteSkill, updateSkill } from '@/actions/skills'
 import { getIcons } from '@/actions/icons'
 import { iconMap } from '@/utils/iconMap'
 
@@ -18,6 +18,7 @@ export default function AdminSkills() {
   const [skills, setSkills] = useState<Skill[]>([])
   const [loading, setLoading] = useState(true)
   const [customSvgs, setCustomSvgs] = useState<Record<string, string>>({})
+  const [dragIdx, setDragIdx] = useState<number | null>(null)
   const router = useRouter()
 
   useEffect(() => {
@@ -45,6 +46,20 @@ export default function AdminSkills() {
     }
   }
 
+  const handleDrop = useCallback(async (fromIdx: number, toIdx: number) => {
+    if (fromIdx === toIdx) return
+    const reordered = [...skills]
+    const [moved] = reordered.splice(fromIdx, 1)
+    reordered.splice(toIdx, 0, moved)
+    const updated = reordered.map((s, i) => ({ ...s, display_order: i + 1 }))
+    setSkills(updated)
+    try {
+      await Promise.all(updated.map((s) => updateSkill(s.id, { display_order: s.display_order })))
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Failed to save order')
+    }
+  }, [skills])
+
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
@@ -66,6 +81,7 @@ export default function AdminSkills() {
           <table className="w-full text-left text-sm">
             <thead className="border-b border-[#607b96] bg-[#0d1a3b]">
               <tr>
+                <th className="w-10 px-2 py-3 text-[#607b96]"></th>
                 <th className="px-4 py-3 text-[#607b96]">#</th>
                 <th className="px-4 py-3 text-[#607b96]">Icon</th>
                 <th className="px-4 py-3 text-[#607b96]">Name</th>
@@ -78,7 +94,21 @@ export default function AdminSkills() {
                 const BundledIcon = iconMap[skill.icon_id]
                 const customSvg = customSvgs[skill.icon_id]
                 return (
-                  <tr key={skill.id} className="border-b border-[#607b96]/20 hover:bg-[#1a2d4a]">
+                  <tr
+                    key={skill.id}
+                    draggable
+                    onDragStart={() => setDragIdx(i)}
+                    onDragOver={(e) => { e.preventDefault(); if (dragIdx !== null && dragIdx !== i) setDragIdx(i) }}
+                    onDragEnd={() => { if (dragIdx !== null && dragIdx !== i) handleDrop(dragIdx, i); setDragIdx(null) }}
+                    className={`border-b border-[#607b96]/20 transition ${
+                      dragIdx === i ? 'bg-[#5565e8]/10 opacity-50' : 'hover:bg-[#1a2d4a]'
+                    }`}
+                  >
+                    <td className="w-10 px-2 py-3">
+                      <span className="flex cursor-grab items-center justify-center text-[#607b96] hover:text-white active:cursor-grabbing">
+                        <svg className="size-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 6a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm8 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4zM8 14a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm8 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4zM8 22a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm8 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4z" /></svg>
+                      </span>
+                    </td>
                     <td className="px-4 py-3 text-[#607b96]">{i + 1}</td>
                     <td className="px-4 py-3">
                       {BundledIcon ? <BundledIcon className="size-6 text-white" /> : customSvg ? <span className="inline-flex size-6 items-center justify-center text-white" dangerouslySetInnerHTML={{ __html: customSvg }} /> : <span className="text-xs text-[#607b96]">?</span>}
