@@ -1,9 +1,9 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { getProjects, deleteProject } from '@/actions/projects'
+import { getProjects, deleteProject, updateProject } from '@/actions/projects'
 import InlineEditableTitle from '@/components/Admin/InlineEditableTitle'
 
 interface Project {
@@ -17,6 +17,7 @@ interface Project {
 export default function AdminProjects() {
   const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
+  const [dragIdx, setDragIdx] = useState<number | null>(null)
   const router = useRouter()
 
   useEffect(() => {
@@ -35,6 +36,20 @@ export default function AdminProjects() {
       alert(err instanceof Error ? err.message : 'Failed to delete')
     }
   }
+
+  const handleDrop = useCallback(async (fromIdx: number, toIdx: number) => {
+    if (fromIdx === toIdx) return
+    const reordered = [...projects]
+    const [moved] = reordered.splice(fromIdx, 1)
+    reordered.splice(toIdx, 0, moved)
+    const updated = reordered.map((p, i) => ({ ...p, priority: i + 1 }))
+    setProjects(updated)
+    try {
+      await Promise.all(updated.map((p) => updateProject(p.id, { priority: p.priority })))
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Failed to save order')
+    }
+  }, [projects])
 
   return (
     <div>
@@ -57,6 +72,7 @@ export default function AdminProjects() {
           <table className="w-full text-left text-sm">
             <thead className="border-b border-[#607b96] bg-[#0d1a3b]">
               <tr>
+                <th className="w-10 px-2 py-3 text-[#607b96]"></th>
                 <th className="px-4 py-3 text-[#607b96]">#</th>
                 <th className="px-4 py-3 text-[#607b96]">Image</th>
                 <th className="px-4 py-3 text-[#607b96]">Title</th>
@@ -67,7 +83,21 @@ export default function AdminProjects() {
             </thead>
             <tbody>
               {projects.map((project, i) => (
-                <tr key={project.id} className="border-b border-[#607b96]/20 hover:bg-[#1a2d4a]">
+                <tr
+                  key={project.id}
+                  draggable
+                  onDragStart={() => setDragIdx(i)}
+                  onDragOver={(e) => { e.preventDefault(); if (dragIdx !== null && dragIdx !== i) setDragIdx(i) }}
+                  onDragEnd={() => { if (dragIdx !== null && dragIdx !== i) handleDrop(dragIdx, i); setDragIdx(null) }}
+                  className={`border-b border-[#607b96]/20 transition ${
+                    dragIdx === i ? 'bg-[#5565e8]/10 opacity-50' : 'hover:bg-[#1a2d4a]'
+                  }`}
+                >
+                  <td className="w-10 px-2 py-3">
+                    <span className="flex cursor-grab items-center justify-center text-[#607b96] hover:text-white active:cursor-grabbing">
+                      <svg className="size-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 6a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm8 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4zM8 14a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm8 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4zM8 22a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm8 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4z" /></svg>
+                    </span>
+                  </td>
                   <td className="px-4 py-3 text-[#607b96]">{i + 1}</td>
                   <td className="px-4 py-3">
                     <img
