@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { getSiteConfig, updateSiteConfig } from '@/actions/site-config'
 
-const STYLES = ['pulse', 'shimmer', 'wave', 'gradient'] as const
+const STYLES = ['pulse', 'shimmer', 'wave', 'gradient', 'cyber', 'neon', 'quantum', 'terminal'] as const
 
 export default function AdminSettings() {
   const [mode, setMode] = useState<'marquee' | 'grid'>('marquee')
