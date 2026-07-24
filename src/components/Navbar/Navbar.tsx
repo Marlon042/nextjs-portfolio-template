@@ -19,13 +19,13 @@ const navItems = [
     icon: ProjectsIcon,
   },
   {
-    labelKey: 'nav.blogs' as const,
-    href: '/blogs',
+    labelKey: 'nav.services' as const,
+    href: '/#services',
     icon: BlogIcon,
   },
   {
-    labelKey: 'nav.services' as const,
-    href: '/#services',
+    labelKey: 'nav.blogs' as const,
+    href: '/blogs',
     icon: ServicesIcon,
   },
 ]
