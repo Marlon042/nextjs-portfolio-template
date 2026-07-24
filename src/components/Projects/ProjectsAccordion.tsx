@@ -7,6 +7,7 @@ import { useLanguage } from '@/context/LanguageContext'
 import { ChevronRightIcon } from '@/utils/icons'
 import SectionHeading from '../SectionHeading/SectionHeading'
 import ProjectCard from './ProjectCard'
+import ProjectSkeleton from './ProjectSkeleton'
 
 const ProjectsAccordion: React.FC = () => {
   const { t } = useLanguage()
@@ -90,7 +91,9 @@ const ProjectsAccordion: React.FC = () => {
         <div className="min-h-0 overflow-hidden">
           <div className="pt-6">
             {fetching && !loaded ? (
-              <p className="text-sm text-[#607b96]">Loading projects...</p>
+              <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+                {[1, 2].map((i) => <ProjectSkeleton key={i} />)}
+              </div>
             ) : projects.length === 0 ? (
               <p className="text-sm text-[#607b96]">No projects yet.</p>
             ) : (

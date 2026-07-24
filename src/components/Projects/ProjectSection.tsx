@@ -6,13 +6,16 @@ import { Project } from '@/lib/types'
 import { useLanguage } from '@/context/LanguageContext'
 import SectionHeading from '../SectionHeading/SectionHeading'
 import ProjectCard from './ProjectCard'
+import ProjectSkeleton from './ProjectSkeleton'
 
 const ProjectSection: React.FC = () => {
   const { t } = useLanguage()
   const [projects, setProjects] = useState<Project[]>([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchProjects = async () => {
+      setLoading(true)
       const { data } = await supabase
         .from('projects')
         .select('*')
@@ -40,6 +43,7 @@ const ProjectSection: React.FC = () => {
           siteAge: item.site_age ?? '',
         })),
       )
+      setLoading(false)
     }
 
     fetchProjects()
@@ -49,11 +53,19 @@ const ProjectSection: React.FC = () => {
     <section id="projects">
       <SectionHeading title={t('projects.title')} />
 
-      <div className="my-8 grid grid-cols-1 gap-8 md:my-12 md:grid-cols-2">
-        {projects.map((project, i) => (
-          <ProjectCard key={project.id || project.title} data={project} index={i} />
-        ))}
-      </div>
+      {loading ? (
+        <div className="my-8 grid grid-cols-1 gap-8 md:my-12 md:grid-cols-2">
+          {[1, 2].map((i) => <ProjectSkeleton key={i} />)}
+        </div>
+      ) : projects.length === 0 ? (
+        <p className="my-8 text-sm text-[#607b96] md:my-12">No projects yet.</p>
+      ) : (
+        <div className="my-8 grid grid-cols-1 gap-8 md:my-12 md:grid-cols-2">
+          {projects.map((project, i) => (
+            <ProjectCard key={project.id || project.title} data={project} index={i} />
+          ))}
+        </div>
+      )}
     </section>
   )
 }

@@ -24,7 +24,10 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ data, index = 0 }) => {
   const [visible, setVisible] = useState(false)
   const [galleryIdx, setGalleryIdx] = useState(0)
   const [slideInterval, setSlideInterval] = useState(4000)
+  const [canScrollUp, setCanScrollUp] = useState(false)
+  const [canScrollDown, setCanScrollDown] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
+  const descRef = useRef<HTMLDivElement>(null)
 
   const {
     title,
@@ -66,6 +69,21 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ data, index = 0 }) => {
       if (config.projects_slide_interval) setSlideInterval(config.projects_slide_interval)
     })
   }, [])
+
+  const checkOverflow = () => {
+    const el = descRef.current
+    if (!el) return
+    setCanScrollUp(el.scrollTop > 0)
+    setCanScrollDown(el.scrollTop + el.clientHeight < el.scrollHeight)
+  }
+
+  useEffect(() => {
+    const el = descRef.current
+    if (!el) return
+    checkOverflow()
+    el.addEventListener('scroll', checkOverflow)
+    return () => el.removeEventListener('scroll', checkOverflow)
+  }, [shortDescription])
 
   useEffect(() => {
     if (!hasGallery) return
@@ -132,8 +150,26 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ data, index = 0 }) => {
         </div>
 
         <div>
-          <div className="bg-primary text-primary-content my-4 h-[100px] overflow-scroll rounded-2xl px-4 py-2">
-            <p className="text-[14px] font-normal md:text-base">{shortDescription}</p>
+          <div className="bg-primary text-primary-content relative my-4 overflow-hidden rounded-2xl">
+            <div ref={descRef} className="h-[100px] overflow-auto px-4 py-2 scrollbar-hide">
+              <p className="text-[14px] font-normal md:text-base">{shortDescription}</p>
+            </div>
+            {canScrollUp && (
+              <button
+                onClick={() => descRef.current?.scrollBy({ top: -40, behavior: 'smooth' })}
+                className="absolute top-0 left-1/2 flex h-5 w-full -translate-x-1/2 items-center justify-center bg-gradient-to-b from-[#011627] to-transparent text-[#607b96] transition hover:text-white"
+              >
+                <svg className="size-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" /></svg>
+              </button>
+            )}
+            {canScrollDown && (
+              <button
+                onClick={() => descRef.current?.scrollBy({ top: 40, behavior: 'smooth' })}
+                className="absolute bottom-0 left-1/2 flex h-5 w-full -translate-x-1/2 items-center justify-center bg-gradient-to-t from-[#011627] to-transparent text-[#607b96] transition hover:text-white"
+              >
+                <svg className="size-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
+              </button>
+            )}
           </div>
 
           <div className="flex gap-5">
