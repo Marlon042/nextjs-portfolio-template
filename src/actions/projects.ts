@@ -14,9 +14,9 @@ interface ProjectInput {
   visitors?: string
   earned?: string
   github_stars?: string
-  ratings?: string
   number_of_sales?: string
   site_age?: string
+  gallery_urls?: string[]
 }
 
 export async function getProjects() {

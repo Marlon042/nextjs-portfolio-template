@@ -3,6 +3,7 @@
 import { useState, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import ImageUpload from './ImageUpload'
+import GalleryUpload from './GalleryUpload'
 import { createProject, updateProject } from '@/actions/projects'
 
 interface ProjectData {
@@ -18,6 +19,7 @@ interface ProjectData {
   github_stars?: string
   number_of_sales?: string
   site_age?: string
+  gallery_urls?: string[]
 }
 
 interface ProjectFormProps {
@@ -44,6 +46,7 @@ export default function ProjectForm({ initialData, projectId, action }: ProjectF
       github_stars: '',
       number_of_sales: '',
       site_age: '',
+      gallery_urls: [],
     },
   )
 
@@ -96,6 +99,11 @@ export default function ProjectForm({ initialData, projectId, action }: ProjectF
         label="Cover Image *"
         currentImage={form.cover_url}
         onUpload={(url) => setForm((prev) => ({ ...prev, cover_url: url }))}
+      />
+
+      <GalleryUpload
+        images={form.gallery_urls ?? []}
+        onImagesChange={(urls) => setForm((prev) => ({ ...prev, gallery_urls: urls }))}
       />
 
       <div className="grid grid-cols-2 gap-4">

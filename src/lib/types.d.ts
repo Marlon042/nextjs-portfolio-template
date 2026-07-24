@@ -14,6 +14,7 @@ export interface Project {
   numberOfSales?: string
   type: string
   siteAge?: string
+  gallery_urls?: string[]
 }
 
 export interface Heading {

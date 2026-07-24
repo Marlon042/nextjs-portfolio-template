@@ -30,6 +30,7 @@ const ProjectSection: React.FC = () => {
           cover_url: item.cover_url,
           livePreview: item.live_preview_url,
           githubLink: item.github_link,
+          gallery_urls: item.gallery_urls ?? [],
           visitors: item.visitors ?? '',
           earned: item.earned ?? '',
           githubStars: item.github_stars ?? '',
@@ -49,8 +50,8 @@ const ProjectSection: React.FC = () => {
       <SectionHeading title={t('projects.title')} />
 
       <div className="my-8 grid grid-cols-1 gap-8 md:my-12 md:grid-cols-2">
-        {projects.map((project) => (
-          <ProjectCard key={project.id || project.title} data={project} />
+        {projects.map((project, i) => (
+          <ProjectCard key={project.id || project.title} data={project} index={i} />
         ))}
       </div>
     </section>

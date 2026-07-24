@@ -30,6 +30,7 @@ export default async function EditProjectPage({ params }: Props) {
         github_stars: project.github_stars ?? '',
         number_of_sales: project.number_of_sales ?? '',
         site_age: project.site_age ?? '',
+        gallery_urls: project.gallery_urls ?? [],
       }}
     />
   )

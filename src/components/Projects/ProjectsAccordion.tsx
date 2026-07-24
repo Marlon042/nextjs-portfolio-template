@@ -43,6 +43,7 @@ const ProjectsAccordion: React.FC = () => {
               cover_url: item.cover_url,
               livePreview: item.live_preview_url,
               githubLink: item.github_link,
+              gallery_urls: item.gallery_urls ?? [],
               visitors: item.visitors ?? '',
               earned: item.earned ?? '',
               githubStars: item.github_stars ?? '',
@@ -94,8 +95,8 @@ const ProjectsAccordion: React.FC = () => {
               <p className="text-sm text-[#607b96]">No projects yet.</p>
             ) : (
               <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-                {projects.map((project) => (
-                  <ProjectCard key={project.id || project.title} data={project} />
+                {projects.map((project, i) => (
+                  <ProjectCard key={project.id || project.title} data={project} index={i} />
                 ))}
               </div>
             )}
