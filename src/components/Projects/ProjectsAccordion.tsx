@@ -8,6 +8,7 @@ import { ChevronRightIcon } from '@/utils/icons'
 import SectionHeading from '../SectionHeading/SectionHeading'
 import ProjectCard from './ProjectCard'
 import ProjectSkeleton from './ProjectSkeleton'
+import { getSiteConfig } from '@/actions/site-config'
 
 const ProjectsAccordion: React.FC = () => {
   const { t } = useLanguage()
@@ -16,6 +17,15 @@ const ProjectsAccordion: React.FC = () => {
   const [count, setCount] = useState<number | null>(null)
   const [loaded, setLoaded] = useState(false)
   const [fetching, setFetching] = useState(false)
+  const [skeletonStyle, setSkeletonStyle] = useState('shimmer')
+  const [skeletonDelay, setSkeletonDelay] = useState(2000)
+
+  useEffect(() => {
+    getSiteConfig().then((config) => {
+      if (config.skeleton_style) setSkeletonStyle(config.skeleton_style)
+      if (config.skeleton_delay) setSkeletonDelay(config.skeleton_delay)
+    })
+  }, [])
 
   useEffect(() => {
     supabase
@@ -28,11 +38,11 @@ const ProjectsAccordion: React.FC = () => {
     if (!open || loaded || fetching) return
     setFetching(true)
 
-    supabase
-      .from('projects')
-      .select('*')
-      .order('priority', { ascending: true })
-      .then(({ data }) => {
+    const delay = skeletonDelay > 0 ? new Promise((r) => setTimeout(r, skeletonDelay)) : Promise.resolve()
+    Promise.all([
+      delay,
+      supabase.from('projects').select('*').order('priority', { ascending: true }),
+    ]).then(([, { data }]) => {
         if (data) {
           setProjects(
             (data as Record<string, any>[]).map((item) => ({
@@ -92,7 +102,7 @@ const ProjectsAccordion: React.FC = () => {
           <div className="pt-6">
             {fetching && !loaded ? (
               <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-                {[1, 2].map((i) => <ProjectSkeleton key={i} />)}
+                {[1, 2].map((i) => <ProjectSkeleton key={i} style={skeletonStyle as any} />)}
               </div>
             ) : projects.length === 0 ? (
               <p className="text-sm text-[#607b96]">No projects yet.</p>

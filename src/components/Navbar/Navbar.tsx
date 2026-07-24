@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
-import { BurgerIcon, CloseIcon, HomeIcon, ProjectsIcon, ServicesIcon, BlogIcon, ContactIcon } from '../../utils/icons'
+import { BurgerIcon, CloseIcon, HomeIcon, ProjectsIcon, ServicesIcon, BlogIcon, ContactIcon, PhoneIcon } from '../../utils/icons'
 import Logo from './Logo'
 import { useLanguage } from '@/context/LanguageContext'
 
@@ -19,14 +19,14 @@ const navItems = [
     icon: ProjectsIcon,
   },
   {
-    labelKey: 'nav.services' as const,
-    href: '/#services',
-    icon: ServicesIcon,
-  },
-  {
     labelKey: 'nav.blogs' as const,
     href: '/blogs',
     icon: BlogIcon,
+  },
+  {
+    labelKey: 'nav.services' as const,
+    href: '/#services',
+    icon: ServicesIcon,
   },
 ]
 
@@ -79,7 +79,7 @@ const Navbar = () => {
               href="/#contact"
               onClick={() => setIsVisible(false)}
               className="text-primary-content hover:text-neutral flex w-full items-center gap-2 py-7 transition-all duration-150 md:py-0">
-              <ContactIcon className="h-6 w-6" />
+              <PhoneIcon className="h-6 w-6" />
               {t('nav.contactMe')}
             </Link>
           </li>
