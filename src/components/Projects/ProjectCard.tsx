@@ -65,130 +65,132 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ data, index = 0 }) => {
   }
 
   return (
-    <div
-      ref={ref}
-      className={`bg-secondary border-border flex flex-col justify-between rounded-[14px] border p-5 transition-all duration-700 ease-out ${
-        visible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-      }`}
-      style={{ transitionDelay: `${index * 100}ms` }}
-    >
-      <div className="flex items-start justify-between gap-2">
-        <div className="flex-1">
-          <div className="flex flex-col flex-wrap gap-3 sm:flex-row sm:items-center">
-            <h3 className="text-secondary-content text-lg font-medium md:font-semibold">{title}</h3>
-            {type && (
-              <span
-                className={`h-7 w-fit rounded-md bg-[#FFFFFF1A] p-1 text-sm ${type === 'New 🔥' ? 'animate-blink text-tag' : 'text-accent'} backdrop-blur-[80px]`}>
-                {type}
-              </span>
-            )}
-          </div>
-          <ul className="mt-3 flex flex-col flex-wrap gap-2 sm:flex-row sm:gap-4">
-            {(visitors || numberOfSales) && (
-              <IconText text={(visitors || numberOfSales)?.toString() || ''} icon={Likes} />
-            )}
-            {siteAge && <IconText text={siteAge} icon={Timer} />}
-            {earned && <IconText text={earned} icon={Earning} />}
-            {(ratings || githubStars) && (
-              <IconText text={(ratings || githubStars)?.toString() || ''} icon={Star} />
-            )}
-          </ul>
-        </div>
-        {cover && (
-          <figure
-            className="group relative flex cursor-pointer justify-end overflow-hidden rounded-md"
-            onClick={() => openLightbox(0)}
-          >
-            <Image
-              src={allImages[galleryIdx] || cover}
-              width={150}
-              height={80}
-              alt="Project Cover"
-              className="h-[80px] w-[150px] rounded-md object-cover shadow-[0px_1.66px_3.74px_-1.25px_#18274B1F]"
-            />
-            <div className="absolute inset-0 flex items-center justify-center gap-1.5 rounded-md bg-black/60 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-              <EyeIcon className="size-4 text-white" />
-              <span className="text-xs font-medium text-white">Ver imagen</span>
-            </div>
-          </figure>
-        )}
-      </div>
-
-      <div>
-        <div className="bg-primary text-primary-content my-4 rounded-2xl px-4 py-3">
-          <p className="text-[14px] font-normal md:text-base">{shortDescription}</p>
-        </div>
-
-        {hasGallery && (
-          <div className="mb-4">
-            <div className="relative overflow-hidden rounded-lg">
-              <div
-                className="flex transition-transform duration-500 ease-in-out"
-                style={{ transform: `translateX(-${galleryIdx * 100}%)` }}
-              >
-                {allImages.map((img, i) => (
-                  <div key={i} className="min-w-0 shrink-0 grow basis-full">
-                    <Image
-                      src={img}
-                      width={600}
-                      height={340}
-                      alt={`${title} screenshot ${i + 1}`}
-                      className="h-48 w-full cursor-pointer object-cover transition-opacity hover:opacity-90 md:h-56"
-                      onClick={() => openLightbox(i)}
-                    />
-                  </div>
-                ))}
-              </div>
-              {allImages.length > 1 && (
-                <>
-                  <button
-                    onClick={() => setGalleryIdx((prev) => (prev === 0 ? allImages.length - 1 : prev - 1))}
-                    className="absolute top-1/2 left-2 -translate-y-1/2 rounded-full bg-black/50 p-1.5 text-white transition hover:bg-black/70"
-                  >
-                    <svg className="size-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
-                  </button>
-                  <button
-                    onClick={() => setGalleryIdx((prev) => (prev === allImages.length - 1 ? 0 : prev + 1))}
-                    className="absolute top-1/2 right-2 -translate-y-1/2 rounded-full bg-black/50 p-1.5 text-white transition hover:bg-black/70"
-                  >
-                    <svg className="size-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
-                  </button>
-                  <div className="absolute bottom-2 left-1/2 flex -translate-x-1/2 gap-1.5">
-                    {allImages.map((_, i) => (
-                      <button
-                        key={i}
-                        onClick={() => setGalleryIdx(i)}
-                        className={`size-2 rounded-full transition ${
-                          i === galleryIdx ? 'bg-white' : 'bg-white/40 hover:bg-white/70'
-                        }`}
-                      />
-                    ))}
-                  </div>
-                </>
+    <>
+      <div
+        ref={ref}
+        className={`bg-secondary border-border flex flex-col justify-between rounded-[14px] border p-5 transition-all duration-700 ease-out ${
+          visible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+        }`}
+        style={{ transitionDelay: `${index * 100}ms` }}
+      >
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex-1">
+            <div className="flex flex-col flex-wrap gap-3 sm:flex-row sm:items-center">
+              <h3 className="text-secondary-content text-lg font-medium md:font-semibold">{title}</h3>
+              {type && (
+                <span
+                  className={`h-7 w-fit rounded-md bg-[#FFFFFF1A] p-1 text-sm ${type === 'New 🔥' ? 'animate-blink text-tag' : 'text-accent'} backdrop-blur-[80px]`}>
+                  {type}
+                </span>
               )}
             </div>
+            <ul className="mt-3 flex flex-col flex-wrap gap-2 sm:flex-row sm:gap-4">
+              {(visitors || numberOfSales) && (
+                <IconText text={(visitors || numberOfSales)?.toString() || ''} icon={Likes} />
+              )}
+              {siteAge && <IconText text={siteAge} icon={Timer} />}
+              {earned && <IconText text={earned} icon={Earning} />}
+              {(ratings || githubStars) && (
+                <IconText text={(ratings || githubStars)?.toString() || ''} icon={Star} />
+              )}
+            </ul>
           </div>
-        )}
+          {cover && (
+            <figure
+              className="group relative flex cursor-pointer justify-end overflow-hidden rounded-md"
+              onClick={() => openLightbox(0)}
+            >
+              <Image
+                src={allImages[galleryIdx] || cover}
+                width={150}
+                height={80}
+                alt="Project Cover"
+                className="h-[80px] w-[150px] rounded-md object-cover shadow-[0px_1.66px_3.74px_-1.25px_#18274B1F]"
+              />
+              <div className="absolute inset-0 flex items-center justify-center gap-1.5 rounded-md bg-black/60 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                <EyeIcon className="size-4 text-white" />
+                <span className="text-xs font-medium text-white">Ver imagen</span>
+              </div>
+            </figure>
+          )}
+        </div>
 
-        <div className="flex gap-5">
-          {livePreview && (
-            <a
-              href={livePreview}
-              className="text-accent flex gap-2 text-sm underline underline-offset-[3px] transition-all duration-75 ease-linear hover:scale-105 md:text-base"
-              target="_blank">
-              <PreviewIcon className="h-auto w-[18px] md:w-5" />
-              <span>Live Preview</span>
-            </a>
+        <div>
+          <div className="bg-primary text-primary-content my-4 rounded-2xl px-4 py-3">
+            <p className="text-[14px] font-normal md:text-base">{shortDescription}</p>
+          </div>
+
+          {hasGallery && (
+            <div className="mb-4">
+              <div className="relative overflow-hidden rounded-lg">
+                <div
+                  className="flex transition-transform duration-500 ease-in-out"
+                  style={{ transform: `translateX(-${galleryIdx * 100}%)` }}
+                >
+                  {allImages.map((img, i) => (
+                    <div key={i} className="min-w-0 shrink-0 grow basis-full">
+                      <Image
+                        src={img}
+                        width={600}
+                        height={340}
+                        alt={`${title} screenshot ${i + 1}`}
+                        className="h-48 w-full cursor-pointer object-cover transition-opacity hover:opacity-90 md:h-56"
+                        onClick={() => openLightbox(i)}
+                      />
+                    </div>
+                  ))}
+                </div>
+                {allImages.length > 1 && (
+                  <>
+                    <button
+                      onClick={() => setGalleryIdx((prev) => (prev === 0 ? allImages.length - 1 : prev - 1))}
+                      className="absolute top-1/2 left-2 -translate-y-1/2 rounded-full bg-black/50 p-1.5 text-white transition hover:bg-black/70"
+                    >
+                      <svg className="size-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
+                    </button>
+                    <button
+                      onClick={() => setGalleryIdx((prev) => (prev === allImages.length - 1 ? 0 : prev + 1))}
+                      className="absolute top-1/2 right-2 -translate-y-1/2 rounded-full bg-black/50 p-1.5 text-white transition hover:bg-black/70"
+                    >
+                      <svg className="size-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+                    </button>
+                    <div className="absolute bottom-2 left-1/2 flex -translate-x-1/2 gap-1.5">
+                      {allImages.map((_, i) => (
+                        <button
+                          key={i}
+                          onClick={() => setGalleryIdx(i)}
+                          className={`size-2 rounded-full transition ${
+                            i === galleryIdx ? 'bg-white' : 'bg-white/40 hover:bg-white/70'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
           )}
-          {githubLink && (
-            <a
-              href={githubLink}
-              className="text-accent flex gap-2 text-sm underline underline-offset-[3px] transition-all duration-75 ease-linear hover:scale-105 md:text-base"
-              target="_blank">
-              <GithubIcon className="w-[18px] md:w-5" />
-              <span>Github Link</span>
-            </a>
-          )}
+
+          <div className="flex gap-5">
+            {livePreview && (
+              <a
+                href={livePreview}
+                className="text-accent flex gap-2 text-sm underline underline-offset-[3px] transition-all duration-75 ease-linear hover:scale-105 md:text-base"
+                target="_blank">
+                <PreviewIcon className="h-auto w-[18px] md:w-5" />
+                <span>Live Preview</span>
+              </a>
+            )}
+            {githubLink && (
+              <a
+                href={githubLink}
+                className="text-accent flex gap-2 text-sm underline underline-offset-[3px] transition-all duration-75 ease-linear hover:scale-105 md:text-base"
+                target="_blank">
+                <GithubIcon className="w-[18px] md:w-5" />
+                <span>Github Link</span>
+              </a>
+            )}
+          </div>
         </div>
       </div>
 
@@ -229,7 +231,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ data, index = 0 }) => {
           />
         </div>
       )}
-    </div>
+    </>
   )
 }
 
