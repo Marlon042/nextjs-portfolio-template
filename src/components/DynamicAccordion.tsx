@@ -5,6 +5,8 @@ import { supabase } from '@/lib/supabase'
 import { iconMap } from '@/utils/iconMap'
 import { useLanguage } from '@/context/LanguageContext'
 import { ChevronRightIcon } from '@/utils/icons'
+import SectionSkeleton from './SectionSkeleton'
+import { getSiteConfig } from '@/actions/site-config'
 
 interface ItemData {
   id: string
@@ -33,6 +35,15 @@ const DynamicAccordion: React.FC<DynamicAccordionProps> = ({ identifier, default
   const [fetching, setFetching] = useState(false)
   const [sectionId, setSectionId] = useState<string | null>(null)
   const [customIcons, setCustomIcons] = useState<Record<string, string>>({})
+  const [skeletonStyle, setSkeletonStyle] = useState('shimmer')
+  const [skeletonDelay, setSkeletonDelay] = useState(2000)
+
+  useEffect(() => {
+    getSiteConfig().then((config) => {
+      if (config.skeleton_style) setSkeletonStyle(config.skeleton_style)
+      if (config.skeleton_delay) setSkeletonDelay(config.skeleton_delay)
+    })
+  }, [])
 
   useEffect(() => {
     setLoaded(false)
@@ -70,6 +81,7 @@ const DynamicAccordion: React.FC<DynamicAccordionProps> = ({ identifier, default
     setFetching(true)
 
     ;(async () => {
+      if (skeletonDelay > 0) await new Promise((r) => setTimeout(r, skeletonDelay))
       const [{ data: itemsRaw }, { data: transRaw }] = await Promise.all([
         supabase.from('section_items').select('id, icon_id, display_order').eq('section_id', sectionId).order('display_order'),
         supabase.from('section_item_translations').select('item_id, language, title, description'),
@@ -98,7 +110,7 @@ const DynamicAccordion: React.FC<DynamicAccordionProps> = ({ identifier, default
       setLoaded(true)
       setFetching(false)
     })()
-  }, [open, loaded, fetching, sectionId, lang])
+  }, [open, loaded, fetching, sectionId, lang, skeletonDelay])
 
   const titleKey = identifier === 'services' ? 'services.title'
     : identifier === 'support' ? 'support.title'
@@ -135,7 +147,7 @@ const DynamicAccordion: React.FC<DynamicAccordionProps> = ({ identifier, default
         <div className="min-h-0 overflow-hidden">
           <div className="pt-6">
             {fetching && !loaded ? (
-              <p className="text-sm text-[#607b96]">Loading...</p>
+              <SectionSkeleton style={skeletonStyle as any} columns={3} />
             ) : items.length === 0 ? (
               <p className="text-sm text-[#607b96]">No items yet.</p>
             ) : (
