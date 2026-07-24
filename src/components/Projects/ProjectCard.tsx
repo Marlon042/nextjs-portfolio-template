@@ -4,6 +4,7 @@ import { Project } from '@/lib/types'
 import Image from 'next/image'
 import { FC, SVGProps, useState, useEffect, useRef } from 'react'
 import { Earning, EyeIcon, GithubIcon, Likes, PreviewIcon, Star, Timer } from '../../utils/icons'
+import { getSiteConfig } from '@/actions/site-config'
 
 const IconText: React.FC<{ icon: FC<SVGProps<SVGSVGElement>>; text: string }> = ({ icon: Icon, text }) => (
   <li className="flex gap-2">
@@ -22,6 +23,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ data, index = 0 }) => {
   const [lightboxIdx, setLightboxIdx] = useState(0)
   const [visible, setVisible] = useState(false)
   const [galleryIdx, setGalleryIdx] = useState(0)
+  const [slideInterval, setSlideInterval] = useState(4000)
   const ref = useRef<HTMLDivElement>(null)
 
   const {
@@ -58,6 +60,20 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ data, index = 0 }) => {
     observer.observe(el)
     return () => observer.disconnect()
   }, [])
+
+  useEffect(() => {
+    getSiteConfig().then((config) => {
+      if (config.projects_slide_interval) setSlideInterval(config.projects_slide_interval)
+    })
+  }, [])
+
+  useEffect(() => {
+    if (!hasGallery) return
+    const interval = setInterval(() => {
+      setGalleryIdx((prev) => (prev + 1) % allImages.length)
+    }, slideInterval)
+    return () => clearInterval(interval)
+  }, [hasGallery, allImages.length, slideInterval])
 
   const openLightbox = (idx: number) => {
     setLightboxIdx(idx)
@@ -109,67 +125,16 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ data, index = 0 }) => {
               />
               <div className="absolute inset-0 flex items-center justify-center gap-1.5 rounded-md bg-black/60 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
                 <EyeIcon className="size-4 text-white" />
-                <span className="text-xs font-medium text-white">Ver imagen</span>
+                <span className="text-xs font-medium text-white">{hasGallery ? 'Ver imágenes' : 'Ver imagen'}</span>
               </div>
             </figure>
           )}
         </div>
 
         <div>
-          <div className="bg-primary text-primary-content my-4 rounded-2xl px-4 py-3">
+          <div className="bg-primary text-primary-content my-4 h-[100px] overflow-scroll rounded-2xl px-4 py-2">
             <p className="text-[14px] font-normal md:text-base">{shortDescription}</p>
           </div>
-
-          {hasGallery && (
-            <div className="mb-4">
-              <div className="relative overflow-hidden rounded-lg">
-                <div
-                  className="flex transition-transform duration-500 ease-in-out"
-                  style={{ transform: `translateX(-${galleryIdx * 100}%)` }}
-                >
-                  {allImages.map((img, i) => (
-                    <div key={i} className="min-w-0 shrink-0 grow basis-full">
-                      <Image
-                        src={img}
-                        width={600}
-                        height={340}
-                        alt={`${title} screenshot ${i + 1}`}
-                        className="h-48 w-full cursor-pointer object-cover transition-opacity hover:opacity-90 md:h-56"
-                        onClick={() => openLightbox(i)}
-                      />
-                    </div>
-                  ))}
-                </div>
-                {allImages.length > 1 && (
-                  <>
-                    <button
-                      onClick={() => setGalleryIdx((prev) => (prev === 0 ? allImages.length - 1 : prev - 1))}
-                      className="absolute top-1/2 left-2 -translate-y-1/2 rounded-full bg-black/50 p-1.5 text-white transition hover:bg-black/70"
-                    >
-                      <svg className="size-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
-                    </button>
-                    <button
-                      onClick={() => setGalleryIdx((prev) => (prev === allImages.length - 1 ? 0 : prev + 1))}
-                      className="absolute top-1/2 right-2 -translate-y-1/2 rounded-full bg-black/50 p-1.5 text-white transition hover:bg-black/70"
-                    >
-                      <svg className="size-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
-                    </button>
-                    <div className="absolute bottom-2 left-1/2 flex -translate-x-1/2 gap-1.5">
-                      {allImages.map((_, i) => (
-                        <button
-                          key={i}
-                          onClick={() => setGalleryIdx(i)}
-                          className={`size-2 rounded-full transition ${
-                            i === galleryIdx ? 'bg-white' : 'bg-white/40 hover:bg-white/70'
-                          }`}
-                        />
-                      ))}
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
-          )}
 
           <div className="flex gap-5">
             {livePreview && (

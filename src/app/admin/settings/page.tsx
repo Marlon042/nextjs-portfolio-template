@@ -8,12 +8,16 @@ export default function AdminSettings() {
   const [marqueeDuration, setMarqueeDuration] = useState(20000)
   const [speedSaving, setSpeedSaving] = useState(false)
   const [speedMsg, setSpeedMsg] = useState('')
+  const [slideInterval, setSlideInterval] = useState(4000)
+  const [slideSaving, setSlideSaving] = useState(false)
+  const [slideMsg, setSlideMsg] = useState('')
   const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
     getSiteConfig().then((config) => {
       if (config.skills_display_mode) setMode(config.skills_display_mode)
       if (config.marquee_duration) setMarqueeDuration(config.marquee_duration)
+      if (config.projects_slide_interval) setSlideInterval(config.projects_slide_interval)
       setLoaded(true)
     })
   }, [])
@@ -37,6 +41,18 @@ export default function AdminSettings() {
       setSpeedMsg(err instanceof Error ? err.message : 'Error saving speed')
     }
     setSpeedSaving(false)
+  }
+
+  const saveSlideInterval = async () => {
+    setSlideSaving(true)
+    setSlideMsg('')
+    try {
+      await updateSiteConfig('projects_slide_interval', slideInterval)
+      setSlideMsg('Interval saved!')
+    } catch (err) {
+      setSlideMsg(err instanceof Error ? err.message : 'Error saving interval')
+    }
+    setSlideSaving(false)
   }
 
   return (
@@ -109,6 +125,39 @@ export default function AdminSettings() {
               </p>
             </div>
           )}
+
+          {/* Projects Slide Interval */}
+          <div className="rounded-lg border border-[#607b96]/20 bg-[#0d1a3b] p-5">
+            <h2 className="mb-1 text-sm font-semibold text-white">Projects Image Auto-Slide</h2>
+            <p className="mb-4 text-xs text-[#607b96]">Controls how fast the project thumbnail images auto-slide (in milliseconds).</p>
+            <div className="flex items-center gap-4">
+              <input
+                type="range"
+                min={1000}
+                max={12000}
+                step={500}
+                value={slideInterval}
+                onChange={(e) => setSlideInterval(Number(e.target.value))}
+                className="w-full max-w-xs accent-[#5565e8]"
+              />
+              <span className="min-w-[80px] text-sm text-white">{slideInterval}ms</span>
+              <button
+                onClick={saveSlideInterval}
+                disabled={slideSaving}
+                className="rounded bg-[#5565e8] px-4 py-1.5 text-sm font-semibold text-white transition hover:bg-[#4555d8] disabled:opacity-50"
+              >
+                {slideSaving ? 'Saving...' : 'Save'}
+              </button>
+              {slideMsg && (
+                <span className={`text-sm ${slideMsg === 'Interval saved!' ? 'text-green-400' : 'text-red-400'}`}>
+                  {slideMsg}
+                </span>
+              )}
+            </div>
+            <p className="mt-2 text-xs text-[#607b96]">
+              Lower = faster, Higher = slower. Default 4000ms.
+            </p>
+          </div>
         </div>
       )}
     </div>
