@@ -1,5 +1,37 @@
 # Changelog
 
+## [2.0.0] — 2026-07-24
+
+### Added
+- **Drag & drop reordering**: en editor de secciones, skills y proyectos — olvídate de escribir números como un cavernícola
+- **Galería de imágenes por proyecto**: subí múltiples imágenes a Cloudinary desde el formulario, se ven en un carrusel con auto-slide que tienes miedo de que acelere mucho
+- **Auto-slide configurable**: velocidad del carrusel ajustable desde Admin Settings (1s–12s). Ponlo en 1s si quieres marear a tus usuarios
+- **Animaciones de entrada**: ProjectCard aparece con fade-in + slide-up al hacer scroll. Stagger incluido para que no lleguen todos borrachos a la vez
+- **Skeleton loading** con 9 estilos:
+  - `pulse` — el clásico, aburrido pero funcional
+  - `shimmer` — barrido de luz, como YouTube pero sin los ads
+  - `wave` — ondulación secuencial, como olas en el mar... de la carga
+  - `gradient` — gradiente sutil que respira. Zen
+  - `cyber` — cuadrícula Tron + barra de escaneo. Tu skeleton usa más efectos que tu PC
+  - `neon` — colores que cambian, partículas flotantes, borde rave. Fiesta en cada carga
+  - `quantum` — estrellas titilantes, auroras boreales, vórtice warp, anillos expansivos. Tu skeleton tiene más capas que una cebolla
+  - `terminal` — modo hacker: texto verde apareciendo línea por línea, scanlines CRT, cursor parpadeante. Matrix tiene envidia
+  - `powershell` — igual que terminal pero azul, porque el azul es más profesional (?
+- **Skeleton config en Admin Settings**: elegí estilo y delay artificial (0–5000ms). Pon 0 si eres impaciente
+- **SectionSkeleton**: skeleton para DynamicAccordion (services/support) con todas las animaciones
+- **Scroll arrows en descripción**: flechitas arriba/abajo solo cuando el texto se desborda. Como un ascensor pero para leer
+- **Phone icon en navbar**: el contacto ahora tiene un teléfono, porque el sobre es muy 2010
+- **Iconos intercambiados**: Services tiene el planeta, Blogs tiene la llave inglesa. Caos controlado
+
+### Changed
+- ProjectCard: lightbox movido fuera del div animado (el `fixed` no se llevaba bien con `translate-y-8`)
+- ProjectCard: descripción vuelve a altura fija 100px con scroll (como Dios manda)
+- Navbar: icono de contacto cambiado a PhoneIcon
+
+### Fixed
+- Lightbox se posicionaba mal por el `transform` del animated wrapper (fix: fragmento)
+- Terminal skeleton no arrancaba en Projects accordion si no abrías Services primero (faltaban keyframes en ProjectSkeleton)
+
 ## [1.5.0] — 2026-07-22
 
 ### Added

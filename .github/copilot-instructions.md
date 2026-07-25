@@ -168,6 +168,26 @@ npm run lint                  # Verificar ESLint
 - **Idioma default**: Español (`es`). El admin panel usa `useLanguage()` y `t()` para traducir sidebar y textos; si no hay traducción en la DB, muestra el texto en inglés como fallback
 - **Sidebar admin traducido**: Las claves de traducción son las palabras en inglés (ej: `'Dashboard'`, `'Projects'`). Para agregar traducciones, insertar en tabla `translations` con `key` = palabra en inglés y `language` = código del idioma
 
+### Skeleton Loading
+- **9 estilos** configurados desde Admin → Settings → Skeleton Loading: `pulse`, `shimmer`, `wave`, `gradient`, `cyber`, `neon`, `quantum`, `terminal`, `powershell`
+- **Delay artificial** (`skeleton_delay`, 0–5000ms): simula carga lenta para que el usuario disfrute el skeleton. O para que sufra. Tú eliges
+- **ProjectSkeleton** (`src/components/Projects/ProjectSkeleton.tsx`): 5 bloques (header, metrics, icon/desc, actions). Todos los keyframes definidos en `<style>` local para no depender de SectionSkeleton
+- **SectionSkeleton** (`src/components/SectionSkeleton.tsx`): grid de 3 columnas para DynamicAccordion. En terminal/powershell muestra líneas de texto simulando comandos
+- **Auto-slide interval**: `site_config` key `projects_slide_interval` (slider 1s–12s, paso 500ms)
+- **Descripción con scroll**: `h-[100px] overflow-scroll` + flechas arriba/abajo que aparecen cuando el contenido se desborda
+- **Lightbox**: Debe estar fuera del elemento con `translate-y-8` porque `transform` rompe `position: fixed`
+
+### Drag & Drop Reordering
+- Implementado en editor de secciones (`/admin/sections/[id]`), lista de skills (`/admin/skills`), lista de proyectos (`/admin/projects`)
+- Usa HTML5 Drag & Drop API nativa (sin librerías externas)
+- Al soltar, recalcula `display_order`/`priority` y persiste vía server action
+
+### Project Gallery
+- Columna `gallery_urls TEXT[]` en tabla `projects` (migration 00010)
+- **GalleryUpload** (`src/components/Admin/GalleryUpload.tsx`): sube múltiples imágenes a Cloudinary con previews y botón de borrar
+- **ProjectCard**: auto-sliding carrusel de thumbnails (cover + gallery), flechas de navegación, puntos indicadores, lightbox con prev/next
+- **Entrance animation**: IntersectionObserver + fade + slide-up con stagger entre cards
+
 ### Configuración de Entorno
 - **Requerido** (producción): `.env.local` con `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - **Firebase** (opcional): Configurar en `src/lib/firebase.ts` — el formulario de contacto guarda en Firestore si está configurado
@@ -200,6 +220,13 @@ npm run lint                  # Verificar ESLint
 | Agregar ícono custom | `/admin/icons` → "+ New Icon" — pegar markup SVG |
 | Modo de Skills (admin) | `/admin/settings` → Skills Display Mode (Marquee / Grid) |
 | Velocidad del marquee (admin) | `/admin/settings` → Marquee Speed (solo visible en modo Marquee) |
+| Reordenar skills (drag & drop) | `/admin/skills` — arrastrar filas |
+| Reordenar proyectos (drag & drop) | `/admin/projects` — arrastrar filas |
+| Reordenar items de sección (drag & drop) | `/admin/sections/[id]` — arrastrar cards |
+| Subir galería de imágenes a proyecto | `/admin/projects/[id]/edit` → GalleryUpload después de cover |
+| Auto-slide del carrusel (admin) | `/admin/settings` → Projects Auto-Slide (1s–12s, paso 500ms) |
+| Estilo skeleton (admin) | `/admin/settings` → Skeleton Loading (9 estilos: pulse → powershell) |
+| Delay artificial de skeleton (admin) | `/admin/settings` → Skeleton Loading → delay slider (0–5000ms) |
 | Editar items de acordeones (admin) | `/admin/sections` → elegir sección → editar items con íconos filtrados por categoría, orden y texto en español |
 | Editar título de sección inline (admin) | `/admin/projects` o `/admin/sections/[id]` → hover sobre título → click lápiz → editar → botón guardar |
 | Cambiar idioma por defecto | `src/context/LanguageContext.tsx` — cambiar `'es'` en `useState<Language>('es')` y en el fallback de localStorage |
