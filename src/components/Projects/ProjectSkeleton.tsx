@@ -3,7 +3,7 @@
 import { FC } from 'react'
 
 interface Props {
-  style?: 'pulse' | 'shimmer' | 'wave' | 'gradient' | 'cyber' | 'neon' | 'quantum' | 'terminal'
+  style?: 'pulse' | 'shimmer' | 'wave' | 'gradient' | 'cyber' | 'neon' | 'quantum' | 'terminal' | 'powershell'
 }
 
 const pulseClass = 'animate-pulse bg-[#1a2d4a]'
@@ -64,6 +64,15 @@ const terminalBlock: FC<{ cn?: string }> = ({ cn = '' }) => (
   </div>
 )
 
+const psBlock: FC<{ cn?: string }> = ({ cn = '' }) => (
+  <div className={`relative overflow-hidden rounded ${cn}`} style={{ background: '#0c0d2e', border: '1px solid rgba(0, 120, 255, 0.2)' }}>
+    <div className="absolute inset-0 ps-scanline" />
+    <div className="absolute inset-0 ps-glow" />
+    <div className="absolute top-1/2 left-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#0078ff]/20" style={{ animation: 'psRipple 2s ease-out infinite' }} />
+    <div className="absolute top-1/2 left-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#0078ff]/10" style={{ animation: 'psRipple 2s ease-out infinite 0.5s' }} />
+  </div>
+)
+
 const SkeletonBlock: FC<{ className?: string; delay?: number; style?: string }> = ({ className = '', delay = 0, style = 'shimmer' }) => {
   switch (style) {
     case 'pulse':
@@ -82,6 +91,8 @@ const SkeletonBlock: FC<{ className?: string; delay?: number; style?: string }> 
       return <>{quantumBlock({ cn: className })}</>
     case 'terminal':
       return <>{terminalBlock({ cn: className })}</>
+    case 'powershell':
+      return <>{psBlock({ cn: className })}</>
     default:
       return <div className={`${pulseClass} ${className}`} />
   }
@@ -188,34 +199,70 @@ const ProjectSkeleton: FC<Props> = ({ style = 'shimmer' }) => {
         @keyframes terminalRipple { 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0.4; } 100% { transform: translate(-50%, -50%) scale(2); opacity: 0; } }
         .terminal-card { animation: terminalBorderPulse 2s ease-in-out infinite; }
         @keyframes terminalBorderPulse { 0%, 100% { border-color: rgba(0, 255, 65, 0.15); box-shadow: 0 0 10px rgba(0, 255, 65, 0.05), inset 0 0 10px rgba(0, 255, 65, 0.02); } 50% { border-color: rgba(0, 255, 65, 0.35); box-shadow: 0 0 25px rgba(0, 255, 65, 0.12), inset 0 0 20px rgba(0, 255, 65, 0.05); } }
+        @keyframes terminalType { 0% { opacity: 0; } 100% { opacity: 1; } }
+        @keyframes terminalBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        .ps-scanline { background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 120, 255, 0.03) 2px, rgba(0, 120, 255, 0.03) 4px); animation: psScan 8s linear infinite; }
+        @keyframes psScan { 0% { transform: translateY(0); } 100% { transform: translateY(4px); } }
+        .ps-glow { background: radial-gradient(ellipse at 50% 0%, rgba(0, 120, 255, 0.06), transparent 70%), radial-gradient(ellipse at 50% 100%, rgba(0, 200, 255, 0.03), transparent 70%); }
+        @keyframes psRipple { 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0.4; } 100% { transform: translate(-50%, -50%) scale(2); opacity: 0; } }
+        .ps-card { animation: psBorderPulse 2s ease-in-out infinite; }
+        @keyframes psBorderPulse { 0%, 100% { border-color: rgba(0, 120, 255, 0.15); box-shadow: 0 0 10px rgba(0, 120, 255, 0.05), inset 0 0 10px rgba(0, 120, 255, 0.02); } 50% { border-color: rgba(0, 180, 255, 0.35); box-shadow: 0 0 25px rgba(0, 120, 255, 0.12), inset 0 0 20px rgba(0, 150, 255, 0.05); } }
+        @keyframes psType { 0% { opacity: 0; } 100% { opacity: 1; } }
+        @keyframes psBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
       `}</style>
       <div className={`flex flex-col justify-between rounded-[14px] p-5 ${
         style === 'cyber' ? 'border border-cyan-500/20 bg-[#0a1628] cyber-card' :
         style === 'neon' ? 'border border-fuchsia-500/20 bg-[#0d0b1a] neon-card' :
         style === 'quantum' ? 'border border-purple-500/20 bg-[#05031a] quantum-card' :
         style === 'terminal' ? 'border border-green-500/20 bg-[#0a0f0a] terminal-card' :
+        style === 'powershell' ? 'border border-blue-500/20 bg-[#0c0d2e] ps-card' :
         'bg-secondary border-border border'
       }`}>
-        {style === 'terminal' ? (
+        {style === 'terminal' || style === 'powershell' ? (
           <div className="flex w-full flex-col gap-0.5 py-2" style={{ fontFamily: 'monospace' }}>
-            <span className="block text-left text-xs leading-5 text-[#00ff41]/90" style={{ animation: 'terminalType 0.3s steps(1) 0.1s both' }}>
-              <span className="text-[#00ff41]/50">admin@root</span>:<span className="text-[#00ccff]/50">~</span>$ deploy --project=portfolio
-            </span>
-            <span className="block text-left text-xs leading-5 text-[#00ff41]/75" style={{ animation: 'terminalType 0.3s steps(1) 0.4s both' }}>
-              {'>'} building assets... <span className="text-green-400">OK</span>
-            </span>
-            <span className="block text-left text-xs leading-5 text-[#00ff41]/60" style={{ animation: 'terminalType 0.3s steps(1) 0.7s both' }}>
-              {'>'} optimizing images... <span className="text-yellow-400">12 files</span>
-            </span>
-            <span className="block text-left text-xs leading-5 text-[#00ff41]/45" style={{ animation: 'terminalType 0.3s steps(1) 1s both' }}>
-              {'>'} running tests... <span className="text-green-400">42 passed</span>
-            </span>
-            <span className="block text-left text-xs leading-5 text-[#00ff41]/30" style={{ animation: 'terminalType 0.3s steps(1) 1.3s both' }}>
-              {'>'} deploying... <span className="text-cyan-400">███████▒▒ 78%</span>
-            </span>
-            <span className="block text-left text-xs leading-5 text-[#00ff41]/20" style={{ animation: 'terminalType 0.3s steps(1) 1.6s both' }}>
-              $ <span className="animate-pulse" style={{ animation: 'terminalBlink 1s step-end infinite' }}>_</span>
-            </span>
+            {style === 'terminal' ? (
+              <>
+                <span className="block text-left text-xs leading-5 text-[#00ff41]/90" style={{ animation: 'terminalType 0.3s steps(1) 0.1s both' }}>
+                  <span className="text-[#00ff41]/50">admin@root</span>:<span className="text-[#00ccff]/50">~</span>$ deploy --project=portfolio
+                </span>
+                <span className="block text-left text-xs leading-5 text-[#00ff41]/75" style={{ animation: 'terminalType 0.3s steps(1) 0.4s both' }}>
+                  {'>'} building assets... <span className="text-green-400">OK</span>
+                </span>
+                <span className="block text-left text-xs leading-5 text-[#00ff41]/60" style={{ animation: 'terminalType 0.3s steps(1) 0.7s both' }}>
+                  {'>'} optimizing images... <span className="text-yellow-400">12 files</span>
+                </span>
+                <span className="block text-left text-xs leading-5 text-[#00ff41]/45" style={{ animation: 'terminalType 0.3s steps(1) 1s both' }}>
+                  {'>'} running tests... <span className="text-green-400">42 passed</span>
+                </span>
+                <span className="block text-left text-xs leading-5 text-[#00ff41]/30" style={{ animation: 'terminalType 0.3s steps(1) 1.3s both' }}>
+                  {'>'} deploying... <span className="text-cyan-400">███████▒▒ 78%</span>
+                </span>
+                <span className="block text-left text-xs leading-5 text-[#00ff41]/20" style={{ animation: 'terminalType 0.3s steps(1) 1.6s both' }}>
+                  $ <span className="animate-pulse" style={{ animation: 'terminalBlink 1s step-end infinite' }}>_</span>
+                </span>
+              </>
+            ) : (
+              <>
+                <span className="block text-left text-xs leading-5 text-[#0088ff]/90" style={{ animation: 'psType 0.3s steps(1) 0.1s both' }}>
+                  <span className="text-[#0088ff]/50">PS</span> <span className="text-[#00ccff]/50">{'>'}</span> Invoke-Deploy -Target portfolio
+                </span>
+                <span className="block text-left text-xs leading-5 text-[#0088ff]/75" style={{ animation: 'psType 0.3s steps(1) 0.4s both' }}>
+                  {'>>'} compiling modules... <span className="text-blue-300">OK</span>
+                </span>
+                <span className="block text-left text-xs leading-5 text-[#0088ff]/60" style={{ animation: 'psType 0.3s steps(1) 0.7s both' }}>
+                  {'>>'} optimizing bundle... <span className="text-yellow-300">24 assets</span>
+                </span>
+                <span className="block text-left text-xs leading-5 text-[#0088ff]/45" style={{ animation: 'psType 0.3s steps(1) 1s both' }}>
+                  {'>>'} running unit tests... <span className="text-blue-300">56 passed</span>
+                </span>
+                <span className="block text-left text-xs leading-5 text-[#0088ff]/30" style={{ animation: 'psType 0.3s steps(1) 1.3s both' }}>
+                  {'>>'} deploying... <span className="text-cyan-300">███████▒▒ 78%</span>
+                </span>
+                <span className="block text-left text-xs leading-5 text-[#0088ff]/20" style={{ animation: 'psType 0.3s steps(1) 1.6s both' }}>
+                  PS {'>'} <span className="animate-pulse" style={{ animation: 'psBlink 1s step-end infinite' }}>_</span>
+                </span>
+              </>
+            )}
           </div>
         ) : (
           <>

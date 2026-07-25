@@ -3,7 +3,7 @@
 import { FC } from 'react'
 
 interface Props {
-  style?: 'pulse' | 'shimmer' | 'wave' | 'gradient' | 'cyber' | 'neon' | 'quantum' | 'terminal'
+  style?: 'pulse' | 'shimmer' | 'wave' | 'gradient' | 'cyber' | 'neon' | 'quantum' | 'terminal' | 'powershell'
   columns?: 2 | 3
 }
 
@@ -65,6 +65,15 @@ const SkeletonBlock: FC<{ className?: string; delay?: number; style?: string }> 
           <div className="absolute inset-0 terminal-matrix" />
           <div className="absolute top-1/2 left-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#00ff41]/20" style={{ animation: 'terminalRipple 2s ease-out infinite' }} />
           <div className="absolute top-1/2 left-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#00ff41]/10" style={{ animation: 'terminalRipple 2s ease-out infinite 0.5s' }} />
+        </div>
+      )
+    case 'powershell':
+      return (
+        <div className={`relative overflow-hidden rounded ${className}`} style={{ background: '#0c0d2e', border: '1px solid rgba(0, 120, 255, 0.2)' }}>
+          <div className="absolute inset-0 ps-scanline" />
+          <div className="absolute inset-0 ps-glow" />
+          <div className="absolute top-1/2 left-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#0078ff]/20" style={{ animation: 'psRipple 2s ease-out infinite' }} />
+          <div className="absolute top-1/2 left-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#0078ff]/10" style={{ animation: 'psRipple 2s ease-out infinite 0.5s' }} />
         </div>
       )
     default:
@@ -221,6 +230,14 @@ const SectionSkeleton: FC<Props> = ({ style = 'shimmer', columns = 3 }) => {
         @keyframes terminalRipple { 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0.4; } 100% { transform: translate(-50%, -50%) scale(2); opacity: 0; } }
         .terminal-card { animation: terminalBorderPulse 2s ease-in-out infinite; }
         @keyframes terminalBorderPulse { 0%, 100% { border-color: rgba(0, 255, 65, 0.15); box-shadow: 0 0 10px rgba(0, 255, 65, 0.05), inset 0 0 10px rgba(0, 255, 65, 0.02); } 50% { border-color: rgba(0, 255, 65, 0.35); box-shadow: 0 0 25px rgba(0, 255, 65, 0.12), inset 0 0 20px rgba(0, 255, 65, 0.05); } }
+        .ps-scanline { background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 120, 255, 0.03) 2px, rgba(0, 120, 255, 0.03) 4px); animation: psScan 8s linear infinite; }
+        @keyframes psScan { 0% { transform: translateY(0); } 100% { transform: translateY(4px); } }
+        .ps-glow { background: radial-gradient(ellipse at 50% 0%, rgba(0, 120, 255, 0.06), transparent 70%), radial-gradient(ellipse at 50% 100%, rgba(0, 200, 255, 0.03), transparent 70%); }
+        @keyframes psRipple { 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0.4; } 100% { transform: translate(-50%, -50%) scale(2); opacity: 0; } }
+        .ps-card { animation: psBorderPulse 2s ease-in-out infinite; }
+        @keyframes psBorderPulse { 0%, 100% { border-color: rgba(0, 120, 255, 0.15); box-shadow: 0 0 10px rgba(0, 120, 255, 0.05), inset 0 0 10px rgba(0, 120, 255, 0.02); } 50% { border-color: rgba(0, 180, 255, 0.35); box-shadow: 0 0 25px rgba(0, 120, 255, 0.12), inset 0 0 20px rgba(0, 150, 255, 0.05); } }
+        @keyframes psType { 0% { opacity: 0; } 100% { opacity: 1; } }
+        @keyframes psBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
       `}</style>
       <div className={`grid grid-cols-1 gap-x-8 gap-y-8 ${columns === 2 ? 'md:grid-cols-2' : 'md:grid-cols-3'}`}>
         {[1, 2, 3].map((cardIdx) => (
@@ -229,23 +246,44 @@ const SectionSkeleton: FC<Props> = ({ style = 'shimmer', columns = 3 }) => {
             style === 'neon' ? 'border border-fuchsia-500/20 bg-[#0d0b1a] neon-card' :
             style === 'quantum' ? 'border border-purple-500/20 bg-[#05031a] quantum-card' :
             style === 'terminal' ? 'border border-green-500/20 bg-[#0a0f0a] terminal-card' :
+            style === 'powershell' ? 'border border-blue-500/20 bg-[#0c0d2e] ps-card' :
             'bg-secondary border-border border'
           }`}>
-            {style === 'terminal' ? (
+            {style === 'terminal' || style === 'powershell' ? (
               <div className="flex w-full flex-col gap-0.5" style={{ fontFamily: 'monospace' }}>
-                <span className="block text-left text-[10px] leading-5 text-[#00ff41]/90" style={{ animation: 'terminalType 0.3s steps(1) 0.1s both' }}>
-                  <span className="text-[#00ff41]/50">user@host</span>:<span className="text-[#00ccff]/50">~</span>$ init --module=0{cardIdx}
-                </span>
-                <span className="block text-left text-[10px] leading-5 text-[#00ff41]/70" style={{ animation: 'terminalType 0.3s steps(1) 0.4s both' }}>
-                  {'>'} scanning dependencies... <span className="text-green-400">OK</span>
-                </span>
-                <span className="block text-left text-[10px] leading-5 text-[#00ff41]/50" style={{ animation: 'terminalType 0.3s steps(1) 0.7s both' }}>
-                  {'>'} loading module_0{cardIdx}.bin <span className="text-green-400/80">{cardIdx === 0 ? '███▒▒▒ 60%' : cardIdx === 1 ? '█████ 100%' : '██▒▒▒▒ 40%'}</span>
-                </span>
-                <span className="block text-left text-[10px] leading-5 text-[#00ff41]/30" style={{ animation: 'terminalType 0.3s steps(1) 1s both' }}>
-                  {'>'} {cardIdx === 0 ? 'checksum verified [OK]' : cardIdx === 1 ? 'service started on port 8080' : 'waiting for signal...'}
-                  {cardIdx === 2 ? <span className="ml-0.5" style={{ animation: 'terminalBlink 1s step-end infinite' }}>_</span> : null}
-                </span>
+                {style === 'terminal' ? (
+                  <>
+                    <span className="block text-left text-[10px] leading-5 text-[#00ff41]/90" style={{ animation: 'terminalType 0.3s steps(1) 0.1s both' }}>
+                      <span className="text-[#00ff41]/50">user@host</span>:<span className="text-[#00ccff]/50">~</span>$ init --module=0{cardIdx}
+                    </span>
+                    <span className="block text-left text-[10px] leading-5 text-[#00ff41]/70" style={{ animation: 'terminalType 0.3s steps(1) 0.4s both' }}>
+                      {'>'} scanning dependencies... <span className="text-green-400">OK</span>
+                    </span>
+                    <span className="block text-left text-[10px] leading-5 text-[#00ff41]/50" style={{ animation: 'terminalType 0.3s steps(1) 0.7s both' }}>
+                      {'>'} loading module_0{cardIdx}.bin <span className="text-green-400/80">{cardIdx === 0 ? '███▒▒▒ 60%' : cardIdx === 1 ? '█████ 100%' : '██▒▒▒▒ 40%'}</span>
+                    </span>
+                    <span className="block text-left text-[10px] leading-5 text-[#00ff41]/30" style={{ animation: 'terminalType 0.3s steps(1) 1s both' }}>
+                      {'>'} {cardIdx === 0 ? 'checksum verified [OK]' : cardIdx === 1 ? 'service started on port 8080' : 'waiting for signal...'}
+                      {cardIdx === 2 ? <span className="ml-0.5" style={{ animation: 'terminalBlink 1s step-end infinite' }}>_</span> : null}
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <span className="block text-left text-[10px] leading-5 text-[#0088ff]/90" style={{ animation: 'psType 0.3s steps(1) 0.1s both' }}>
+                      <span className="text-[#0088ff]/50">PS</span> <span className="text-[#00ccff]/50">{'>'}</span> Invoke-Module -Id 0{cardIdx}
+                    </span>
+                    <span className="block text-left text-[10px] leading-5 text-[#0088ff]/70" style={{ animation: 'psType 0.3s steps(1) 0.4s both' }}>
+                      {'>>'} resolving dependencies... <span className="text-blue-300">OK</span>
+                    </span>
+                    <span className="block text-left text-[10px] leading-5 text-[#0088ff]/50" style={{ animation: 'psType 0.3s steps(1) 0.7s both' }}>
+                      {'>>'} deploying module_0{cardIdx} <span className="text-yellow-300">{cardIdx === 0 ? '███▒▒▒ 60%' : cardIdx === 1 ? '█████ 100%' : '██▒▒▒▒ 40%'}</span>
+                    </span>
+                    <span className="block text-left text-[10px] leading-5 text-[#0088ff]/30" style={{ animation: 'psType 0.3s steps(1) 1s both' }}>
+                      {'>>'} {cardIdx === 0 ? 'hash verified [OK]' : cardIdx === 1 ? 'listening on 0.0.0.0:443' : 'awaiting handshake...'}
+                      {cardIdx === 2 ? <span className="ml-0.5" style={{ animation: 'psBlink 1s step-end infinite' }}>_</span> : null}
+                    </span>
+                  </>
+                )}
               </div>
             ) : (
               <>
