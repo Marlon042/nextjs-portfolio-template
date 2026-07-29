@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { Project } from '@/lib/types'
 import { useLanguage } from '@/context/LanguageContext'
@@ -27,12 +27,11 @@ const ProjectsAccordion: React.FC = () => {
     })
   }, [])
 
-  useEffect(() => {
-    supabase
-      .from('projects')
-      .select('id', { count: 'exact', head: true })
-      .then(({ count: c }) => setCount(c ?? 0))
-  }, [])
+  const fetchCount = () => {
+    supabase.from('projects').select('id', { count: 'exact', head: true }).then(({ count: c }) => setCount(c ?? 0))
+  }
+
+  useEffect(() => { fetchCount() }, [])
 
   useEffect(() => {
     if (!open || loaded || fetching) return
@@ -69,6 +68,18 @@ const ProjectsAccordion: React.FC = () => {
         setFetching(false)
       })
   }, [open, loaded, fetching])
+
+  useEffect(() => {
+    const channel = supabase
+      .channel('projects-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'projects' }, () => {
+        fetchCount()
+        setLoaded(false)
+        setFetching(false)
+      })
+      .subscribe()
+    return () => { supabase.removeChannel(channel) }
+  }, [])
 
   return (
     <section id="projects" className="my-6">

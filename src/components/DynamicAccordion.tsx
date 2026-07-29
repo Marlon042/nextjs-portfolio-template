@@ -77,6 +77,23 @@ const DynamicAccordion: React.FC<DynamicAccordionProps> = ({ identifier, default
   }, [identifier])
 
   useEffect(() => {
+    if (!sectionId) return
+    const channel = supabase
+      .channel(`dynamic-accordion-${identifier}`)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'section_items', filter: `section_id=eq.${sectionId}` }, () => {
+        setLoaded(false)
+        setFetching(false)
+        supabase.from('section_items').select('id', { count: 'exact', head: true }).eq('section_id', sectionId).then(({ count: c }) => setCount(c ?? 0))
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'section_item_translations' }, () => {
+        setLoaded(false)
+        setFetching(false)
+      })
+      .subscribe()
+    return () => { supabase.removeChannel(channel) }
+  }, [sectionId, identifier])
+
+  useEffect(() => {
     if (!open || loaded || fetching || !sectionId) return
     setFetching(true)
 

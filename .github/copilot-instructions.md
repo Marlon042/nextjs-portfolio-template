@@ -188,6 +188,21 @@ npm run lint                  # Verificar ESLint
 - **ProjectCard**: auto-sliding carrusel de thumbnails (cover + gallery), flechas de navegación, puntos indicadores, lightbox con prev/next
 - **Entrance animation**: IntersectionObserver + fade + slide-up con stagger entre cards
 
+### Realtime Updates (WebSockets)
+- Los cambios del admin se reflejan al instante en el frontend sin recargar la página
+- Implementado con `supabase.channel()` + `postgres_changes` en:
+  - `DynamicAccordion.tsx`: escucha cambios en `section_items` y `section_item_translations`
+  - `ProjectsAccordion.tsx`: escucha cambios en `projects` (proyectos + contador)
+  - `Skills.tsx`: escucha cambios en `skills` y `site_config`
+- Skills ahora obtiene datos directamente desde Supabase (cliente) en vez de recibirlos como prop del server
+- **Requerido**: Habilitar Realtime en Supabase Dashboard para las tablas:
+  ```
+  Supabase → Project Settings → Database → Replication
+  → Enable Realtime para: projects, skills, sections, section_items,
+    section_item_translations, site_config, icons
+  ```
+  Sin este paso, los cambios no se propagan automáticamente (el frontend solo carga datos al montar el componente)
+
 ### Configuración de Entorno
 - **Requerido** (producción): `.env.local` con `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - **Firebase** (opcional): Configurar en `src/lib/firebase.ts` — el formulario de contacto guarda en Firestore si está configurado

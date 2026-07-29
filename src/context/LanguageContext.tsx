@@ -72,6 +72,20 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
     }
   }, [lang, mounted, loadTranslations])
 
+  useEffect(() => {
+    const channel = supabase
+      .channel('translations-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'translations' }, (payload) => {
+        const changedLang = (payload.new as any)?.language ?? (payload.old as any)?.language
+        if (changedLang) {
+          translationCache.delete(changedLang)
+          if (changedLang === lang) loadTranslations(lang)
+        }
+      })
+      .subscribe()
+    return () => { supabase.removeChannel(channel) }
+  }, [lang, loadTranslations])
+
   const t = (key: string): string => {
     return dict[key] || key
   }

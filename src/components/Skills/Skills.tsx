@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
 import dynamic from 'next/dynamic'
+import { supabase } from '@/lib/supabase'
 import { iconMap } from '@/utils/iconMap'
 import { useLanguage } from '@/context/LanguageContext'
 import { getSiteConfig } from '@/actions/site-config'
@@ -9,9 +10,7 @@ import SectionHeading from '../SectionHeading/SectionHeading'
 
 const MarqueeWrapper = dynamic(() => import('../Marquee/MarqueeWrapper'), { ssr: false })
 
-type SkillsProps = {
-  skills: { name: string; icon_id: string }[]
-}
+type SkillData = { name: string; icon_id: string }
 
 const customSvgCache = new Map<string, string>()
 
@@ -28,8 +27,9 @@ const IconRenderer = ({ iconId, size = 'sm' }: { iconId: string; size?: 'sm' | '
   return null
 }
 
-const Skills: React.FC<SkillsProps> = ({ skills }) => {
+const Skills: React.FC = () => {
   const { t } = useLanguage()
+  const [skills, setSkills] = useState<SkillData[]>([])
   const [mode, setMode] = useState<'marquee' | 'grid'>('marquee')
   const [marqueeDuration, setMarqueeDuration] = useState(20000)
   const initLoaded = useRef(false)
@@ -39,9 +39,11 @@ const Skills: React.FC<SkillsProps> = ({ skills }) => {
     initLoaded.current = true
 
     Promise.all([
+      supabase.from('skills').select('name, icon_id').order('display_order'),
       getSiteConfig(),
       getIcons(),
-    ]).then(([config, icons]) => {
+    ]).then(([{ data }, config, icons]) => {
+      if (data) setSkills(data as SkillData[])
       if (config.marquee_duration) setMarqueeDuration(config.marquee_duration)
       if (config.skills_display_mode) setMode(config.skills_display_mode)
       icons.forEach((icon) => {
@@ -50,6 +52,22 @@ const Skills: React.FC<SkillsProps> = ({ skills }) => {
         }
       })
     })
+  }, [])
+
+  useEffect(() => {
+    const channel = supabase
+      .channel('skills-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'skills' }, async () => {
+        const { data } = await supabase.from('skills').select('name, icon_id').order('display_order')
+        if (data) setSkills(data as SkillData[])
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'site_config' }, async () => {
+        const config = await getSiteConfig()
+        if (config.marquee_duration) setMarqueeDuration(config.marquee_duration)
+        if (config.skills_display_mode) setMode(config.skills_display_mode)
+      })
+      .subscribe()
+    return () => { supabase.removeChannel(channel) }
   }, [])
 
   return (
