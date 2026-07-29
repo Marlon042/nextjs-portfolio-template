@@ -194,14 +194,21 @@ npm run lint                  # Verificar ESLint
   - `DynamicAccordion.tsx`: escucha cambios en `section_items` y `section_item_translations`
   - `ProjectsAccordion.tsx`: escucha cambios en `projects` (proyectos + contador)
   - `Skills.tsx`: escucha cambios en `skills` y `site_config`
+  - `LanguageContext.tsx`: escucha cambios en `translations` (invalida cache y recarga al toque)
 - Skills ahora obtiene datos directamente desde Supabase (cliente) en vez de recibirlos como prop del server
-- **Requerido**: Habilitar Realtime en Supabase Dashboard para las tablas:
+- **Requerido**: Habilitar Realtime en Supabase Dashboard. Opción 1 (SQL):
+  ```sql
+  alter publication supabase_realtime add table projects;
+  alter publication supabase_realtime add table skills;
+  alter publication supabase_realtime add table sections;
+  alter publication supabase_realtime add table section_items;
+  alter publication supabase_realtime add table section_item_translations;
+  alter publication supabase_realtime add table site_config;
+  alter publication supabase_realtime add table icons;
+  alter publication supabase_realtime add table translations;
   ```
-  Supabase → Project Settings → Database → Replication
-  → Enable Realtime para: projects, skills, sections, section_items,
-    section_item_translations, site_config, icons
-  ```
-  Sin este paso, los cambios no se propagan automáticamente (el frontend solo carga datos al montar el componente)
+  Opción 2: `Supabase → Database → Publications → supabase_realtime` y tildar las 8 tablas
+  Sin este paso, los cambios no se propagan automáticamente
 
 ### Configuración de Entorno
 - **Requerido** (producción): `.env.local` con `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`

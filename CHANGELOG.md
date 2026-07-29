@@ -1,5 +1,23 @@
 # Changelog
 
+## [2.0.1] — 2026-07-24
+
+### Added
+- **Supabase Realtime en frontend**: cambios del admin se reflejan al instante sin recargar
+  - DynamicAccordion escucha `section_items` y `section_item_translations`
+  - ProjectsAccordion escucha `projects` (datos + contador)
+  - Skills escucha `skills` y `site_config` (modo, velocidad)
+  - LanguageContext escucha `translations` (títulos de acordeones al instante)
+- Skills refactorizado a fetching cliente (ya no recibe props del server)
+- Skills ahora se conecta por su cuenta a Supabase y se actualiza solo
+
+### Fixed
+- Skills no cargaba ningún item porque usaba `order('priority')` pero la columna se llama `display_order` — la query fallaba en silencio y se veía vacío
+- LanguageContext cacheaba traducciones para siempre; al editar un título desde el admin, el front nunca se enteraba
+
+### Notes
+- Requiere habilitar Realtime en Supabase para las tablas: `projects`, `skills`, `sections`, `section_items`, `section_item_translations`, `site_config`, `icons`, `translations`
+
 ## [2.0.0] — 2026-07-24
 
 ### Added
