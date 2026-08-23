@@ -3,6 +3,14 @@
 ## [No liberado]
 
 ### Agregado
+- **Migración a Vercel** — Hosting migrado de Netlify a Vercel
+  - Proyecto: `marlongv-portfolio` → dominio `https://marlongv.vercel.app`
+  - Variables de entorno configuradas en Vercel (Supabase, Firebase, Cloudinary)
+  - Eliminada dependencia de `netlify.toml` para builds
+
+## [No liberado]
+
+### Agregado
 - **Sistema i18n** — Internacionalización completa con 5 idiomas (EN, ES, FR, DE, RU)
   - Archivo de traducciones: `src/i18n/translations.ts` con todas las claves de texto UI
   - LanguageContext provider con persistencia en `localStorage`
