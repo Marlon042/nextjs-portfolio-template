@@ -42,3 +42,6 @@ next-env.d.ts
 
 # local env files
 .env.local
+
+# docs
+/docs
