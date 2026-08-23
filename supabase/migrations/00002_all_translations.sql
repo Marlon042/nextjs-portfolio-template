@@ -335,3 +335,71 @@ insert into translations (key, language, value) values
   ('skills.title', 'ru', '// Навыки'),
   ('about.title', 'ru', '_о себе')
 on conflict (key, language) do nothing;
+
+-- BLOG translations (new page)
+insert into translations (key, language, value) values
+  -- English
+  ('blog.comingSoon', 'en', 'Coming Soon'),
+  ('blog.title', 'en', 'Blog'),
+  ('blog.description', 'en', 'I''m working on something great. Stay tuned for articles, tutorials, and insights about web development.'),
+  ('blog.viewProjects', 'en', 'View Projects'),
+  ('blog.contactMe', 'en', 'Contact Me'),
+  ('blog.futureArticles', 'en', 'Articles'),
+  ('blog.futureArticlesDesc', 'en', 'Technical articles and deep dives'),
+  ('blog.tutorials', 'en', 'Tutorials'),
+  ('blog.tutorialsDesc', 'en', 'Step-by-step guides'),
+  ('blog.tips', 'en', 'Tips & Tricks'),
+  ('blog.tipsDesc', 'en', 'Quick tips for developers'),
+
+  -- Spanish
+  ('blog.comingSoon', 'es', 'Próximamente'),
+  ('blog.title', 'es', 'Blog'),
+  ('blog.description', 'es', 'Estoy trabajando en algo genial. Mantente atento a artículos, tutoriales e ideas sobre desarrollo web.'),
+  ('blog.viewProjects', 'es', 'Ver Proyectos'),
+  ('blog.contactMe', 'es', 'Contáctame'),
+  ('blog.futureArticles', 'es', 'Artículos'),
+  ('blog.futureArticlesDesc', 'es', 'Artículos técnicos y análisis profundos'),
+  ('blog.tutorials', 'es', 'Tutoriales'),
+  ('blog.tutorialsDesc', 'es', 'Guías paso a paso'),
+  ('blog.tips', 'es', 'Consejos'),
+  ('blog.tipsDesc', 'es', 'Trucos rápidos para desarrolladores'),
+
+  -- French
+  ('blog.comingSoon', 'fr', 'Bientôt Disponible'),
+  ('blog.title', 'fr', 'Blog'),
+  ('blog.description', 'fr', 'Je travaille sur quelque chose de génial. Restez à l''écoute pour des articles, tutoriels et insights sur le développement web.'),
+  ('blog.viewProjects', 'fr', 'Voir les Projets'),
+  ('blog.contactMe', 'fr', 'Me Contacter'),
+  ('blog.futureArticles', 'fr', 'Articles'),
+  ('blog.futureArticlesDesc', 'fr', 'Articles techniques et analyses approfondies'),
+  ('blog.tutorials', 'fr', 'Tutoriels'),
+  ('blog.tutorialsDesc', 'fr', 'Guides étape par étape'),
+  ('blog.tips', 'fr', 'Astuces'),
+  ('blog.tipsDesc', 'fr', 'Astuces rapides pour développeurs'),
+
+  -- German
+  ('blog.comingSoon', 'de', 'Demnächst'),
+  ('blog.title', 'de', 'Blog'),
+  ('blog.description', 'de', 'Ich arbeite an etwas Großartigem. Bleiben Sie dran für Artikel, Tutorials und Einblicke in die Webentwicklung.'),
+  ('blog.viewProjects', 'de', 'Projekte Ansehen'),
+  ('blog.contactMe', 'de', 'Kontaktieren Sie Mich'),
+  ('blog.futureArticles', 'de', 'Artikel'),
+  ('blog.futureArticlesDesc', 'de', 'Technische Artikel und Deep Dives'),
+  ('blog.tutorials', 'de', 'Tutorials'),
+  ('blog.tutorialsDesc', 'de', 'Schritt-für-Schritt-Anleitungen'),
+  ('blog.tips', 'de', 'Tipps & Tricks'),
+  ('blog.tipsDesc', 'de', 'Schnelle Tipps für Entwickler'),
+
+  -- Russian
+  ('blog.comingSoon', 'ru', 'Скоро'),
+  ('blog.title', 'ru', 'Блог'),
+  ('blog.description', 'ru', 'Я работаю над чем-то отличным. Следите за статьями, руководствами и идеями о веб-разработке.'),
+  ('blog.viewProjects', 'ru', 'Посмотреть Проекты'),
+  ('blog.contactMe', 'ru', 'Связаться Со Мной'),
+  ('blog.futureArticles', 'ru', 'Статьи'),
+  ('blog.futureArticlesDesc', 'ru', 'Технические статьи и глубокие разборы'),
+  ('blog.tutorials', 'ru', 'Уроки'),
+  ('blog.tutorialsDesc', 'ru', 'Пошаговые руководства'),
+  ('blog.tips', 'ru', 'Советы'),
+  ('blog.tipsDesc', 'ru', 'Быстрые советы для разработчиков')
+on conflict (key, language) do nothing;

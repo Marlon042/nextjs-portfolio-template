@@ -48,11 +48,6 @@ const Footer = () => {
           <p className="text-tertiary-content">
             {t('footer.description')}
           </p>
-          <a
-            href="#"
-            className="text-neutral mt-4 inline-flex items-center gap-2 text-xs hover:underline">
-            {t('footer.moreAboutUs')} <span className="bg-neutral inline-block size-[10px] rounded-full" />
-          </a>
         </div>
 
         <div className="flex flex-wrap gap-8">
