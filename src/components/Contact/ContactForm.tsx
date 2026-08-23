@@ -1,6 +1,6 @@
 'use client'
 
-import action from '@/actions/contact-form'
+import action from '@/actions/contact-form-supabase'
 import { useActionState } from 'react'
 import { useLanguage } from '@/context/LanguageContext'
 import Button from '../UI/Button'
