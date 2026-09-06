@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Image from '@tiptap/extension-image'
@@ -64,6 +64,20 @@ export default function TipTapEditor({ content, onChange, placeholder }: TipTapE
       onChange(editor.getHTML(), editor.getJSON() as Record<string, unknown>)
     },
   })
+
+  // Sincroniza contenido externo (ej. botón ⚡) sin pisar lo que el usuario escribe:
+  // solo aplica setContent si el JSON entrante difiere del que ya tiene el editor.
+  const incomingKey = JSON.stringify(content ?? null)
+  const lastSynced = useRef<string | null>(null)
+  useEffect(() => {
+    if (!editor) return
+    if (lastSynced.current === incomingKey) return
+    lastSynced.current = incomingKey
+    if (!content || Object.keys(content).length === 0) return
+    if (JSON.stringify(editor.getJSON()) !== incomingKey) {
+      editor.commands.setContent(content as never)
+    }
+  }, [editor, incomingKey, content])
 
   if (!editor) {
     return <p className="rounded border border-[#607b96] bg-[#011627] p-4 text-sm text-[#607b96]">Cargando editor…</p>
