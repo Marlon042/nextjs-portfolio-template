@@ -76,7 +76,9 @@ export interface BlogPostWithContent extends BlogPost {
 // ─── Helpers ───
 
 async function slugTaken(slug: string, excludeId?: string) {
-  let query = supabase.from('blog_posts').select('id').eq('slug', slug)
+  // Admin client: anon no ve drafts por RLS y daría falsos negativos
+  const admin = getSupabaseAdmin()
+  let query = admin.from('blog_posts').select('id').eq('slug', slug)
   if (excludeId) query = query.neq('id', excludeId)
   const { data } = await query.maybeSingle()
   return !!data
@@ -186,7 +188,9 @@ export async function getPostBySlug(slug: string, lang: BlogLanguage = 'es') {
 // ─── Admin ───
 
 export async function getAllPosts() {
-  const { data, error } = await supabase
+  // Admin client: el admin debe ver drafts/archived, anon solo ve published por RLS
+  const admin = getSupabaseAdmin()
+  const { data, error } = await admin
     .from('blog_posts')
     .select('*, blog_post_translations(*), blog_categories(slug,name_es,name_en)')
     .order('display_order')
@@ -196,7 +200,9 @@ export async function getAllPosts() {
 }
 
 export async function getPost(id: string) {
-  const { data, error } = await supabase
+  // Admin client: ver punto anterior
+  const admin = getSupabaseAdmin()
+  const { data, error } = await admin
     .from('blog_posts')
     .select('*, blog_post_translations(*)')
     .eq('id', id)

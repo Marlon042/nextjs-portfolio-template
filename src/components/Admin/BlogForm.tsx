@@ -117,6 +117,80 @@ export default function BlogForm({ initialData, postId, action }: BlogFormProps)
     setTagInput('')
   }
 
+  const fillSampleData = () => {
+    const dirty =
+      form.translations.es.title !== '' ||
+      form.translations.en.title !== '' ||
+      form.translations.es.content_html !== ''
+    if (dirty && !confirm('¿Sobrescribir el formulario con datos de prueba?')) return
+
+    const doc = (blocks: { heading: string; paras: string[]; bullets: string[] }) => ({
+      type: 'doc',
+      content: [
+        { type: 'heading', attrs: { level: 2 }, content: [{ type: 'text', text: blocks.heading }] },
+        ...blocks.paras.map((p) => ({ type: 'paragraph', content: [{ type: 'text', text: p }] })),
+        {
+          type: 'bulletList',
+          content: blocks.bullets.map((b) => ({
+            type: 'listItem',
+            content: [{ type: 'paragraph', content: [{ type: 'text', text: b }] }],
+          })),
+        },
+      ],
+    })
+
+    const esParas = [
+      'Este es un post de prueba generado automáticamente para verificar el flujo completo: crear, editar, publicar y leer desde la API.',
+      'Si estás leyendo esto, el CMS del blog funciona de punta a punta.',
+    ]
+    const esHtml = `<h2>Post de prueba</h2><p>${esParas[0]}</p><p>${esParas[1]}</p><ul><li>Crear borradores en ES y EN</li><li>Publicar y ver en la API</li><li>Borrar sin miedo: es solo una prueba</li></ul>`
+
+    const enParas = [
+      'This is an auto-generated test post to verify the full flow: create, edit, publish and read from the API.',
+      'If you are reading this, the blog CMS works end to end.',
+    ]
+    const enHtml = `<h2>Test post</h2><p>${enParas[0]}</p><p>${enParas[1]}</p><ul><li>Create drafts in ES and EN</li><li>Publish and check the API</li><li>Delete without fear: it is only a test</li></ul>`
+
+    const esTitle = 'Mi primer post: probando el CMS del blog'
+    setForm((prev) => ({
+      ...prev,
+      slug: slugTouched ? prev.slug : slugify(esTitle),
+      tags: normalizeTags(['prueba', 'blog']),
+      translations: {
+        es: {
+          title: esTitle,
+          excerpt:
+            'Post de prueba para verificar el CMS: editor TipTap, publicación y lectura desde la API pública.',
+          content_html: esHtml,
+          content_json: doc({
+            heading: 'Post de prueba',
+            paras: esParas,
+            bullets: [
+              'Crear borradores en ES y EN',
+              'Publicar y ver en la API',
+              'Borrar sin miedo: es solo una prueba',
+            ],
+          }),
+        },
+        en: {
+          title: 'My first post: testing the blog CMS',
+          excerpt:
+            'Test post to verify the CMS: TipTap editor, publishing and reading from the public API.',
+          content_html: enHtml,
+          content_json: doc({
+            heading: 'Test post',
+            paras: enParas,
+            bullets: [
+              'Create drafts in ES and EN',
+              'Publish and check the API',
+              'Delete without fear: it is only a test',
+            ],
+          }),
+        },
+      },
+    }))
+  }
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setError('')
@@ -154,9 +228,19 @@ export default function BlogForm({ initialData, postId, action }: BlogFormProps)
 
   return (
     <form onSubmit={handleSubmit} className="max-w-3xl space-y-6">
-      <h1 className="text-2xl font-bold text-white">
-        {action === 'create' ? 'New Post' : 'Edit Post'}
-      </h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold text-white">
+          {action === 'create' ? 'New Post' : 'Edit Post'}
+        </h1>
+        <button
+          type="button"
+          onClick={fillSampleData}
+          title="Rellena título, resumen y contenido ES/EN con datos de prueba"
+          className="rounded border border-dashed border-[#18f2e5]/60 px-3 py-1.5 text-xs text-[#18f2e5] transition hover:bg-[#18f2e5]/10"
+        >
+          ⚡ Datos de prueba
+        </button>
+      </div>
 
       {error && <p className="rounded bg-red-500/10 p-3 text-sm text-red-400">{error}</p>}
 

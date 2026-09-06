@@ -7,7 +7,12 @@ interface Props {
 
 export default async function EditBlogPostPage({ params }: Props) {
   const { id } = await params
-  const post = await getPost(id)
+  let post: Awaited<ReturnType<typeof getPost>> | null = null
+  try {
+    post = await getPost(id)
+  } catch {
+    post = null
+  }
 
   if (!post) {
     return <p className="text-red-400">Post not found</p>
