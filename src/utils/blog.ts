@@ -55,6 +55,42 @@ export function normalizeTags(tags: string[]): string[] {
   return [...seen]
 }
 
+const FIELD_LABELS: Record<string, string> = {
+  slug: 'Slug',
+  status: 'Estado',
+  cover_url: 'Portada',
+  cover_alt: 'Texto portada',
+  category_id: 'Categoría',
+  author_id: 'Autor',
+  tags: 'Tags',
+  'translations.es.title': 'Español · Título',
+  'translations.es.excerpt': 'Español · Resumen',
+  'translations.es.content_html': 'Español · Contenido',
+  'translations.en.title': 'English · Title',
+  'translations.en.excerpt': 'English · Excerpt',
+  'translations.en.content_html': 'English · Content',
+}
+
+interface ValidationIssue {
+  path: readonly (string | number | symbol)[]
+  code: string
+  minimum?: number | bigint
+  maximum?: number | bigint
+}
+
+/** Convierte el primer error de zod en mensaje en español con campo incluido. */
+export function formatValidationError(issues: ValidationIssue[]): string {
+  const issue = issues[0]
+  if (!issue) return 'Datos inválidos'
+  const key = issue.path.map(String).join('.')
+  const label = FIELD_LABELS[key] ?? (issue.path.map(String).join(' · ') || 'Formulario')
+  if (issue.code === 'too_small') return `${label}: mínimo ${String(issue.minimum ?? '?')} caracteres`
+  if (issue.code === 'too_big') return `${label}: máximo ${String(issue.maximum ?? '?')} caracteres`
+  if (issue.code === 'invalid_format') return `${label}: formato inválido (solo minúsculas, números y guiones)`
+  if (issue.code === 'invalid_type') return `${label}: campo requerido`
+  return `${label}: valor inválido`
+}
+
 /** Excerpt fallback: primeras ~160 chars del contenido */
 export function excerptFromHtml(html: string, maxLen = 160): string {
   const text = stripHtml(html)

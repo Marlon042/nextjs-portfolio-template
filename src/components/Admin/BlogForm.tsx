@@ -175,13 +175,14 @@ export default function BlogForm({ initialData, postId, action }: BlogFormProps)
             {form.translations[l].title ? ' ✓' : ''}
           </button>
         ))}
+        <span className="self-center text-xs text-[#607b96]">Ambos idiomas obligatorios</span>
         <span className="ml-auto self-center text-xs text-[#607b96]">
           {calcReadingTime(t.content_html || '<p></p>')} min · {t.content_html.replace(/<[^>]*>/g, '').split(/\s+/).filter(Boolean).length} palabras
         </span>
       </div>
 
       <div>
-        <label className={labelClass} htmlFor="title">Title ({lang.toUpperCase()}) *</label>
+        <label className={labelClass} htmlFor="title">Título ({lang.toUpperCase()}) * — el H1 del artículo, mín. 5 caracteres</label>
         <input
           id="title"
           value={t.title}
@@ -189,12 +190,15 @@ export default function BlogForm({ initialData, postId, action }: BlogFormProps)
           required
           minLength={5}
           maxLength={120}
+          placeholder={lang === 'es' ? 'Ej: Cómo optimicé mi portfolio con Next.js 15' : 'E.g.: How I optimized my portfolio with Next.js 15'}
           className={inputClass}
         />
       </div>
 
       <div>
-        <label className={labelClass} htmlFor="excerpt">Excerpt ({lang.toUpperCase()}) * — 30–300 chars</label>
+        <label className={labelClass} htmlFor="excerpt">
+          Resumen ({lang.toUpperCase()}) * — 1 o 2 frases que aparecen en la tarjeta del blog y en Google (30–300 caracteres)
+        </label>
         <textarea
           id="excerpt"
           value={t.excerpt}
@@ -202,13 +206,14 @@ export default function BlogForm({ initialData, postId, action }: BlogFormProps)
           required
           rows={2}
           maxLength={300}
+          placeholder={lang === 'es' ? 'Ej: Te cuento paso a paso cómo dejé mi portfolio cargando en menos de 1 segundo…' : 'E.g.: Step by step on how I got my portfolio loading in under 1 second…'}
           className={inputClass}
         />
-        <p className="mt-1 text-right text-xs text-[#607b96]">{t.excerpt.length}/300</p>
+        <p className="mt-1 text-right text-xs text-[#607b96]">{t.excerpt.length}/300 (mín. 30)</p>
       </div>
 
       <div>
-        <label className={labelClass}>Content ({lang.toUpperCase()}) *</label>
+        <label className={labelClass}>Contenido ({lang.toUpperCase()}) * — el cuerpo del artículo</label>
         <TipTapEditor
           key={lang}
           content={t.content_json && Object.keys(t.content_json).length > 0 ? t.content_json : null}

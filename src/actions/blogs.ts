@@ -7,6 +7,7 @@ import { blogCreateSchema, type BlogCreateInput } from '@/lib/validations/blog'
 import {
   BLOG_LANGUAGES,
   calcReadingTime,
+  formatValidationError,
   isValidSlug,
   normalizeTags,
   slugify,
@@ -206,7 +207,7 @@ export async function getPost(id: string) {
 
 export async function createPost(input: BlogCreateInput) {
   const parsed = blogCreateSchema.safeParse(input)
-  if (!parsed.success) throw new Error(parsed.error.issues[0]?.message ?? 'Datos inválidos')
+  if (!parsed.success) throw new Error(formatValidationError(parsed.error.issues))
   const { translations, ...postFields } = parsed.data
 
   if (!isValidSlug(postFields.slug)) throw new Error('Slug inválido (§2.2)')
