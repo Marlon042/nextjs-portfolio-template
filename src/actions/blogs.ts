@@ -124,7 +124,7 @@ export async function getPublishedPosts(params: ListParams = {}) {
 
   let query = supabase
     .from('blog_posts')
-    .select('*, blog_categories!inner(slug)', { count: 'exact' })
+    .select('*, blog_categories!inner(slug), blog_authors(name)', { count: 'exact' })
     .eq('status', 'published')
     .order('published_at', { ascending: false })
 
@@ -136,7 +136,10 @@ export async function getPublishedPosts(params: ListParams = {}) {
   const { data, count, error } = await query.range(offset, offset + limit - 1)
   if (error) throw new Error(error.message)
 
-  const posts = (data ?? []) as (BlogPost & { blog_categories: { slug: string } | null })[]
+  const posts = (data ?? []) as (BlogPost & {
+    blog_categories: { slug: string } | null
+    blog_authors: { name: string } | null
+  })[]
   const ids = posts.map((p) => p.id)
   if (ids.length === 0) return { posts: [], total: count ?? 0 }
 
