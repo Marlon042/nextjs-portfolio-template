@@ -100,6 +100,8 @@ export default async function BlogPostPage({
   const { slug } = await params
   const lang = getLang(await searchParams)
   const t = ui[lang]
+  // URL absoluta: LinkedIn/X exigen URL pública completa, no ruta relativa
+  const shareUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://your-portfolio-url.com'}/blogs/${slug}`
 
   let post: Awaited<ReturnType<typeof getPostBySlug>>
   try {
@@ -203,7 +205,7 @@ export default async function BlogPostPage({
       <div className="mt-10 flex flex-wrap items-center gap-3 border-t border-border pt-6">
         <span className="text-tertiary-content text-sm">{t.share}:</span>
         <a
-          href={`https://x.com/intent/tweet?text=${encodeURIComponent(translation.title)}`}
+          href={`https://x.com/intent/tweet?text=${encodeURIComponent(translation.title)}&url=${encodeURIComponent(shareUrl)}`}
           target="_blank"
           rel="noopener noreferrer"
           className="rounded-lg border border-border px-3 py-1.5 text-sm text-accent transition hover:bg-accent/10"
@@ -211,7 +213,7 @@ export default async function BlogPostPage({
           X
         </a>
         <a
-          href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`/blogs/${slug}`)}`}
+          href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`}
           target="_blank"
           rel="noopener noreferrer"
           className="rounded-lg border border-border px-3 py-1.5 text-sm text-accent transition hover:bg-accent/10"
