@@ -4,6 +4,9 @@ import { useEffect, useState, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import ImageUpload from './ImageUpload'
 import TipTapEditor from './TipTapEditor'
+import AiAssistModal, { type AiDraftData } from './AiAssistModal'
+import { generateJSON } from '@tiptap/core'
+import { getBlogExtensions } from './tiptap-extensions'
 import { createPost, updatePost, findAvailableSlug, type BlogCategory, type BlogAuthor } from '@/actions/blogs'
 import { getCategories } from '@/actions/blog-categories'
 import { getAuthors } from '@/actions/blog-authors'
@@ -70,6 +73,26 @@ export default function BlogForm({ initialData, postId, action }: BlogFormProps)
   const [loading, setLoading] = useState(false)
   const [checkingSlug, setCheckingSlug] = useState(false)
   const [error, setError] = useState('')
+  const [aiOpen, setAiOpen] = useState(false)
+
+  const handleAiApply = (targetLang: BlogLanguage, draft: AiDraftData) => {
+    const contentJson = generateJSON(draft.content_html, getBlogExtensions()) as unknown as Record<string, unknown>
+    setForm((prev) => ({
+      ...prev,
+      slug: !slugTouched && targetLang === 'es' && draft.title ? slugify(draft.title) : prev.slug,
+      tags: draft.tags.length > 0 ? normalizeTags(draft.tags) : prev.tags,
+      translations: {
+        ...prev.translations,
+        [targetLang]: {
+          title: draft.title,
+          excerpt: draft.excerpt,
+          content_html: draft.content_html,
+          content_json: contentJson,
+        },
+      },
+    }))
+    setLang(targetLang)
+  }
 
   useEffect(() => {
     getCategories().then(setCategories).catch(() => {})
@@ -320,15 +343,37 @@ export default function BlogForm({ initialData, postId, action }: BlogFormProps)
         <h1 className="text-2xl font-bold text-white">
           {action === 'create' ? 'New Post' : 'Edit Post'}
         </h1>
-        <button
-          type="button"
-          onClick={fillSampleData}
-          title="Rellena el artículo ES/EN sobre cómo construimos este CMS"
-          className="rounded border border-dashed border-[#18f2e5]/60 px-3 py-1.5 text-xs text-[#18f2e5] transition hover:bg-[#18f2e5]/10"
-        >
-          ⚡ Datos de prueba
-        </button>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={() => setAiOpen(true)}
+            title="Genera un borrador con IA o traduce ES → EN"
+            className="rounded border border-[#5565e8] px-3 py-1.5 text-xs font-semibold text-[#8b95f0] transition hover:bg-[#5565e8]/20 hover:text-white"
+          >
+            ✨ Asistir con IA
+          </button>
+          <button
+            type="button"
+            onClick={fillSampleData}
+            title="Rellena el artículo ES/EN sobre cómo construimos este CMS"
+            className="rounded border border-dashed border-[#18f2e5]/60 px-3 py-1.5 text-xs text-[#18f2e5] transition hover:bg-[#18f2e5]/10"
+          >
+            ⚡ Datos de prueba
+          </button>
+        </div>
       </div>
+
+      <AiAssistModal
+        open={aiOpen}
+        onClose={() => setAiOpen(false)}
+        activeLang={lang}
+        getSource={(l) => ({
+          title: form.translations[l].title,
+          excerpt: form.translations[l].excerpt,
+          content_html: form.translations[l].content_html,
+        })}
+        onApply={handleAiApply}
+      />
 
       {error && <p className="rounded bg-red-500/10 p-3 text-sm text-red-400">{error}</p>}
 

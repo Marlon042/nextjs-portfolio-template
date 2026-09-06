@@ -2,13 +2,9 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { useEditor, EditorContent } from '@tiptap/react'
-import StarterKit from '@tiptap/starter-kit'
-import Image from '@tiptap/extension-image'
-import Link from '@tiptap/extension-link'
 import Placeholder from '@tiptap/extension-placeholder'
 import CharacterCount from '@tiptap/extension-character-count'
-import TextAlign from '@tiptap/extension-text-align'
-import Highlight from '@tiptap/extension-highlight'
+import { getBlogExtensions } from './tiptap-extensions'
 import ImageUpload from './ImageUpload'
 
 interface TipTapEditorProps {
@@ -48,13 +44,9 @@ export default function TipTapEditor({ content, onChange, placeholder }: TipTapE
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
-      StarterKit.configure({ heading: { levels: [2, 3, 4] } }),
-      Image.configure({ inline: false }),
-      Link.configure({ openOnClick: false }),
+      ...getBlogExtensions(),
       Placeholder.configure({ placeholder: placeholder ?? 'Escribe tu historia…' }),
       CharacterCount,
-      TextAlign.configure({ types: ['heading', 'paragraph'] }),
-      Highlight,
     ],
     content: (content as never) ?? null,
     editorProps: {

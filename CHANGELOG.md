@@ -11,6 +11,7 @@
 - Deps: `@tiptap/*` (react, pm, starter-kit, image, link, placeholder, character-count, text-align, highlight)
 - **Blog CMS — Frontend** (`/blogs` + `/blogs/[slug]`): `BlogCard`/`BlogList` con filtros por categoría, búsqueda con debounce, "Ver más" y Realtime; artículo SSR con SEO (`generateMetadata`, canonical, OG), TOC auto, tracker de vistas, share X/LinkedIn, autor y relacionados; ISR 60s
 - **Blog CMS — SEO/API**: `sitemap.xml` con posts, OG dinámica por slug, feed RSS (`/api/blogs/rss`)
+- **Blog CMS — Asistente IA** (Fase 5A, sin commitear): endpoint admin-only `POST /api/blogs/ai-assist` (modos generar/traducir, Gemini Flash gratis, rate-limit 20s, errores ES) + modal ✨ en `BlogForm` con preview y volcado al form vía `generateJSON`
 
 ### Notes
 - Pendiente Fase 5 (RSS ✔ hecho, resto backlog); crear posts desde `/admin/blogs`
