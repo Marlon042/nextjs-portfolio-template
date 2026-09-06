@@ -124,11 +124,20 @@ export async function getPublishedPosts(params: ListParams = {}) {
 
   let query = supabase
     .from('blog_posts')
-    .select('*, blog_categories!inner(slug), blog_authors(name)', { count: 'exact' })
+    .select('*, blog_categories(slug), blog_authors(name)', { count: 'exact' })
     .eq('status', 'published')
     .order('published_at', { ascending: false })
 
-  if (category) query = query.eq('blog_categories.slug', category)
+  if (category) {
+    // PostgREST ignora filtros sobre embeds con left join: resolver slug → id primero
+    const { data: cat } = await supabase
+      .from('blog_categories')
+      .select('id')
+      .eq('slug', category)
+      .maybeSingle()
+    if (!cat) return { posts: [], total: 0 }
+    query = query.eq('category_id', cat.id)
+  }
   if (tag) query = query.contains('tags', [tag.toLowerCase()])
   if (featured !== undefined) query = query.eq('is_featured', featured)
   if (postIds) query = query.in('id', postIds)
