@@ -124,68 +124,156 @@ export default function BlogForm({ initialData, postId, action }: BlogFormProps)
       form.translations.es.content_html !== ''
     if (dirty && !confirm('¿Sobrescribir el formulario con datos de prueba?')) return
 
-    const doc = (blocks: { heading: string; paras: string[]; bullets: string[] }) => ({
-      type: 'doc',
-      content: [
-        { type: 'heading', attrs: { level: 2 }, content: [{ type: 'text', text: blocks.heading }] },
-        ...blocks.paras.map((p) => ({ type: 'paragraph', content: [{ type: 'text', text: p }] })),
-        {
-          type: 'bulletList',
-          content: blocks.bullets.map((b) => ({
-            type: 'listItem',
-            content: [{ type: 'paragraph', content: [{ type: 'text', text: b }] }],
-          })),
-        },
-      ],
-    })
+    const REPO = 'https://github.com/Marlon042/nextjs-portfolio-template/blob/main/'
+    const TSAFI = 'https://github.com/michaelshimeles/tsafi'
 
-    const esParas = [
-      'Este es un post de prueba generado automáticamente para verificar el flujo completo: crear, editar, publicar y leer desde la API.',
-      'Si estás leyendo esto, el CMS del blog funciona de punta a punta.',
-    ]
-    const esHtml = `<h2>Post de prueba</h2><p>${esParas[0]}</p><p>${esParas[1]}</p><ul><li>Crear borradores en ES y EN</li><li>Publicar y ver en la API</li><li>Borrar sin miedo: es solo una prueba</li></ul>`
+    // Mini-helpers TipTap JSON
+    const T = (text: string) => ({ type: 'text', text })
+    const B = (text: string) => ({ type: 'text', text, marks: [{ type: 'bold' }] })
+    const A = (text: string, href: string) => ({ type: 'text', text, marks: [{ type: 'link', attrs: { href } }] })
+    const P = (...parts: object[]) => ({ type: 'paragraph', content: parts })
+    const H2 = (text: string) => ({ type: 'heading', attrs: { level: 2 }, content: [T(text)] })
+    const LI = (...parts: object[]) => ({ type: 'listItem', content: [P(...parts)] })
+    const UL = (items: object[][]) => ({ type: 'bulletList', content: items.map((parts) => LI(...parts)) })
+    const OL = (items: object[][]) => ({ type: 'orderedList', content: items.map((parts) => LI(...parts)) })
+    const QUOTE = (text: string) => ({ type: 'blockquote', content: [P(T(text))] })
+    const CODE = (code: string) => ({ type: 'codeBlock', content: [T(code)] })
+    const DOC = (content: object[]) => ({ type: 'doc', content })
 
-    const enParas = [
-      'This is an auto-generated test post to verify the full flow: create, edit, publish and read from the API.',
-      'If you are reading this, the blog CMS works end to end.',
-    ]
-    const enHtml = `<h2>Test post</h2><p>${enParas[0]}</p><p>${enParas[1]}</p><ul><li>Create drafts in ES and EN</li><li>Publish and check the API</li><li>Delete without fear: it is only a test</li></ul>`
+    const esTitle = 'Cómo construí un CMS de blog con Next.js, Supabase y TipTap'
+    const esHtml =
+      `<h2>De un placeholder a un CMS real</h2>` +
+      `<p>La ruta <strong>/blogs</strong> de mi portfolio mostraba un cartel de “Coming Soon”. Un video sobre <a href="${TSAFI}">SupaNext</a>, un CMS open source de blogs con Next.js, Supabase y TipTap, me dio la idea: ¿por qué no construir uno propio, integrado al admin panel que ya tenía?</p>` +
+      `<h2>Las decisiones que marcaron el rumbo</h2>` +
+      `<ul><li><strong>Opción A, modelo simple:</strong> un post = un slug. El sistema Documentos → Artículos de Tsafi (un borrador, N slugs para SEO A/B) era complejidad innecesaria para un portfolio de un solo autor.</li>` +
+      `<li><strong>Dos idiomas (ES/EN)</strong> en vez de los cinco del sitio, con tabla <strong>blog_post_translations</strong> y constraint de idioma.</li>` +
+      `<li><strong>TipTap 2.x + Cloudinary:</strong> reutilizar el stack existente en lugar de sumar UploadThing o Prisma.</li>` +
+      `<li><strong>Migraciones SQL planas,</strong> con el mismo estilo y convenciones del resto del proyecto.</li></ul>` +
+      `<h2>Fase 1 — La base de datos</h2>` +
+      `<p>Cuatro tablas en <a href="${REPO}supabase/migrations/00013_blog_schema.sql">00013_blog_schema.sql</a>: blog_categories, blog_authors, blog_posts y blog_post_translations. Con índice GIN para tags, trigger de updated_at y RLS que solo deja leer <strong>published</strong> al público.</p>` +
+      `<pre><code>create table blog_posts (\n  id uuid primary key default gen_random_uuid(),\n  slug text unique not null,\n  status text not null default 'draft'\n    check (status in ('draft', 'published', 'archived')),\n  tags text[] not null default '{}'\n);</code></pre>` +
+      `<h2>Fase 2 — Backend y API pública</h2>` +
+      `<p>Server actions con el patrón getX / createX / updateX / deleteX en <a href="${REPO}src/actions/blogs.ts">src/actions/blogs.ts</a>: createPost valida con Zod, sanitiza el HTML, calcula el tiempo de lectura y hace rollback si falla una traducción. Además expusimos <a href="${REPO}src/app/api/blogs/route.ts">GET /api/blogs</a> para consumir el blog desde cualquier otro sitio, igual que hacía SupaNext.</p>` +
+      `<ul><li><strong>findAvailableSlug:</strong> si el slug existe, sugiere slug-2, slug-3…</li>` +
+      `<li><strong>incrementViews</strong> fire-and-forget para el contador de visitas.</li></ul>` +
+      `<h2>Fase 3 — El admin con TipTap</h2>` +
+      `<p>Tabla con filtros por estado, drag &amp; drop y toggle de publicación (<a href="${REPO}src/app/admin/blogs/page.tsx">admin/blogs</a>); <a href="${REPO}src/components/Admin/BlogForm.tsx">BlogForm</a> con tabs ES/EN, slug auto-generado y verificación de unicidad; y <a href="${REPO}src/components/Admin/TipTapEditor.tsx">TipTapEditor</a> con toolbar, resaltado, alineación e imágenes que suben directo a Cloudinary.</p>` +
+      `<h2>Los dos bugs que casi nos ganan</h2>` +
+      `<p>Probar en local no basta: los dos aparecieron contra datos reales.</p>` +
+      `<ol><li><strong>RLS ocultaba los borradores:</strong> las lecturas del admin usaban la llave anónima y la policy solo deja ver published. Abrir el editor de un draft crasheaba la página. Fix: lecturas admin con service_role.</li>` +
+      `<li><strong>PostgREST ignoraba el filtro</strong> por categoría sobre el embed con left join y devolvía todos los posts. Fix: resolver slug → id y filtrar por category_id.</li></ol>` +
+      `<blockquote>La moraleja: un CMS se prueba contra datos reales, no contra supuestos.</blockquote>` +
+      `<h2>Lo que sigue</h2>` +
+      `<p>Estás leyendo este artículo en el frontend público (/blogs y /blogs/[slug]) con SEO, sitemap y RSS. Queda pulir detalles y, si algún día hace falta, evolucionar al modelo Documentos → Posts para SEO A/B. El código completo está en <a href="${REPO}">el repositorio</a>.</p>`
 
-    const esTitle = 'Mi primer post: probando el CMS del blog'
+    const esJson = DOC([
+      H2('De un placeholder a un CMS real'),
+      P(T('La ruta '), B('/blogs'), T(' de mi portfolio mostraba un cartel de “Coming Soon”. Un video sobre '), A('SupaNext', TSAFI), T(', un CMS open source de blogs con Next.js, Supabase y TipTap, me dio la idea: ¿por qué no construir uno propio, integrado al admin panel que ya tenía?')),
+      H2('Las decisiones que marcaron el rumbo'),
+      UL([
+        [B('Opción A, modelo simple:'), T(' un post = un slug. El sistema Documentos → Artículos de Tsafi (un borrador, N slugs para SEO A/B) era complejidad innecesaria para un portfolio de un solo autor.')],
+        [B('Dos idiomas (ES/EN)'), T(' en vez de los cinco del sitio, con tabla '), B('blog_post_translations'), T(' y constraint de idioma.')],
+        [B('TipTap 2.x + Cloudinary:'), T(' reutilizar el stack existente en lugar de sumar UploadThing o Prisma.')],
+        [B('Migraciones SQL planas,'), T(' con el mismo estilo y convenciones del resto del proyecto.')],
+      ]),
+      H2('Fase 1 — La base de datos'),
+      P(T('Cuatro tablas en '), A('00013_blog_schema.sql', `${REPO}supabase/migrations/00013_blog_schema.sql`), T(': blog_categories, blog_authors, blog_posts y blog_post_translations. Con índice GIN para tags, trigger de updated_at y RLS que solo deja leer '), B('published'), T(' al público.')),
+      CODE("create table blog_posts (\n  id uuid primary key default gen_random_uuid(),\n  slug text unique not null,\n  status text not null default 'draft'\n    check (status in ('draft', 'published', 'archived')),\n  tags text[] not null default '{}'\n);"),
+      H2('Fase 2 — Backend y API pública'),
+      P(T('Server actions con el patrón getX / createX / updateX / deleteX en '), A('src/actions/blogs.ts', `${REPO}src/actions/blogs.ts`), T(': createPost valida con Zod, sanitiza el HTML, calcula el tiempo de lectura y hace rollback si falla una traducción. Además expusimos '), A('GET /api/blogs', `${REPO}src/app/api/blogs/route.ts`), T(' para consumir el blog desde cualquier otro sitio, igual que hacía SupaNext.')),
+      UL([
+        [B('findAvailableSlug:'), T(' si el slug existe, sugiere slug-2, slug-3…')],
+        [B('incrementViews'), T(' fire-and-forget para el contador de visitas.')],
+      ]),
+      H2('Fase 3 — El admin con TipTap'),
+      P(T('Tabla con filtros por estado, drag & drop y toggle de publicación ('), A('admin/blogs', `${REPO}src/app/admin/blogs/page.tsx`), T('); '), A('BlogForm', `${REPO}src/components/Admin/BlogForm.tsx`), T(' con tabs ES/EN, slug auto-generado y verificación de unicidad; y '), A('TipTapEditor', `${REPO}src/components/Admin/TipTapEditor.tsx`), T(' con toolbar, resaltado, alineación e imágenes que suben directo a Cloudinary.')),
+      H2('Los dos bugs que casi nos ganan'),
+      P(T('Probar en local no basta: los dos aparecieron contra datos reales.')),
+      OL([
+        [B('RLS ocultaba los borradores:'), T(' las lecturas del admin usaban la llave anónima y la policy solo deja ver published. Abrir el editor de un draft crasheaba la página. Fix: lecturas admin con service_role.')],
+        [B('PostgREST ignoraba el filtro'), T(' por categoría sobre el embed con left join y devolvía todos los posts. Fix: resolver slug → id y filtrar por category_id.')],
+      ]),
+      QUOTE('La moraleja: un CMS se prueba contra datos reales, no contra supuestos.'),
+      H2('Lo que sigue'),
+      P(T('Estás leyendo este artículo en el frontend público (/blogs y /blogs/[slug]) con SEO, sitemap y RSS. Queda pulir detalles y, si algún día hace falta, evolucionar al modelo Documentos → Posts para SEO A/B. El código completo está en '), A('el repositorio', REPO), T('.')),
+    ])
+
+    const enTitle = 'How I built a blog CMS with Next.js, Supabase and TipTap'
+    const enHtml =
+      `<h2>From placeholder to real CMS</h2>` +
+      `<p>The <strong>/blogs</strong> route of my portfolio showed a “Coming Soon” banner. A video about <a href="${TSAFI}">SupaNext</a>, an open-source blog CMS built with Next.js, Supabase and TipTap, gave me the idea: why not build my own, integrated into the admin panel I already had?</p>` +
+      `<h2>The decisions that shaped the project</h2>` +
+      `<ul><li><strong>Option A, simple model:</strong> one post = one slug. Tsafi's Documents → Articles system (one draft, N slugs for SEO A/B testing) was unnecessary complexity for a single-author portfolio.</li>` +
+      `<li><strong>Two languages (ES/EN)</strong> instead of the site's five, with a <strong>blog_post_translations</strong> table and a language check.</li>` +
+      `<li><strong>TipTap 2.x + Cloudinary:</strong> reuse the existing stack instead of adding UploadThing or Prisma.</li>` +
+      `<li><strong>Plain SQL migrations,</strong> following the project's existing style and conventions.</li></ul>` +
+      `<h2>Phase 1 — The database</h2>` +
+      `<p>Four tables in <a href="${REPO}supabase/migrations/00013_blog_schema.sql">00013_blog_schema.sql</a>: blog_categories, blog_authors, blog_posts and blog_post_translations. With a GIN index for tags, an updated_at trigger, and RLS that only lets the public read <strong>published</strong> posts.</p>` +
+      `<pre><code>create table blog_posts (\n  id uuid primary key default gen_random_uuid(),\n  slug text unique not null,\n  status text not null default 'draft'\n    check (status in ('draft', 'published', 'archived')),\n  tags text[] not null default '{}'\n);</code></pre>` +
+      `<h2>Phase 2 — Backend and public API</h2>` +
+      `<p>Server actions following the getX / createX / updateX / deleteX pattern in <a href="${REPO}src/actions/blogs.ts">src/actions/blogs.ts</a>: createPost validates with Zod, sanitizes the HTML, computes reading time, and rolls back if a translation fails. We also exposed <a href="${REPO}src/app/api/blogs/route.ts">GET /api/blogs</a> so any other site can consume the blog, just like SupaNext did.</p>` +
+      `<ul><li><strong>findAvailableSlug:</strong> if the slug exists, it suggests slug-2, slug-3…</li>` +
+      `<li><strong>incrementViews</strong> fire-and-forget for the view counter.</li></ul>` +
+      `<h2>Phase 3 — The admin with TipTap</h2>` +
+      `<p>A table with status filters, drag &amp; drop and a publish toggle (<a href="${REPO}src/app/admin/blogs/page.tsx">admin/blogs</a>); <a href="${REPO}src/components/Admin/BlogForm.tsx">BlogForm</a> with ES/EN tabs, auto-generated slug and uniqueness check; and <a href="${REPO}src/components/Admin/TipTapEditor.tsx">TipTapEditor</a> with toolbar, highlight, alignment and images uploaded straight to Cloudinary.</p>` +
+      `<h2>The two bugs that almost beat us</h2>` +
+      `<p>Testing locally is not enough: both showed up against real data.</p>` +
+      `<ol><li><strong>RLS hid the drafts:</strong> admin reads used the anonymous key, whose policy only allows published. Opening a draft's editor crashed the page. Fix: admin reads with service_role.</li>` +
+      `<li><strong>PostgREST ignored the filter</strong> on the left-joined embedded category and returned every post. Fix: resolve slug → id and filter by category_id.</li></ol>` +
+      `<blockquote>The lesson: a CMS is tested against real data, not assumptions.</blockquote>` +
+      `<h2>What's next</h2>` +
+      `<p>You are reading this article on the public frontend (/blogs and /blogs/[slug]) with SEO, sitemap and RSS. Polishing remains and, if ever needed, evolving to the Documents → Posts model for SEO A/B. The full code lives in <a href="${REPO}">the repository</a>.</p>`
+
+    const enJson = DOC([
+      H2('From placeholder to real CMS'),
+      P(T('The '), B('/blogs'), T(' route of my portfolio showed a “Coming Soon” banner. A video about '), A('SupaNext', TSAFI), T(', an open-source blog CMS built with Next.js, Supabase and TipTap, gave me the idea: why not build my own, integrated into the admin panel I already had?')),
+      H2('The decisions that shaped the project'),
+      UL([
+        [B('Option A, simple model:'), T(" one post = one slug. Tsafi's Documents → Articles system (one draft, N slugs for SEO A/B testing) was unnecessary complexity for a single-author portfolio.")],
+        [B('Two languages (ES/EN)'), T(" instead of the site's five, with a "), B('blog_post_translations'), T(' table and a language check.')],
+        [B('TipTap 2.x + Cloudinary:'), T(' reuse the existing stack instead of adding UploadThing or Prisma.')],
+        [B('Plain SQL migrations,'), T(" following the project's existing style and conventions.")],
+      ]),
+      H2('Phase 1 — The database'),
+      P(T('Four tables in '), A('00013_blog_schema.sql', `${REPO}supabase/migrations/00013_blog_schema.sql`), T(': blog_categories, blog_authors, blog_posts and blog_post_translations. With a GIN index for tags, an updated_at trigger, and RLS that only lets the public read '), B('published'), T(' posts.')),
+      CODE("create table blog_posts (\n  id uuid primary key default gen_random_uuid(),\n  slug text unique not null,\n  status text not null default 'draft'\n    check (status in ('draft', 'published', 'archived')),\n  tags text[] not null default '{}'\n);"),
+      H2('Phase 2 — Backend and public API'),
+      P(T('Server actions following the getX / createX / updateX / deleteX pattern in '), A('src/actions/blogs.ts', `${REPO}src/actions/blogs.ts`), T(': createPost validates with Zod, sanitizes the HTML, computes reading time, and rolls back if a translation fails. We also exposed '), A('GET /api/blogs', `${REPO}src/app/api/blogs/route.ts`), T(' so any other site can consume the blog, just like SupaNext did.')),
+      UL([
+        [B('findAvailableSlug:'), T(' if the slug exists, it suggests slug-2, slug-3…')],
+        [B('incrementViews'), T(' fire-and-forget for the view counter.')],
+      ]),
+      H2('Phase 3 — The admin with TipTap'),
+      P(T('A table with status filters, drag & drop and a publish toggle ('), A('admin/blogs', `${REPO}src/app/admin/blogs/page.tsx`), T('); '), A('BlogForm', `${REPO}src/components/Admin/BlogForm.tsx`), T(' with ES/EN tabs, auto-generated slug and uniqueness check; and '), A('TipTapEditor', `${REPO}src/components/Admin/TipTapEditor.tsx`), T(' with toolbar, highlight, alignment and images uploaded straight to Cloudinary.')),
+      H2('The two bugs that almost beat us'),
+      P(T('Testing locally is not enough: both showed up against real data.')),
+      OL([
+        [B('RLS hid the drafts:'), T(" admin reads used the anonymous key, whose policy only allows published. Opening a draft's editor crashed the page. Fix: admin reads with service_role.")],
+        [B('PostgREST ignored the filter'), T(' on the left-joined embedded category and returned every post. Fix: resolve slug → id and filter by category_id.')],
+      ]),
+      QUOTE('The lesson: a CMS is tested against real data, not assumptions.'),
+      H2("What's next"),
+      P(T('You are reading this article on the public frontend (/blogs and /blogs/[slug]) with SEO, sitemap and RSS. Polishing remains and, if ever needed, evolving to the Documents → Posts model for SEO A/B. The full code lives in '), A('the repository', REPO), T('.')),
+    ])
+
     setForm((prev) => ({
       ...prev,
       slug: slugTouched ? prev.slug : slugify(esTitle),
-      tags: normalizeTags(['prueba', 'blog']),
+      tags: normalizeTags(['nextjs', 'supabase', 'cms']),
       translations: {
         es: {
           title: esTitle,
           excerpt:
-            'Post de prueba para verificar el CMS: editor TipTap, publicación y lectura desde la API pública.',
+            'De un "Coming Soon" a un CMS completo: cómo construí el blog de mi portfolio con Next.js 16, Supabase, TipTap y Cloudinary — decisiones, fases y los dos bugs reales del camino.',
           content_html: esHtml,
-          content_json: doc({
-            heading: 'Post de prueba',
-            paras: esParas,
-            bullets: [
-              'Crear borradores en ES y EN',
-              'Publicar y ver en la API',
-              'Borrar sin miedo: es solo una prueba',
-            ],
-          }),
+          content_json: esJson as Record<string, unknown>,
         },
         en: {
-          title: 'My first post: testing the blog CMS',
+          title: enTitle,
           excerpt:
-            'Test post to verify the CMS: TipTap editor, publishing and reading from the public API.',
+            'From a "Coming Soon" placeholder to a full CMS: how I built my portfolio blog with Next.js 16, Supabase, TipTap and Cloudinary — decisions, phases and two real bugs.',
           content_html: enHtml,
-          content_json: doc({
-            heading: 'Test post',
-            paras: enParas,
-            bullets: [
-              'Create drafts in ES and EN',
-              'Publish and check the API',
-              'Delete without fear: it is only a test',
-            ],
-          }),
+          content_json: enJson as Record<string, unknown>,
         },
       },
     }))
@@ -235,7 +323,7 @@ export default function BlogForm({ initialData, postId, action }: BlogFormProps)
         <button
           type="button"
           onClick={fillSampleData}
-          title="Rellena título, resumen y contenido ES/EN con datos de prueba"
+          title="Rellena el artículo ES/EN sobre cómo construimos este CMS"
           className="rounded border border-dashed border-[#18f2e5]/60 px-3 py-1.5 text-xs text-[#18f2e5] transition hover:bg-[#18f2e5]/10"
         >
           ⚡ Datos de prueba
