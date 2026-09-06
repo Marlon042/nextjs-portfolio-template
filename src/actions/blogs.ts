@@ -14,6 +14,8 @@ import {
   type BlogStatus,
 } from '@/utils/blog'
 
+export type { BlogLanguage, BlogStatus } from '@/utils/blog'
+
 export interface BlogCategory {
   id: string
   slug: string

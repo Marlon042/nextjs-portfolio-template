@@ -14,6 +14,7 @@ const sidebarLinks = [
   { key: 'Sections', href: '/admin/sections' },
   { key: 'Skills', href: '/admin/skills' },
   { key: 'Icons', href: '/admin/icons' },
+  { key: 'Blog', href: '/admin/blogs' },
   { key: 'Testimonials', href: '/admin/testimonials' },
   { key: 'Translations', href: '/admin/translations' },
   { key: 'Settings', href: '/admin/settings' },

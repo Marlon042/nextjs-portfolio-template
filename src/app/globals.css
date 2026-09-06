@@ -194,3 +194,93 @@ section {
   }
   scrollbar-width: none;
 }
+
+/* TipTap editor (admin) + blog article prose share the same base */
+.tiptap,
+.blog-prose {
+  min-height: 280px;
+  padding: 1rem;
+  color: #fff;
+  outline: none;
+
+  p {
+    margin: 0.75rem 0;
+    line-height: 1.75;
+  }
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 1.5rem 0 0.75rem;
+  }
+  h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 1.25rem 0 0.5rem;
+  }
+  h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 1rem 0 0.5rem;
+  }
+  ul,
+  ol {
+    margin: 0.75rem 0;
+    padding-left: 1.5rem;
+  }
+  ul {
+    list-style: disc;
+  }
+  ol {
+    list-style: decimal;
+  }
+  blockquote {
+    margin: 1rem 0;
+    padding: 0.5rem 1rem;
+    border-left: 3px solid #18f2e5;
+    color: #99a1af;
+    font-style: italic;
+  }
+  pre {
+    margin: 1rem 0;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background: #05101a;
+    overflow-x: auto;
+    code {
+      background: none;
+      padding: 0;
+    }
+  }
+  code {
+    padding: 0.15rem 0.4rem;
+    border-radius: 0.25rem;
+    background: #1a2d4a;
+    font-size: 0.875em;
+  }
+  a {
+    color: #18f2e5;
+    text-decoration: underline;
+  }
+  img {
+    margin: 1rem auto;
+    border-radius: 0.5rem;
+    max-width: 100%;
+  }
+  mark {
+    background: rgba(24, 242, 229, 0.3);
+    color: inherit;
+    border-radius: 0.2rem;
+    padding: 0 0.2rem;
+  }
+  hr {
+    margin: 1.5rem 0;
+    border-color: #607b96;
+  }
+  p.is-empty::before {
+    content: attr(data-placeholder);
+    color: #607b96;
+    float: left;
+    height: 0;
+    pointer-events: none;
+  }
+}

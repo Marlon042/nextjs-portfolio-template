@@ -1,15 +1,17 @@
 # Changelog
 
-## [Unreleased] — Blog CMS (Fases 1–2: DB + Backend)
+## [Unreleased] — Blog CMS (Fases 1–3: DB + Backend + Admin)
 
 ### Added
 - **Blog CMS — base de datos** (`supabase/migrations/00013_blog_schema.sql`): tablas `blog_categories`, `blog_authors`, `blog_posts` (slug único compartido es/en, `status` draft/published/archived, tags `text[]` + GIN, `views`, `reading_time`, trigger `updated_at`) y `blog_post_translations` (es/en, `content_html` + `content_json` TipTap)
 - **Blog CMS — backend** (`src/actions/blogs.ts`, `blog-categories.ts`, `blog-authors.ts`): CRUD + `togglePublish` + `incrementViews` + `findAvailableSlug` (Slug Policy §2.2 en `docs/blog_plan.md`)
 - **Blog CMS — API pública** (`/api/blogs`, `/api/blogs/[slug]`, `/api/blogs/[slug]/views`): filtros lang/categoría/search/tag, paginación y contador de vistas
 - Deps: `zod`, `sanitize-html` (+ `@types/sanitize-html`). Sanitizado server-only en `src/lib/blog-sanitize.ts`
+- **Blog CMS — Admin** (`/admin/blogs`): tabla con filtros draft/published/archived/featured, toggle publish inline, drag&drop `display_order`, Realtime; `BlogForm` con tabs ES/EN, slug auto + verificación §2.2, cover vía Cloudinary, tags, categorías; editor **TipTap 2.x** (toolbar + highlight + align + imágenes Cloudinary) en `src/components/Admin/TipTapEditor.tsx` + estilos `.tiptap` en `globals.css`; sidebar link `Blog`
+- Deps: `@tiptap/*` (react, pm, starter-kit, image, link, placeholder, character-count, text-align, highlight)
 
 ### Notes
-- Pendiente Fase 3 (Admin CMS con TipTap) y Fase 4 (frontend `/blogs` + `/blogs/[slug]`); la API responde vacío hasta crear posts
+- Pendiente Fase 4 (frontend `/blogs` + `/blogs/[slug]`); crear posts desde `/admin/blogs`
 - Requiere habilitar Realtime en Supabase para: `blog_posts`, `blog_post_translations`, `blog_categories`
 - Ver plan completo (local, no versionado — `docs/` está en `.gitignore`): `docs/blog_plan.md`
 
