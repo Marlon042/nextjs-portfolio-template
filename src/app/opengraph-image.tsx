@@ -3,7 +3,7 @@ import { ImageResponse } from 'next/og'
 export const runtime = 'edge'
 
 // Image metadata
-export const alt = 'SOLOPRENEUR'
+export const alt = 'Marlon Gutiérrez | Full-Stack Web Developer in Costa Rica'
 
 export const size = {
   width: 1200,

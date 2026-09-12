@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, useRef, ReactNode, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
-import { languages, Language } from '@/i18n/translations'
+import { languages, Language, fallbackDictionaries } from '@/i18n/translations'
 
 interface LanguageContextType {
   lang: Language
@@ -29,14 +29,19 @@ const translationCache = new Map<string, Record<string, string>>()
 export const LanguageProvider = ({ children }: LanguageProviderProps) => {
   const [lang, setLang] = useState<Language>('es')
   const [mounted, setMounted] = useState(false)
-  const [dict, setDict] = useState<Record<string, string>>({})
+  // Fallback local desde el primer render: evita claves crudas en SSR/bots
+  const [dict, setDict] = useState<Record<string, string>>(() => fallbackDictionaries.es)
   const loadingRef = useRef(false)
 
   const loadTranslations = useCallback(async (language: Language) => {
+    const fallback = fallbackDictionaries[language] ?? fallbackDictionaries.es
     if (translationCache.has(language)) {
       setDict(translationCache.get(language)!)
       return
     }
+
+    // Muestra fallback de inmediato mientras carga Supabase
+    setDict(fallback)
 
     if (loadingRef.current) return
     loadingRef.current = true
@@ -46,7 +51,7 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
       .select('key, value')
       .eq('language', language)
 
-    const map: Record<string, string> = {}
+    const map: Record<string, string> = { ...fallback }
     if (data) {
       (data as { key: string; value: string }[]).forEach((item) => { map[item.key] = item.value })
     }
@@ -87,7 +92,7 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
   }, [lang, loadTranslations])
 
   const t = (key: string): string => {
-    return dict[key] || key
+    return dict[key] || fallbackDictionaries[lang]?.[key] || fallbackDictionaries.es[key] || key
   }
 
   return (

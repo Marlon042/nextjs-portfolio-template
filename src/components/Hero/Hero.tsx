@@ -1,4 +1,5 @@
 'use client'
+import Image from 'next/image'
 import { useLanguage } from '@/context/LanguageContext'
 import useRoleSwitcher from '@/hooks/useRoleSwitcher'
 import useRotatingAnimation from '@/hooks/useRotatingAnimation'
@@ -45,11 +46,14 @@ const Hero = () => {
 
         <div className="flex min-h-[18.75rem] items-center justify-center lg:min-h-[35rem]">
           <div className="text-accent relative size-56 sm:size-60 md:size-[20rem] lg:size-[25.75rem]">
-            <img
+            <Image
               src={HeroImage}
               alt="Marlon Gutiérrez - Full Stack Developer"
-              className="absolute inset-0 w-full h-full object-contain p-7"
-              loading="eager"
+              fill
+              sizes="(max-width: 768px) 15rem, (max-width: 1024px) 20rem, 25.75rem"
+              priority
+              fetchPriority="high"
+              className="object-contain p-7"
             />
             <Ellipse
               ref={ellipseRef}
